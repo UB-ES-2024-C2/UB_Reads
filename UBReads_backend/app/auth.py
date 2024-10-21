@@ -1,10 +1,11 @@
+from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from . import schemas, models, crud
-from .dependencies import get_db
+from . import schemas, crud
+from .dependencies import get_current_user, get_db
+from .models import User
 from .schemas import UserResponse
-from .security import verify_password, create_access_token, get_current_user
-from datetime import timedelta
+from .security import create_access_token, verify_password
 
 router = APIRouter()
 
@@ -30,5 +31,19 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/users/me", response_model=schemas.UserResponse)
-def read_users_me(current_user: schemas.UserResponse = Depends(get_current_user)):
+def get_current_user_info(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.delete("/delete-account/")
+def delete_account(db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+    # Get the current user from the database
+    user = db.query(User).filter(User.email == current_user.email).first()
+    
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Delete the user from the database
+    db.delete(user)
+    db.commit()
+
+    return {"message": "User account deleted successfully"}
