@@ -16,7 +16,7 @@
   }
 
   /* Estilos para el contenedor del formulario */
-  .login-container {
+  .signup-container {
     background-color: white;
     padding: 40px;
     border-radius: 0 20px 20px 0;
@@ -38,7 +38,7 @@
   }
 
   /* Título del formulario */
-  .login-container h2,
+  .signup-container h2,
   .welcome-container h2 {
     margin-bottom: 20px;
     font-size: 24px;
@@ -46,10 +46,10 @@
   }
 
   /* Estilos del formulario */
-  .login-container form {
+  .signup-container form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Añade espacio entre los campos */
+    gap: 3px; /* Añade espacio entre los campos */
   }
 
   /* Estilos para las etiquetas */
@@ -63,7 +63,7 @@
   input[type="text"],
   input[type="email"],
   input[type="password"] {
-    padding: 10px;
+    padding: 5px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -72,7 +72,7 @@
   }
 
   /* Estilos para el botón de envío */
-  .login-container button[type="submit"] {
+  .signup-container button[type="submit"] {
     padding: 10px;
     background-color: #007bff;
     color: white;
@@ -103,4 +103,15 @@
   /* Cambia el color del enlace al pasar el ratón */
   p a:hover {
     text-decoration: underline;
+  }
+
+  /* Mante coherencia amb els missatges d'error */
+  small {
+    color: red;
+    margin-top: 0;
+    display: block;
+    font-size: 12px;
+    height: 14px;
+    line-height: 14px;
+    text-align: right;
   }
