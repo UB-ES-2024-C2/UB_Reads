@@ -37,7 +37,7 @@ export const Login = () => {
             <button type="submit">Envia</button> {/* Botón para enviar */}
           </form>
           <p>
-            No tens un compte? <Link to="/registre">Registra't aquí</Link>{" "}
+            No tens un compte? <Link to="/signup">Registra't aquí</Link>{" "}
             {/* Link al registro */}
           </p>
         </div>
