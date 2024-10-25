@@ -1,0 +1,117 @@
+/* Contenedor principal para ambos contenedores */
+.main-container {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+  }
+
+  .central-container {
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+  }
+
+  /* Estilos para el contenedor del formulario */
+  .signup-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 400px; /* Limita el ancho máximo del contenedor del formulario */
+    /* Añade un espacio entre los contenedores */
+    text-align: center; /* Centra el texto dentro del contenedor */
+  }
+
+  /* Estilos para el contenedor de bienvenida */
+  .welcome-container {
+    background-color: #e9f5ff; /* Fondo ligero para el contenedor de bienvenida */
+    padding: 40px;
+    border-radius: 20px 0 0 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 400px; /* Limita el ancho máximo del contenedor de bienvenida */
+  }
+
+  /* Título del formulario */
+  .signup-container h2,
+  .welcome-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+
+  /* Estilos del formulario */
+  .signup-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 3px; /* Añade espacio entre los campos */
+  }
+
+  /* Estilos para las etiquetas */
+  label {
+    font-weight: bold;
+    color: #555;
+    text-align: left; /* Alinea las etiquetas a la izquierda */
+  }
+
+  /* Estilos para los campos de entrada */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho */
+  }
+
+  /* Estilos para el botón de envío */
+  .signup-container button[type="submit"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Hace que el botón ocupe el 100% del ancho del formulario */
+  }
+
+  /* Cambia el color del botón al pasar el ratón */
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+
+  /* Estilos para el enlace de registro */
+  p {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  p a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  /* Cambia el color del enlace al pasar el ratón */
+  p a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mante coherencia amb els missatges d'error */
+  small {
+    color: red;
+    margin-top: 0;
+    display: block;
+    font-size: 12px;
+    height: 14px;
+    line-height: 14px;
+    text-align: right;
+  }
