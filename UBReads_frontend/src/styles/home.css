@@ -1,0 +1,15 @@
+.home-container {
+    /* Display setting */
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    /* Colors setting */
+    background-color: #303030;
+}
+
+p {
+    margin-left: auto;
+    align-self: center;
+    margin-right: auto;
+}
