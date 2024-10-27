@@ -1,7 +1,8 @@
 import "./styles/App.css";
+import { Home } from "./home";
 import { Login } from "./login";
-import { Route, Routes } from "react-router-dom"; // Importa BrowserRouter
 import { SignupForm } from "./signup";
+import { Route, Routes } from "react-router-dom"; // Importa BrowserRouter
 
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<SignupForm />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   );
 }
