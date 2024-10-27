@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return UserController.insert_user(db=db, name=user.name, surname=user.surname, username=user.username, email=user.email, password=user.password)
+    return UserController.insert_user(db=db, username=user.username, email=user.email, password=user.password)
 
 @router.get("/users/{user_id}", response_model=User)
 def read_user(user_id: int, db: Session = Depends(get_db)):

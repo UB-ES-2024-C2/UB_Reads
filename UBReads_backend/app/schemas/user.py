@@ -2,11 +2,12 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class UserBase(BaseModel):
-    
     username: str
     email: str
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+     username: str
+     email: str
      password: str
 
 class UserUpdate(UserBase):
