@@ -1,0 +1,14 @@
+.navbar-item {
+    display: inline;    
+}
+
+.navbar-container {
+    padding: 1rem;
+    /*background-color: ;*/
+}
+
+.navbar-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

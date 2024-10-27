@@ -3,13 +3,13 @@
     width: 100vw;
     height: 100vh;
     display: flex;
+    flex-direction: column;
 
     /* Colors setting */
     background-color: #303030;
 }
 
 p {
-    margin-left: auto;
-    align-self: center;
-    margin-right: auto;
+    flex-grow: 1;
+    margin: auto;
 }
