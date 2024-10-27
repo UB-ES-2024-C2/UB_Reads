@@ -25,7 +25,7 @@
 							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"testuser@example.com\",\n    \"password\": \"testpassword\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/auth/signup/",
+							"raw": "http://localhost:8000/users/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -47,13 +47,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Parse the response to JSON\r",
-									"var jsonData = pm.response.json();\r",
-									"\r",
-									"// Check if the access_token exists in the response\r",
-									"if (jsonData.access_token) {\r",
-									"    // Set the access_token as a collection variable\r",
-									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+									"// Parse the response to JSON",
+									"var jsonData = pm.response.json();",
+									"",
+									"// Check if the access_token exists in the response",
+									"if (jsonData.access_token) {",
+									"    // Set the access_token as a collection variable",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -62,32 +62,36 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"testpassword\"\n}"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "testuser",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "testpassword",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:8000/auth/login/",
+							"raw": "http://localhost:8000/token/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
-								"auth",
-								"login",
-								""
+								"token"
 							]
 						}
 					},
 					"response": []
-				},
+				},				
 				{
 					"name": "Get Current User (Protected)",
 					"request": {
