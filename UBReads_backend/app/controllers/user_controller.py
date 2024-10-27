@@ -41,7 +41,7 @@ class UserController:
     @staticmethod
     def delete_user(db: Session, user_id: int):
         db.execute(
-            text("DELETE FROM book_users WHERE user_id = :user_id"), 
+            text("DELETE FROM user_books WHERE user_id = :user_id"), 
             {"user_id": user_id}
         )
         user = db.query(User).filter(User.id == user_id).first()
