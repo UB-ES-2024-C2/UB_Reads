@@ -4,14 +4,44 @@ import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 
 export const Login = () => {
   const navigate = useNavigate(); // Hook para redirigir
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
     // Aquí puedes agregar lógica de validación de login o autenticación si es necesario
+    // Obtener los valores de los campos de entrada
+    const username = e.target.username.value;
+    const password = e.target.password.value;
 
-    // Redirigir a la página de inicio (por ejemplo, '/home')
-    navigate("/home");
+    try {
+      const response = await fetch("http://localhost:8000/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          username,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        // Si la respuesta no es exitosa, muestra un alert con el mensaje de error
+        alert("Credenciales inválidas");
+        return;
+      }
+
+      const data = await response.json();
+      localStorage.setItem("access_token", data.access_token);
+
+      // Redirigir a la página de inicio
+      navigate("/home");
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
+    }
   };
+
+    
+    //navigate("/home");
 
   return (
     <main className="main-container">
