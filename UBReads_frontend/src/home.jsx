@@ -1,6 +1,8 @@
 import React from "react";
 import './styles/home.css';
 import { NavBar } from "./navbar";
+import { Container, flexbox } from "@mui/system";
+import { Typography } from "@mui/material";
 
 /**
  * 
@@ -8,9 +10,11 @@ import { NavBar } from "./navbar";
  */
 export const Home = () => {
     return (
-        <div className="home-container">
+        <Container disableGutters className="home-container" maxWidth="false">
             <NavBar />
-            <p>WELCOME TO UB READS</p>
-        </div>
+            <Container className="content-container" maxWidth="xl">
+                <Typography variant="h1" sx={{ fontWeight: "bold" }}>WELCOME TO UB READS</Typography>
+            </Container>
+        </Container>
     )
 }

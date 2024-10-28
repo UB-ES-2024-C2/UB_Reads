@@ -6,10 +6,14 @@
     flex-direction: column;
 
     /* Colors setting */
-    background-color: #303030;
+    background-color: #EFE5D6;
 }
 
-p {
-    flex-grow: 1;
-    margin: auto;
+.content-container {
+    /* Display settings */
+    height: 100%;
+    display: flex;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
 }
