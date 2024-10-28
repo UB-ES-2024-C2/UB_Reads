@@ -102,17 +102,15 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8000/auth/users/me",
+							"raw": "http://localhost:8000/me",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
-								"auth",
-								"users",
 								"me"
-							]
+								]
 						}
 					},
 					"response": []

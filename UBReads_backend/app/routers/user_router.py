@@ -41,7 +41,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def get_current_user(
     security_scopes: SecurityScopes,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
     if security_scopes.scopes:
