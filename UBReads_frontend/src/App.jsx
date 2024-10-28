@@ -1,14 +1,21 @@
+// Style Import
 import "./styles/App.css";
+
+// Components import
+import { Home } from "./home";
 import { Login } from "./login";
-import { Route, Routes } from "react-router-dom"; // Importa BrowserRouter
 import { SignupForm } from "./signup";
 
+// BrowserRouter import
+import { Route, Routes } from "react-router-dom";
 
-function App() {
+// React Component
+const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<SignupForm />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   );
 }

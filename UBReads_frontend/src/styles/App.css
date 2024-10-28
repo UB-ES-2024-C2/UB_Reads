@@ -8,11 +8,20 @@
   background-color: #efe5d6;
 }
 
+/* Selection tool style */
+::-moz-selection {
+  color: whitesmoke;
+  background: #CB0042;
+}
+
+::selection {
+  color: whitesmoke;
+  background: CB0042;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 body {
