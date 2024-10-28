@@ -58,7 +58,7 @@ export const SignupForm = () => {
 
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
       // Submit form logic (e.g., send data to server)
-      navigate("/login");
+      navigate("/");
     } else {
       setUnameError(uNameErorrMsg);
       setEmailError(emailErrorMsg);
