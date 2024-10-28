@@ -1,7 +1,15 @@
+// React import
 import React from "react";
+import { NavBar } from "./navbar";  // Component
+
+// Style import
 import './styles/home.css';
-import { NavBar } from "./navbar";
-import { Container, flexbox } from "@mui/system";
+
+/* Material UI imports */
+// Layout
+import { Container } from "@mui/system";
+
+// Component
 import { Typography } from "@mui/material";
 
 /**

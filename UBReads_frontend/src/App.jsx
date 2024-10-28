@@ -1,11 +1,16 @@
+// Style Import
 import "./styles/App.css";
+
+// Components import
 import { Home } from "./home";
 import { Login } from "./login";
 import { SignupForm } from "./signup";
-import { Route, Routes } from "react-router-dom"; // Importa BrowserRouter
 
+// BrowserRouter import
+import { Route, Routes } from "react-router-dom";
 
-function App() {
+// React Component
+const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />

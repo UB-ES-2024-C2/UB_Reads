@@ -8,6 +8,17 @@
   background-color: #efe5d6;
 }
 
+/* Selection tool style */
+::-moz-selection {
+  color: whitesmoke;
+  background: #CB0042;
+}
+
+::selection {
+  color: whitesmoke;
+  background: CB0042;
+}
+
 #root {
   width: 100vw;
   height: 100vh;

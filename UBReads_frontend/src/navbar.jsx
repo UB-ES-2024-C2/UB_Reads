@@ -1,21 +1,33 @@
+// React imports
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
+import { Link } from "react-router-dom"; // Router Link
+
+/* Material UI imports */
+
+// Layout
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
+import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
+
+// Components
+import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Stack } from '@mui/system';
-import { blue, pink } from '@mui/material/colors';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
-import './styles/navbar.css'
+// Colors
+import { pink, blue } from '@mui/material/colors';
 
-const settings = ['Logout'];
+// Style imports
+import './styles/navbar.css';
+import Logo from './assets/logo.png';
 
+/**
+ * 
+ * @returns basic navigation bar with a simple user menu
+ */
 export const NavBar = () => {
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -24,51 +36,43 @@ export const NavBar = () => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
-      <Container disableGutters maxWidth="xl" className='navbar-container'>
-        <Stack direction="row" className="navbar-stack" sx={{ bgcolor: blue[700]}}>
-                {/* LOGO */}
-                <Box >
-                    <Tooltip title="UB Reads">
-                        <img src="UBReads_frontend/src/assets/react.svg" />
-                    </Tooltip>
-                </Box>
-        
-                {/* Avatar menu */}
-                <Box>
-                    <Tooltip title="Open settings">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar >U</Avatar>
-                    </IconButton>
-                    </Tooltip>
-                    <Menu
-                    sx={{ mt: '45px' }}
-                    id="menu-appbar"
-                    anchorEl={anchorElUser}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
-                    >
-                    {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Typography sx={{ textAlign: 'center', color: pink[500] }}>{setting}</Typography>
-                        </MenuItem>
-                    ))}
-                    </Menu>
-                </Box>
-        </Stack>
-      </Container>
+    <Container disableGutters maxWidth="xl" className='navbar-container' sx={{ bgcolor: blue[800] }}>
+      <Stack direction="row" className="navbar-stack">
+        <Link to="/home">
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {/* Logo */}
+            <img src={ Logo } />
+          </Box>
+        </Link>
+        <Box className="navbar-item">
+          {/* Avatar */}
+          <Tooltip title="User menu">
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <Avatar src="/broken-image.jpg"/>
+            </IconButton>
+          </Tooltip>
+          {/* User menu */}
+          <Menu
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={null}
+            sx={{ mt: "0.5rem" }}>
+            <MenuItem>
+              <Typography sx={{ textAlign: 'center', color: pink[500] }}>Log Out</Typography>
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Stack>
+    </Container>
   );
 }
