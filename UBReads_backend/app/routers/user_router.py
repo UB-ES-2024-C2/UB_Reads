@@ -16,27 +16,6 @@ ALGORITHM = os.environ.get("ALGORITHM")
 
 router = APIRouter()
 
-@router.post("/users/", response_model=User)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return UserController.insert_user(db=db, username=user.username, email=user.email, password=user.password)
-
-@router.get("/users/{user_id}", response_model=User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = UserController.get_user(db=db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-@router.delete("/users/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db)):
-    if not UserController.delete_user(db=db, user_id=user_id):
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"detail": "User deleted"}
-
-@router.get("/users/", response_model=list[User])
-def read_users(db: Session = Depends(get_db)):
-    return UserController.get_users(db=db)
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def get_current_user(
@@ -79,6 +58,29 @@ async def get_current_user(
             )
 
     return user
+
+@router.post("/users/", response_model=User)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    return UserController.insert_user(db=db, username=user.username, email=user.email, password=user.password)
+
+@router.get("/users/{user_id}", response_model=User)
+def read_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = UserController.get_user(db=db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
+
+@router.delete("/users-delete/", response_model=dict)
+def delete_user(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not UserController.delete_user(db=db, user=current_user):
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"detail": "User deleted successfully"}
+
+@router.get("/users/", response_model=list[User])
+def read_users(db: Session = Depends(get_db)):
+    return UserController.get_users(db=db)
+
 
 @router.get("/me", response_model=User)
 def read_users_me(current_user: User = Depends(get_current_user)):

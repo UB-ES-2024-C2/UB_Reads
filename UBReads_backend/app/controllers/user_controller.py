@@ -39,15 +39,11 @@ class UserController:
         return db.query(User).filter(User.username == username).first()
 
     @staticmethod
-    def delete_user(db: Session, user_id: int):
-        db.execute(
-            text("DELETE FROM user_books WHERE user_id = :user_id"), 
-            {"user_id": user_id}
-        )
-        user = db.query(User).filter(User.id == user_id).first()
-        if user:
-            db.delete(user)
-            db.commit()
+    def delete_user(db: Session, user: User):
+        db_user = db.query(User).filter(User.id == user.id).first()
+        if db_user:
+            db.delete(db_user)
+            db.commit() 
             return True
         return False
     

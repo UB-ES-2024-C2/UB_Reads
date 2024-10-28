@@ -127,15 +127,14 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8000/auth/delete-account/",
+							"raw": "http://localhost:8000/users-delete/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
-								"auth",
-								"delete-account",
+								"users-delete",
 								""
 							]
 						}
