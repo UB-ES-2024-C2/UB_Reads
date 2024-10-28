@@ -74,7 +74,7 @@ export const SignupForm = () => {
         // Verifica si la respuesta es exitosa
         if (response.ok) {
           // Redirige al usuario a la página de inicio después de un registro exitoso
-          navigate("/home");
+          navigate("/");
         } else {
           // Muestra un mensaje de error si ocurre algún problema
           const errorData = await response.json();
