@@ -61,7 +61,11 @@ async def get_current_user(
 
 @router.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return UserController.insert_user(db=db, username=user.username, email=user.email, password=user.password)
+    try:
+        return UserController.insert_user(db=db, username=user.username, email=user.email, password=user.password)
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) 
 
 @router.get("/users/{user_id}", response_model=User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
