@@ -48,7 +48,7 @@ export const SignupForm = () => {
     return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Final validation before submitting
     const uNameErorrMsg = validateUname(username);
@@ -58,7 +58,33 @@ export const SignupForm = () => {
 
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
       // Submit form logic (e.g., send data to server)
-      navigate("/");
+      try {
+        const response = await fetch("http://127.0.0.1:8000/users/", { // URL completa
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: username,
+            email: email,
+            password: password
+          })
+        });
+  
+        // Verifica si la respuesta es exitosa
+        if (response.ok) {
+          // Redirige al usuario a la página de inicio después de un registro exitoso
+          navigate("/");
+        } else {
+          // Muestra un mensaje de error si ocurre algún problema
+          const errorData = await response.json();
+          alert(errorData.message || "Error al registrarse");
+        }
+      } catch (error) {
+        console.error("Error al conectar con el backend:", error);
+        alert(`Hubo un problema al conectarse con el servidor: ${error.message}`);
+      }
+      //navigate("/home");
     } else {
       setUnameError(uNameErorrMsg);
       setEmailError(emailErrorMsg);

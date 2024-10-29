@@ -1,6 +1,6 @@
 // React imports
 import React from 'react';
-import { Link } from "react-router-dom"; // Router Link
+import { Link, useNavigate } from "react-router-dom"; // Router Link
 
 /* Material UI imports */
 
@@ -29,12 +29,21 @@ import Logo from './assets/logo.png';
  * @returns basic navigation bar with a simple user menu
  */
 export const NavBar = () => {
+  
+  const navigate = useNavigate(); // Hook para redirigir
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+
+  /**
+   * Simple Log Out method implementation
+   */
+  const logOut = () => {
+    navigate("/")
+  }
 
   return (
     <Container disableGutters maxWidth="xl" className='navbar-container' sx={{ bgcolor: blue[800] }}>
@@ -67,7 +76,7 @@ export const NavBar = () => {
             open={Boolean(anchorElUser)}
             onClose={null}
             sx={{ mt: "0.5rem" }}>
-            <MenuItem>
+            <MenuItem onClick={logOut}>
               <Typography sx={{ textAlign: 'center', color: pink[500] }}>Log Out</Typography>
             </MenuItem>
           </Menu>

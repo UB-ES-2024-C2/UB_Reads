@@ -23,6 +23,14 @@ class UserController:
 
     @staticmethod
     def insert_user(db: Session, username: str, email: str, password: str):
+        existing_user = db.query(User).filter(User.username == username).first()
+        if existing_user:
+            raise ValueError("El usuario ya existe")  # Puedes personalizar el mensaje
+
+        existing_email = db.query(User).filter(User.email == email).first()
+        if existing_email:
+            raise ValueError("El correo electrónico ya está registrado")
+
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
         db_user = User(username=username, email=email, password=hashed_password)
         db.add(db_user)
