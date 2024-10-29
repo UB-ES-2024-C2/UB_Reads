@@ -36,7 +36,7 @@ export const SignupForm = () => {
   const validatePassword = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_.-])[A-Za-z\d@$!%*?&_.-]{8,}$/;
     if (!passwordRegex.test(password)) {
-      return "La contrasenya ha de tenir almenys 8 caràcters, 1 número, 1 majúscula, 1 minúscula i 1 caràcter especial.";
+      return "La contrasenya ha de tenir almenys 8 caràcters, 1 número, 1 majúscula, 1 minúscula i 1 caràcter especial [@$!%*?&_.-].";
     }
     return "";
   };
