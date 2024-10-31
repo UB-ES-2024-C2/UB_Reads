@@ -1,5 +1,5 @@
 // React imports
-import React from 'react';
+import React, { useEffect} from 'react';
 import { Link, useNavigate } from "react-router-dom"; // Router Link
 
 /* Material UI imports */
@@ -38,6 +38,10 @@ export const NavBar = () => {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleCloseUserMenu = () => {
+      setAnchorElUser(null);
+  };
+
   /**
    * Simple Log Out method implementation
    */
@@ -45,43 +49,59 @@ export const NavBar = () => {
     navigate("/")
   }
 
+  const profilePage = () => {
+      alert('Aixo hauria de navegar a la user page.\nNot implemented.')
+  }
+
+  useEffect(() => {
+      const handleClickOutside = (event) => {
+          if (anchorElUser && !anchorElUser.contains(event.target)) {
+              handleCloseUserMenu();
+          }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+      };
+  }, [anchorElUser]);
+
   return (
     <Container disableGutters maxWidth="xl" className='navbar-container' sx={{ bgcolor: blue[800] }}>
-      <Stack direction="row" className="navbar-stack">
-        <Link to="/home">
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            {/* Logo */}
-            <img src={ Logo } />
-          </Box>
-        </Link>
-        <Box className="navbar-item">
-          {/* Avatar */}
-          <Tooltip title="User menu">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar src="/broken-image.jpg"/>
-            </IconButton>
-          </Tooltip>
-          {/* User menu */}
-          <Menu
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-            }}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={null}
-            sx={{ mt: "0.5rem" }}>
-            <MenuItem onClick={logOut}>
-              <Typography sx={{ textAlign: 'center', color: pink[500] }}>Log Out</Typography>
-            </MenuItem>
-          </Menu>
-        </Box>
-      </Stack>
+        <Stack direction="row" className="navbar-stack">
+            <Link to="/home">
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {/* Logo */}
+                    <img src={ Logo } alt="Logo" />
+                </Box>
+            </Link>
+            <Box className="search-container">
+                <input type="text" className="search-bar" placeholder="Search..." />
+            </Box>
+            <Box className="navbar-item">
+                {/* Avatar */}
+                <Tooltip title="User menu">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar src="/broken-image.jpg"/>
+                    </IconButton>
+                </Tooltip>
+                {/* User menu */}
+                <Menu
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center', }}
+                    keepMounted transformOrigin={{ vertical: 'top', horizontal: 'center', }}
+                    open={Boolean(anchorElUser)}
+                    onClose={null}
+                    sx={{ mt: "0.5rem" }} >
+
+                    <MenuItem onClick={profilePage}>
+                        <Typography sx={{ textAlign: 'center', color: blue }}>Perfil</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={logOut}>
+                        <Typography sx={{ textAlign: 'center', color: pink[500] }}>Log Out</Typography>
+                    </MenuItem>
+                </Menu>
+            </Box>
+        </Stack>
     </Container>
   );
 }
