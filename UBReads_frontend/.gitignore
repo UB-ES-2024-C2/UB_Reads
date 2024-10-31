@@ -24,8 +24,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# OS files
-.DS_Store
-
 # Linux executables
 .sh
