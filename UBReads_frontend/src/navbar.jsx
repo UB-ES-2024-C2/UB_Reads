@@ -23,13 +23,14 @@ import { pink, blue } from '@mui/material/colors';
 // Style imports
 import './styles/navbar.css';
 import Logo from './assets/logo.png';
+import Lupa from './assets/lupa.png'
 
 /**
- * 
+ *
  * @returns basic navigation bar with a simple user menu
  */
 export const NavBar = () => {
-  
+
   const navigate = useNavigate(); // Hook para redirigir
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -74,9 +75,14 @@ export const NavBar = () => {
                     <img src={ Logo } alt="Logo" />
                 </Box>
             </Link>
+            {/* Searchbox */}
             <Box className="search-container">
-                <input type="text" className="search-bar" placeholder="Search..." />
+                <Box className="search-box">
+                    <img src={ Lupa } alt="Lupa" className="serch-icon"/>
+                    <input type="text" className="search-bar" placeholder="Search..." />
+                </Box>
             </Box>
+
             <Box className="navbar-item">
                 {/* Avatar */}
                 <Tooltip title="User menu">
