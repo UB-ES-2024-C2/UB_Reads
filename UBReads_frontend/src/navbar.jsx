@@ -69,7 +69,7 @@ export const NavBar = () => {
   }, [anchorElUser]);
 
   return (
-    <Container disableGutters maxWidth="xl" className='navbar-container' sx={{ bgcolor: blue[800] }}>
+    <Container disableGutters maxWidth="false" className='navbar-container' sx={{ bgcolor: blue[800] }}>
         <Stack direction="row" className="navbar-stack">
             <Link to="/home">
                 <Box sx={{ display: "flex", alignItems: "center" }}>
