@@ -49,7 +49,8 @@ export const NavBar = () => {
   };
 
   const logOut = () => {
-    navigate("/");
+    localStorage.removeItem("access_token");
+    navigate("/login");
   };
 
   const profilePage = () => {
