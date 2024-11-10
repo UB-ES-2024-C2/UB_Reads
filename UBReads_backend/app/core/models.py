@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 # Association table to link users and books
-user_books = Table(
+book_users = Table(
     "user_books",
     Base.metadata,
     Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
@@ -18,7 +18,7 @@ class User(Base):
     password = Column(String)
 
     # Many-to-many relationship: a user can own multiple books, and a book can be owned by multiple users
-    books = relationship("Book", secondary=user_books, back_populates="owners")
+    books = relationship("Book", secondary= book_users, back_populates="owners")
 
 class Book(Base):
     __tablename__ = "books"
@@ -28,4 +28,5 @@ class Book(Base):
     author = Column(String)
     
     # Many-to-many relationship: a book can have multiple owners (users)
-    owners = relationship("User", secondary=user_books, back_populates="books")
+    owners = relationship("User", secondary= book_users, back_populates="books")
+

@@ -2,12 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
 from app.routers.user_router import router as user_router
-
+from app.routers.book_router import router as book_router
+from app.routers.book_user_router import router as book_user_router
 app = FastAPI()
 
 create_tables()
 
+app.include_router(book_router)
 app.include_router(user_router)
+app.include_router(book_user_router)
 
 origins = [
     "http://localhost",

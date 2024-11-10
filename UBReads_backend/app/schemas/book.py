@@ -1,15 +1,23 @@
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, constr
+from typing import List, Optional
 
 class BookBase(BaseModel):
     title: str
     author: str
+    category: str
+    year: int
+    cover_url: str
 
 class BookCreate(BookBase):
     pass
 
-class BookResponse(BookBase):
+class BookUpdate(BookBase):
+    pass
+
+class Book(BookBase):
     id: int
+
     class Config:
-        orm_mode = True
+        from_attributes = True
+        
 
