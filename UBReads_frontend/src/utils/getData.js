@@ -1,6 +1,7 @@
 import profileImage from "../assets/avatarImg.png";
 
 const getUserData = async (token) => {
+  // Objeto por defecto para el usuario
   let userData = {
     usernameSTR: "Username",
     emailSTR: "username@example.com",
@@ -8,30 +9,34 @@ const getUserData = async (token) => {
   };
 
   try {
+    // Solicitud al endpoint /me
     const response = await fetch("http://localhost:8000/me", {
       method: "GET",
       headers: {
-        Authorization: token, // Correct header format
+        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
       },
     });
 
+    // Verificar si la respuesta no es exitosa
     if (!response.ok) {
-      alert("Ocurrió un error de credenciales.");
-      return userData;
+      console.warn("Error de credenciales o respuesta no válida.");
+      return userData; // Retornar datos por defecto en caso de error
     }
 
-    const data = await response.json(); // Await the JSON parsing
+    // Parsear la respuesta JSON
+    const data = await response.json();
 
+    // Asignar valores si están presentes en la respuesta
     if ("username" in data) userData.usernameSTR = data.username;
     if ("email" in data) userData.emailSTR = data.email;
     if ("image" in data) userData.profImage = data.image;
 
-    return userData;
+    return userData; // Retornar los datos del usuario
   } catch (error) {
+    // Manejo de errores de red o del servidor
     console.error("Error en la solicitud:", error);
-    //alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
-    return userData; // Return default userData in case of error
+    return userData; // Retornar datos por defecto en caso de error
   }
 };
 
-export default getUserData; // Correct export
+export default getUserData;
