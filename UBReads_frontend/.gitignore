@@ -29,3 +29,6 @@ dist-ssr
 
 # Jest coverage dir
 coverage/
+
+# Linux executables
+.sh
