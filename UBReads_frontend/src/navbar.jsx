@@ -23,7 +23,7 @@ import Logo from './assets/logo.png';
 import Lupa from './assets/lupa.png';
 
 // Javascript calls
-import getUserData from './utils/getData.js';
+import getUserData from './utils/dataConnection.js';
 
 export const NavBar = () => {
   const navigate = useNavigate();

@@ -12,30 +12,48 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
-import getUserData from "./utils/getData.js";
+import dataConnection from "./utils/dataConnection.js";
+import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
+  const navigate = useNavigate();
   const [hover, setHover] = useState(false);
   const [userData, setUserData] = useState({
     usernameSTR: "Username",
     emailSTR: "username@example.com",
     profImage: "",
   });
+  const token = localStorage.getItem("access_token");
+
 
   const buttonStyle = { background: hover ? pink[500] : pink[400] };
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token");
-      const data = await getUserData(token);
+      const data = await dataConnection.getUserData(token);
       setUserData(data);
     };
     fetchUserData();
   }, []);
 
-  const deleteAccount = () => {
-    alert("Delete account btn")
-  }
+  const deleteAccount = async () => {
+    const randomSTR = dataConnection.generateRandomString(); // Generate a random string
+    const answer = prompt("Per confirmar que vols eliminar el compte, introdueix el text al requadre:\n\n" + randomSTR);
+
+    if (answer === randomSTR) {
+      const result = await dataConnection.deleteUser(token);
+
+      if(result) {
+        alert('L\'usuari s\'ha eliminat correctament de la base de dades.\n' +
+          'Seguidament seras redirigit a la pàgina de login.')
+        localStorage.removeItem('access_token');
+        navigate("/");
+      }
+
+    } else {
+        alert('El text no coincideix. No s\'eliminarà el compte.');
+    }
+};
 
   return (
     <Container disableGutters className="home-container" maxWidth="false" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
