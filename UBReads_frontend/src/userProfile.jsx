@@ -19,6 +19,10 @@ export const Profile = () => {
 
   const buttonStyle = { background: hover ? pink[500] : pink[400] };
 
+  const deleteAccount = () => {
+    alert("Delete account btn")
+  }
+
   return (
     <Container disableGutters className="home-container" maxWidth="false" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
       <NavBar />
@@ -78,6 +82,7 @@ export const Profile = () => {
           style={buttonStyle}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
+          onClick={deleteAccount}
           sx={{maxWidth: '20ch'}}
         >
           <b>Eliminar Compte</b>

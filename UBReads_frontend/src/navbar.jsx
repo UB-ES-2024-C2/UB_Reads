@@ -50,11 +50,11 @@ export const NavBar = () => {
 
   const logOut = () => {
     localStorage.removeItem("access_token");
-    navigate("/login");
+    navigate("/");
   };
 
   const profilePage = () => {
-    alert('Aixo hauria de navegar a la user page.\nNot implemented.');
+    navigate("/userProfile")
   };
 
   useEffect(() => {
