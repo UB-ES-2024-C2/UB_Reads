@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { NavBar } from "./navbar";  // Component
 
 import { Container } from "@mui/system";
@@ -12,12 +12,26 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
-import profileImage from './assets/avatarImg.png';
+import getUserData from "./utils/getData.js";
 
 export const Profile = () => {
   const [hover, setHover] = useState(false);
+  const [userData, setUserData] = useState({
+    usernameSTR: "Username",
+    emailSTR: "username@example.com",
+    profImage: "",
+  });
 
   const buttonStyle = { background: hover ? pink[500] : pink[400] };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("access_token");
+      const data = await getUserData(token);
+      setUserData(data);
+    };
+    fetchUserData();
+  }, []);
 
   const deleteAccount = () => {
     alert("Delete account btn")
@@ -53,7 +67,7 @@ export const Profile = () => {
               }}
             >
               <div>
-                <img src={profileImage} alt="User avatar"/>
+                <img src={userData['profImage']} alt="User avatar"/>
               </div>
             </AspectRatio>
           </CardOverflow>
@@ -63,7 +77,7 @@ export const Profile = () => {
                 Nom d&#39;usuari
               </Typography>
               <Typography level="body-lg">
-                Username
+                {userData['usernameSTR']}
               </Typography>
             </div>
             <div>
@@ -71,7 +85,7 @@ export const Profile = () => {
                 Correu electrònic
               </Typography>
               <Typography level="body-lg">
-                username@example.com
+                {userData['emailSTR']}
               </Typography>
             </div>
           </CardContent>
