@@ -1,4 +1,5 @@
 import "./styles/login.css";
+import { get_login } from "./utils/UserServices.js"
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 
@@ -11,38 +12,14 @@ export const Login = () => {
     const username = e.target.username.value;
     const password = e.target.password.value;
 
-    try {
-      const response = await fetch("http://localhost:8000/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          username,
-          password,
-        }),
-      });
+    const token = await get_login(username, password);
+    localStorage.setItem("access_token", token);
 
-      if (!response.ok) {
-        // Si la respuesta no es exitosa, muestra un alert con el mensaje de error
-        alert("Credenciales inválidas");
-        return;
-      }
-
-      const data = await response.json();
-      localStorage.setItem("access_token", data.access_token);
-
-      // Redirigir a la página de inicio
-      navigate("/home");
-    } catch (error) {
-      console.error("Error en la solicitud:", error);
-      alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
+    if (token) {
+      localStorage.setItem("access_token", token); // Store the token
+      navigate("/home"); // Redirect to home if token exists
     }
-  };
-
-    
-    //navigate("/home");
-
+  }
   return (
     <main className="main-container">
       <div className="central-container">
