@@ -7,5 +7,9 @@ module.exports = {
     transform: {
       "^.+\\.[t|j]sx?$": "babel-jest",
       "^.+\\.css$": "jest-transform-css"
+
+    },
+    moduleNameMapper: {
+      '^@mui/(.*)$': '<rootDir>/node_modules/@mui/$1'
     }
 }
