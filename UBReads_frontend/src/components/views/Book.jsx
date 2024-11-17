@@ -1,5 +1,6 @@
 import './book.css';
 import React from 'react';
+import BookService from '../../services/BookService.js';
 
 // Material UI imports
 import StarIcon from '@mui/icons-material/Star'; // Icons
@@ -37,10 +38,6 @@ export const Book = ({id}) => {
     const [bookItem, setBookItem] = React.useState({});
     const [readMorePressed, setReadMorePressed] = React.useState(false);
 
-    const fetchData = (id) => {
-        return dummyBooks.find(bookItem => bookItem.id === id);
-    };
-
     const getLabelText = (value) => {
         return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
     }
@@ -57,9 +54,20 @@ export const Book = ({id}) => {
     }
 
     React.useEffect(() => {
-        setBookItem(fetchData(id));
-        setRating(bookItem.averageRating);
+        BookService.getGoogleBookById(id).then((response) => {
+            const usefulData = {
+                title: response.data.volumeInfo.title,
+                author: response.data.volumeInfo.authors[0],
+                averageRating: response.data.volumeInfo.averageRating,
+                desciption: response.data.volumeInfo.description,
+                cover: response.data.volumeInfo.imageLinks.large
+            }
+            setBookItem(usefulData);
+            setRating(bookItem.averageRating)
+        })
     }, [id]);
+
+    console.log(bookItem);
 
     return (
         <div id="book-container">

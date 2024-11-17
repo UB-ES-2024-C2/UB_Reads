@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 const apiURL = import.meta.env.VITE_GOOGLE_BOOKS_API_URL;
-const apiKey = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
+
+console.log(`apiKey: ${apiKey}`);
+console.log(`apiURL: ${apiURL}`);
 
 const booksAPI = axios.create({
     baseURL: apiURL,
