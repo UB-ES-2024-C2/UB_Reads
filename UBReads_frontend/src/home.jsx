@@ -13,18 +13,25 @@ import { Container } from "@mui/system";
 
 // Component
 import { Typography } from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 /**
  * 
  * @returns Home page with an empty div
  */
 export const Home = () => {
+  const navigate = useNavigate();
+
+  if (!localStorage.getItem("access_token")){
+    navigate("/");
+  } else {
     return (
-        <Container disableGutters className="home-container" maxWidth="false">
-            <NavBar />
-            <Container className="content-container" maxWidth="xl">
-                <Typography variant="h1">Benvingut a <b>UBReads</b></Typography>
-            </Container>
+      <Container disableGutters className="home-container" maxWidth="false">
+        <NavBar/>
+        <Container className="content-container" maxWidth="xl">
+          <Typography variant="h1">Benvingut a <b>UBReads</b></Typography>
         </Container>
+      </Container>
     )
+  }
 }
