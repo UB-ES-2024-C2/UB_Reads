@@ -44,7 +44,7 @@ import utils from "./utils/getData.js";
 
 //fetchCurrentUser();
 
-export const NavBar = () => {
+export const NavBar = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userData, setUserData] = useState({
@@ -55,18 +55,17 @@ export const NavBar = () => {
   const searchInputRef = useRef();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    /*const fetchUserData = async () => {
       const token = localStorage.getItem("access_token");
       const data = await utils.getUserData(token);
       setUserData(data);
     };
-    fetchUserData();
+    fetchUserData();*/
   }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const query = searchInputRef.current.value.trim();
-    alert("Searching query:\n" + query);
+    onSearch(searchInputRef.current.value.trim());
   };
 
   const handleOpenUserMenu = (event) => {
@@ -120,7 +119,7 @@ export const NavBar = () => {
             <img src={Lupa} alt="Lupa" className="search-icon" />
             <input type="text" className="search-bar" ref={searchInputRef} />
           </Box>
-          <button type="submit" className="submit-btn">
+          <button type="submit" className="submit-btn" onClick={handleSearch}>
             Cerca
           </button>
         </form>
