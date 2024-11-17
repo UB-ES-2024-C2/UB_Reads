@@ -5,8 +5,6 @@ import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 export const Login = () => {
   const navigate = useNavigate(); // Hook para redirigir
   const handleSubmit = async (e) => {
-    navigate("/home");
-    return;
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
     // Aquí puedes agregar lógica de validación de login o autenticación si es necesario
     // Obtener los valores de los campos de entrada

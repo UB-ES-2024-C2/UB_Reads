@@ -4,6 +4,7 @@ class BookService {
     getGoogleBookById(id) {
         return booksAPI.get(`/volumes/${id}`)
             .then((response) => response);
+    }
       
     getGoogleBooksByQuery(query) {
         return booksAPI.get(`/volumes?q=${query}`)
