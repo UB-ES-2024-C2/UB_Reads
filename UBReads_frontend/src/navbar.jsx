@@ -78,8 +78,10 @@ export const NavBar = () => {
   };
 
   const logOut = () => {
-    localStorage.removeItem("access_token");
-    navigate("/");
+    if (confirm('N\'estas segur que vols sortir de l\'aplicació?')) {
+      localStorage.removeItem("access_token");
+      navigate("/");
+    }
   };
 
   const profilePage = () => {
