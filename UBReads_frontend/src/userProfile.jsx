@@ -12,7 +12,7 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
-import dataConnection from "./utils/dataConnection.js";
+import utils from "./utils/getData.js";
 import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
@@ -23,25 +23,25 @@ export const Profile = () => {
     emailSTR: "username@example.com",
     profImage: "",
   });
-  const token = localStorage.getItem("access_token");
-
 
   const buttonStyle = { background: hover ? pink[500] : pink[400] };
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await dataConnection.getUserData(token);
+      const token = localStorage.getItem("access_token");
+      const data = await utils.getUserData(token);
       setUserData(data);
     };
     fetchUserData();
   }, []);
 
   const deleteAccount = async () => {
-    const randomSTR = dataConnection.generateRandomString(); // Generate a random string
+    const token = localStorage.getItem("access_token");
+    const randomSTR = utils.generateRandomString(); // Generate a random string
     const answer = prompt("Per confirmar que vols eliminar el compte, introdueix el text al requadre:\n\n" + randomSTR);
 
     if (answer === randomSTR) {
-      const result = await dataConnection.deleteUser(token);
+      const result = await utils.deleteUser(token);
 
       if(result) {
         alert('L\'usuari s\'ha eliminat correctament de la base de dades.\n' +

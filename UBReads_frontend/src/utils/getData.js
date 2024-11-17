@@ -2,7 +2,7 @@ import profileImage from "../assets/avatarImg.png";
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
-  let userData = {
+  const userData = {
     usernameSTR: "Username",
     emailSTR: "username@example.com",
     profImage: profileImage,
@@ -27,9 +27,9 @@ const getUserData = async (token) => {
     const data = await response.json();
 
     // Asignar valores si están presentes en la respuesta
-    if ("username" in data) userData.usernameSTR = data.username;
-    if ("email" in data) userData.emailSTR = data.email;
-    if ("image" in data) userData.profImage = data.image;
+    if (data.username) userData.usernameSTR = data.username;
+    if (data.email) userData.emailSTR = data.email;
+    if (data.image) userData.profImage = data.image;
 
     return userData; // Retornar los datos del usuario
   } catch (error) {
@@ -39,4 +39,41 @@ const getUserData = async (token) => {
   }
 };
 
-export default getUserData;
+const deleteUser = async (token) => {
+  try {
+    const response = await fetch("http://localhost:8000/users-delete/", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("La solicitud DELETE no fue exitosa.");
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    alert("Caught error from back");
+    console.error("Error en la solicitud:", error);
+    return false;
+  }
+};
+
+// Generador de cadenas aleatorias
+const generateRandomString = () => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
+  let result = "";
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
+};
+
+// Exportación de las funciones
+export default { getUserData, deleteUser, generateRandomString };
