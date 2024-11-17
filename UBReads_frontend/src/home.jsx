@@ -31,22 +31,23 @@ export const Home = () => {
     setQuery(newQuery);
   }
 
-  /*if (!localStorage.getItem("access_token")){
+  if (!localStorage.getItem("access_token")){
     navigate("/");
-  } else {*/
+  } else {
     return (
       <Container disableGutters className="home-container" maxWidth="false">
         <NavBar onSearch={ handleQuery }></NavBar>
-
-        {query !== '' ? (
-          <Search query={ query }></Search>
-        ) : (
-          <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
-            Search for a book!
-          </Typography>
-        )
-        }
+        <div id="home-content-container">
+          {query !== '' ? (
+            <Search query={ query }></Search>
+          ) : (
+            <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
+              Search for a book!
+            </Typography>
+          )
+          }
+        </div>
       </Container>
     )
-  //}
+  }
 }
