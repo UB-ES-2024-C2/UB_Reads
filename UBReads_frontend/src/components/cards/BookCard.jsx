@@ -17,14 +17,14 @@ export const BookCard = ({ bookData }) => {
     const book = {
         title: bookData.volumeInfo.title,
         author: bookData.volumeInfo.authors ? bookData.volumeInfo.authors[0] : 'Unknown',
-        cover: bookData.volumeInfo.imageLinks.large ? bookData.volumeInfo.imageLinks.large : '/book_placeholder.jpg',
-        averageRating: bookData.volumeInfo.averageRating
+        cover: (bookData.volumeInfo.imageLinks && bookData.volumeInfo.imageLinks.thumbnail) ? bookData.volumeInfo.imageLinks.thumbnail : '/book_placeholder.jpg',
+        averageRating: bookData.volumeInfo.averageRating ? bookData.volumeInfo.averageRating : 0
     }
 
     console.log(book.cover);
 
     return (
-      <Card sx={{ maxWidth: '35vw', maxHeight: '35vh', borderRadius: '1.5rem', boxShadow: 'rgba(0, 0, 0, 0.7) 0 0 1.5rem' }}>
+      <Card sx={{ maxWidth: '35vw', height: '35vh', borderRadius: '1.5rem', boxShadow: 'rgba(0, 0, 0, 0.7) 0 0 1.5rem' }}>
         <CardActionArea sx={{ display: 'flex', width: '100%', height: '100%' }} disableRipple>
             <CardMedia
                 component="img"

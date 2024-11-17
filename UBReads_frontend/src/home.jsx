@@ -17,6 +17,8 @@ import { Container } from "@mui/system";
 import { Typography } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
+import { blue } from "@mui/material/colors";
+
 /**
  * 
  * @returns Home page with an empty div
@@ -35,7 +37,15 @@ export const Home = () => {
     return (
       <Container disableGutters className="home-container" maxWidth="false">
         <NavBar onSearch={ handleQuery }></NavBar>
-        <Search query={ query }></Search>
+
+        {query !== '' ? (
+          <Search query={ query }></Search>
+        ) : (
+          <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
+            Search for a book!
+          </Typography>
+        )
+        }
       </Container>
     )
   //}
