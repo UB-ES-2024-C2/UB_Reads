@@ -1,37 +1,79 @@
 import profileImage from "../assets/avatarImg.png";
 
 const getUserData = async (token) => {
-  let userData = {
+  // Objeto por defecto para el usuario
+  const userData = {
     usernameSTR: "Username",
     emailSTR: "username@example.com",
     profImage: profileImage,
   };
 
   try {
+    // Solicitud al endpoint /me
     const response = await fetch("http://localhost:8000/me", {
       method: "GET",
       headers: {
-        Authorization: token, // Correct header format
+        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
+      },
+    });
+
+    // Verificar si la respuesta no es exitosa
+    if (!response.ok) {
+      console.warn("Error de credenciales o respuesta no válida.");
+      return userData; // Retornar datos por defecto en caso de error
+    }
+
+    // Parsear la respuesta JSON
+    const data = await response.json();
+
+    // Asignar valores si están presentes en la respuesta
+    if (data.username) userData.usernameSTR = data.username;
+    if (data.email) userData.emailSTR = data.email;
+    if (data.image) userData.profImage = data.image;
+
+    return userData; // Retornar los datos del usuario
+  } catch (error) {
+    // Manejo de errores de red o del servidor
+    console.error("Error en la solicitud:", error);
+    return userData; // Retornar datos por defecto en caso de error
+  }
+};
+
+const deleteUser = async (token) => {
+  try {
+    const response = await fetch("http://localhost:8000/users-delete/", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
       },
     });
 
     if (!response.ok) {
-      alert("Ocurrió un error de credenciales.");
-      return userData;
+      console.warn("La solicitud DELETE no fue exitosa.");
+      return false;
     }
-
-    const data = await response.json(); // Await the JSON parsing
-
-    if ("username" in data) userData.usernameSTR = data.username;
-    if ("email" in data) userData.emailSTR = data.email;
-    if ("image" in data) userData.profImage = data.image;
-
-    return userData;
+    
+    return true;
   } catch (error) {
+    alert("Caught error from back");
     console.error("Error en la solicitud:", error);
-    //alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
-    return userData; // Return default userData in case of error
+    return false;
   }
 };
 
-export default getUserData; // Correct export
+// Generador de cadenas aleatorias
+const generateRandomString = () => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
+  let result = "";
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
+};
+
+// Exportación de las funciones
+export default { getUserData, deleteUser, generateRandomString };
