@@ -23,41 +23,30 @@ async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
-    if security_scopes.scopes:
-        authenticate_value = f'Bearer scope="{security_scopes.scope.str}"'
-    else:
-        authenticate_value = "Bearer"
-
+    authenticate_value = f'Bearer scope="{security_scopes.scope_str}"' if security_scopes.scopes else "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
+        headers={"WWW-Authenticate": authenticate_value}
     )
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print(f"Decoded JWT Payload: {payload}")  # Depuración
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-
-        token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
-    except (JWTError, ValidationError):
+        token_data = TokenData(scopes=payload.get("scopes", []), username=username)
+    except JWTError as e:
+        print(f"JWT Error: {str(e)}")  # Depuración
         raise credentials_exception
 
     user = UserController.get_user_by_username(db, username=token_data.username)
     if user is None:
-        print(f"Usuario no encontrado: {token_data.username}")
         raise credentials_exception
 
-    # Validar los scopes requeridos
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions"
-            )
-
     return user
+
 
 @router.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -87,9 +76,10 @@ def read_users(db: Session = Depends(get_db)):
 
 
 @router.get("/me", response_model=User)
-def read_users_me(current_user: User = Depends(get_current_user)):
-    if current_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+def read_users_me(
+    current_user: User = Depends(get_current_user)
+):
+    # Esto devolverá el usuario autenticado al frontend
     return current_user
 
 
