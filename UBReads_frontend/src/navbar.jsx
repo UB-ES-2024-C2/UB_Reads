@@ -23,9 +23,9 @@ import Logo from "./assets/logo.png";
 import Lupa from "./assets/lupa.png";
 
 // Javascript calls
-import getUserData from "./utils/getData.js";
+import utils from "./utils/getData.js";
 
-const fetchCurrentUser = async () => {
+/*const fetchCurrentUser = async () => {
   try {
     const response = await fetch("http://localhost:8000/me", {
       headers: {
@@ -40,9 +40,9 @@ const fetchCurrentUser = async () => {
   } catch (error) {
     console.error(error);
   }
-};
+};*/
 
-fetchCurrentUser();
+//fetchCurrentUser();
 
 export const NavBar = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export const NavBar = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("access_token");
-      const data = await getUserData(token);
+      const data = await utils.getUserData(token);
       setUserData(data);
     };
     fetchUserData();
@@ -78,8 +78,10 @@ export const NavBar = () => {
   };
 
   const logOut = () => {
-    localStorage.removeItem("access_token");
-    navigate("/");
+    if (confirm('N\'estas segur que vols sortir de l\'aplicació?')) {
+      localStorage.removeItem("access_token");
+      navigate("/");
+    }
   };
 
   const profilePage = () => {
