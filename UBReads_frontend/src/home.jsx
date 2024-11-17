@@ -4,6 +4,8 @@
 import React from "react";
 import { NavBar } from "./navbar";  // Component
 
+import { Search } from './components/views/Search';
+
 // Style import
 import './styles/home.css';
 
@@ -21,17 +23,20 @@ import {useNavigate} from "react-router-dom";
  */
 export const Home = () => {
   const navigate = useNavigate();
+  const [query, setQuery] = React.useState('');
 
-  if (!localStorage.getItem("access_token")){
+  const handleQuery = (newQuery) => {
+    setQuery(newQuery);
+  }
+
+  /*if (!localStorage.getItem("access_token")){
     navigate("/");
-  } else {
+  } else {*/
     return (
       <Container disableGutters className="home-container" maxWidth="false">
-        <NavBar/>
-        <Container className="content-container" maxWidth="xl">
-          <Typography variant="h1">Benvingut a <b>UBReads</b></Typography>
-        </Container>
+        <NavBar onSearch={ handleQuery }></NavBar>
+        <Search query={ query }></Search>
       </Container>
     )
-  }
+  //}
 }
