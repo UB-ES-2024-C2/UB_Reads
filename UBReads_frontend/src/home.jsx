@@ -2,7 +2,8 @@
 
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { NavBar } from "./navbar";  // Component
+import { NavBar } from "./navbar";
+import { Book } from './components/views/Book';
 
 import { Search } from './components/views/Search';
 
@@ -15,7 +16,6 @@ import { Container } from "@mui/system";
 
 // Component
 import { Typography } from "@mui/material";
-import {useNavigate} from "react-router-dom";
 
 import { blue } from "@mui/material/colors";
 
@@ -24,30 +24,41 @@ import { blue } from "@mui/material/colors";
  * @returns Home page with an empty div
  */
 export const Home = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = React.useState('');
+  const [selectedBook, setSelectedBook] = React.useState(null);
 
   const handleQuery = (newQuery) => {
     setQuery(newQuery);
+    setSelectedBook(null);
   }
 
-  if (!localStorage.getItem("access_token")){
-    navigate("/");
-  } else {
+  const handleBookSelect = (book) => {
+    setSelectedBook(book);
+
+  };
+
+  const handleBackToSearch = () => {
+    setSelectedBook(null);
+  };
+
+  //if (!localStorage.getItem("access_token")){
+    //navigate("/");
+  //} else {
     return (
       <Container disableGutters className="home-container" maxWidth="false">
         <NavBar onSearch={ handleQuery }></NavBar>
         <div id="home-content-container">
-          {query !== '' ? (
-            <Search query={ query }></Search>
+          {selectedBook ? (
+            <Book book={ selectedBook }></Book>
+          ) : query !== '' ? (
+            <Search query={ query } onBookSelect={ handleBookSelect }></Search>
           ) : (
             <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
-              Search for a book!
+              Benvingut a UBReads!
             </Typography>
-          )
-          }
+          )}
         </div>
       </Container>
     )
-  }
+  //}
 }
