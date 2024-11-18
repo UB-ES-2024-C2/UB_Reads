@@ -14,8 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Compose
+    - name: Set up Docker
       run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+
+        - name: Set up Environment Variables
+        run: |
         echo DB_USER=${{ secrets.DB_USER }} >> .env
         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
         echo DB_HOST=${{ secrets.DB_HOST }} >> .env
@@ -24,7 +32,7 @@ jobs:
 
     - name: Start Database Container
       run: docker-compose up -d
-      
+
   deploy-backend:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest

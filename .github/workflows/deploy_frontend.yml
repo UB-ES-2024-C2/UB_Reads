@@ -1,4 +1,4 @@
-name: Deploy React Frontend
+name: Deploy Frontend
 
 on:
   pull_request:
@@ -17,8 +17,12 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '20'
-
+        node-version: 20
+  
+    - name: Clean workspace
+      run: |
+        rm -rf node_modules package-lock.json
+  
     - name: Install dependencies
       working-directory: ./UBReads_frontend
       run: |
