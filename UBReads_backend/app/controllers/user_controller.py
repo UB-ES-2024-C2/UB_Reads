@@ -11,33 +11,38 @@ from passlib.context import CryptContext
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", 7))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES",
+                                                 30))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS",
+                                               7))
 
 # Crear el contexto para manejar el hash de las contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 class UserController:
     def __init__(self, db: Session):
         self.db = db
 
     @staticmethod
-    def insert_user(db: Session, username: str, email: str, password: str):
+    def insert_user(db: Session, username: str,
+                    email: str, password: str):
         existing_user = db.query(User).filter(User.username == username).first()
         if existing_user:
-            raise ValueError("El usuario ya existe")  # Puedes personalizar el mensaje
+            raise ValueError("El usuario ya existe")
 
         existing_email = db.query(User).filter(User.email == email).first()
         if existing_email:
             raise ValueError("El correo electrónico ya está registrado")
 
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
-        db_user = User(username=username, email=email, password=hashed_password)
+        db_user = User(username=username, email=email,
+                       password=hashed_password)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
         return db_user
-    
+
     @staticmethod
     def get_user(db: Session, user_id: int):
         return db.query(User).filter(User.id == user_id).first()
@@ -51,10 +56,10 @@ class UserController:
         db_user = db.query(User).filter(User.id == user.id).first()
         if db_user:
             db.delete(db_user)
-            db.commit() 
+            db.commit()
             return True
         return False
-    
+
     @staticmethod
     def get_users(db: Session):
         return db.query(User).all()
@@ -64,20 +69,23 @@ class UserController:
         return pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod
-    def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    def create_access_token(data: dict, expires_delta:
+                            Optional[timedelta] = None):
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(timezone.utc) + timedelta(
+                minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
-    
+
     @staticmethod
     def create_refresh_token(data: dict):
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(
+            days=REFRESH_TOKEN_EXPIRE_DAYS)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt

@@ -26,7 +26,8 @@ def db_session():
 def test_insert_user(db_session):
     controller = UserController(db_session)
     new_user = controller.insert_user(
-        db=db_session, username="testuser", email="test@example.com", password="Test1234!"
+        db=db_session, username="testuser", email="test@example.com",
+        password="Test1234!"
     )
     assert new_user.username == "testuser"
     assert new_user.email == "test@example.com"
@@ -36,29 +37,34 @@ def test_insert_user(db_session):
 def test_insert_user_duplicate_username(db_session):
     controller = UserController(db_session)
     controller.insert_user(
-        db=db_session, username="testuser", email="test1@example.com", password="Test1234!"
+        db=db_session, username="testuser",
+        email="test1@example.com", password="Test1234!"
     )
     with pytest.raises(ValueError, match="El usuario ya existe"):
         controller.insert_user(
-            db=db_session, username="testuser", email="test2@example.com", password="Test5678!"
+            db=db_session, username="testuser",
+            email="test2@example.com", password="Test5678!"
         )
 
 # Test: Insertar un usuario con un correo duplicado
 def test_insert_user_duplicate_email(db_session):
     controller = UserController(db_session)
     controller.insert_user(
-        db=db_session, username="testuser1", email="test@example.com", password="Test1234!"
+        db=db_session, username="testuser1",
+        email="test@example.com", password="Test1234!"
     )
     with pytest.raises(ValueError, match="El correo electrónico ya está registrado"):
         controller.insert_user(
-            db=db_session, username="testuser2", email="test@example.com", password="Test5678!"
+            db=db_session, username="testuser2",
+            email="test@example.com", password="Test5678!"
         )
 
 # Test: Obtener un usuario por ID
 def test_get_user(db_session):
     controller = UserController(db_session)
     new_user = controller.insert_user(
-        db=db_session, username="testuser", email="test@example.com", password="Test1234!"
+        db=db_session, username="testuser", email="test@example.com",
+         password="Test1234!"
     )
     user = controller.get_user(db_session, user_id=new_user.id)
     assert user.username == "testuser"

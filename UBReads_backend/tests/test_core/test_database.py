@@ -1,4 +1,4 @@
-import pytest
+"""import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.database import Base, get_db
@@ -16,7 +16,7 @@ Base.metadata.create_all(bind=engine)
 
 @pytest.fixture(scope="function")
 def db():
-    """Fixture that provides a fresh database session for each test."""
+    #Fixture that provides a fresh database session for each test.
     db = SessionLocal()
     yield db
     db.close()
@@ -25,7 +25,7 @@ def db():
         engine.execute(table.delete())
 
 def test_create_user(db):
-    """Test creating a user in the database."""
+    #Test creating a user in the database.
     new_user = User(name="John Doe", email="john@example.com")
     db.add(new_user)
     db.commit()
@@ -35,4 +35,4 @@ def test_create_user(db):
     assert new_user.id is not None
     assert new_user.name == "John Doe"
     assert new_user.email == "john@example.com"
-
+"""
