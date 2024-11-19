@@ -41,4 +41,4 @@ jobs:
         . venv/bin/activate
         pip install -r requirements.txt
         python -c "from app.core.models import reset_database; reset_database();
-        python -c "from app.core.models import create_tables; create_tables()";
+        python -c "from app.core.models import create_tables; create_tables()"
