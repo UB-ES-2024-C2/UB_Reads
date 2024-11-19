@@ -24,5 +24,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# OS files
+.DS_Store
+
+# Jest coverage dir
+coverage/
+
 # Linux executables
 .sh

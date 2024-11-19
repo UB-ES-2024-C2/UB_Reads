@@ -17,6 +17,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", 7))
 # Crear el contexto para manejar el hash de las contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class UserController:
     def __init__(self, db: Session):
         self.db = db
@@ -37,7 +38,7 @@ class UserController:
         db.commit()
         db.refresh(db_user)
         return db_user
-    
+
     @staticmethod
     def get_user(db: Session, user_id: int):
         return db.query(User).filter(User.id == user_id).first()
@@ -51,10 +52,10 @@ class UserController:
         db_user = db.query(User).filter(User.id == user.id).first()
         if db_user:
             db.delete(db_user)
-            db.commit() 
+            db.commit()
             return True
         return False
-    
+
     @staticmethod
     def get_users(db: Session):
         return db.query(User).all()
@@ -69,11 +70,13 @@ class UserController:
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(timezone.utc) + timedelta(
+                minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+            )
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
-    
+
     @staticmethod
     def create_refresh_token(data: dict):
         to_encode = data.copy()
