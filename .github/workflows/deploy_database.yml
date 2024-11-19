@@ -25,7 +25,7 @@ jobs:
         DB_NAME: ${{ secrets.AZURE_DB_NAME }}
         DB_PORT: ${{ secrets.AZURE_DB_PORT }}
       run: |
-        psql "postgresql://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@${{ env.DB_HOST }}:${{ env.DB_PORT }}/postgres" \
+        psql "postgresql://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@${{ env.DB_HOST }}:${{ env.DB_PORT }}/${{ env.DB_NAME }}" \
         -c "CREATE DATABASE $DB_NAME;" || echo "Database already exists"
 
     - name: Migrate Tables
