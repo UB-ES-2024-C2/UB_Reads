@@ -34,5 +34,5 @@ jobs:
       with:
         app_location: "/UBReads_frontend"
         output_location: "/UBReads_frontend/build"
-        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_WATER_098861003 }}
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_WATER_0A1C52E03 }}
         deployment_action: "upload"
