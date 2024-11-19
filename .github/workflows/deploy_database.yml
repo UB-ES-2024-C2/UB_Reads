@@ -1,0 +1,40 @@
+name: Deploy Database
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Create Database (if not exists)
+        env:
+          DB_USER: ${{ secrets.AZURE_DB_USER }}
+          DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
+          DB_HOST: ${{ secrets.AZURE_DB_HOST }}
+          DB_NAME: ${{ secrets.AZURE_DB_NAME }}
+          DB_PORT: ${{ secrets.AZURE_DB_PORT }}
+        run: |
+          psql "postgresql://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@${{ env.DB_HOST }}:${{ env.DB_PORT }}/postgres" \
+          -c "CREATE DATABASE $DB_NAME;" || echo "Database already exists"
+
+      - name: Migrate Tables
+        env:
+          DB_USER: ${{ secrets.AZURE_DB_USER }}
+          DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
+          DB_HOST: ${{ secrets.AZURE_DB_HOST }}
+          DB_NAME: ${{ secrets.AZURE_DB_NAME }}
+          DB_PORT: ${{ secrets.AZURE_DB_PORT }}
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+          python -c "from database import create_tables; create_tables()"
