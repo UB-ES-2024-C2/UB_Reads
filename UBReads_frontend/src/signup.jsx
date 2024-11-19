@@ -59,7 +59,7 @@ export const SignupForm = () => {
 
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
       // Submit form logic (e.g., send data to server)
-      response = signup(username, email, password, navigate)
+      const response = await signup(username, email, password)
       if (response.ok) {
         // Redirect to the login page or home after successful signup
         navigate("/");
