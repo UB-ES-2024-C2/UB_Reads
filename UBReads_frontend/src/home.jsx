@@ -1,4 +1,6 @@
 // React import
+
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 import { NavBar } from "./navbar";  // Component
 
@@ -21,7 +23,7 @@ export const Home = () => {
         <Container disableGutters className="home-container" maxWidth="false">
             <NavBar />
             <Container className="content-container" maxWidth="xl">
-                <Typography variant="h1" sx={{ fontWeight: "bold" }}>WELCOME TO UB READS</Typography>
+                <Typography variant="h1">Benvingut a <b>UBReads</b></Typography>
             </Container>
         </Container>
     )
