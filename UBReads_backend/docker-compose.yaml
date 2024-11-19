@@ -1,6 +1,8 @@
 services:
   db:
     image: postgres
+    container_name: ubreads-db
+    restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}

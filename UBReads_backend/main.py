@@ -14,12 +14,13 @@ app.include_router(book_router)
 app.include_router(user_router)
 app.include_router(book_user_router)
 
+# Configure CORS for development and production
 origins = [
     "http://localhost",
-    "http://localhost:5173",
+    "http://localhost:5173", # Development frontend URL
+    "https://<YOUR_PRODUCTION_URL>", # Production frontend URL
 ]
 
-# Allow requests from the frontend (port 3000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -43,4 +44,4 @@ async def disable_cache(request: Request, call_next):
 
 @app.get("/")
 async def read_root():
-    return {"message": "Hello from FastAPI!"}
+    return {"message": "Welcome to UBReads!"}
