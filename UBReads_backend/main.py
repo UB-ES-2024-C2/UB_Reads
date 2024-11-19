@@ -18,7 +18,7 @@ app.include_router(book_user_router)
 origins = [
     "http://localhost",
     "http://localhost:5173", # Development frontend URL
-    "https://https://lively-water-0a1c52e03.5.azurestaticapps.net", # Production frontend URL
+    "https://lively-water-0a1c52e03.5.azurestaticapps.net", # Production frontend URL
 ]
 
 app.add_middleware(
