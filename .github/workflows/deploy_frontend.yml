@@ -22,6 +22,7 @@ jobs:
     - name: Clean workspace
       run: |
         rm -rf node_modules package-lock.json
+        npm cache clean --force
   
     - name: Install dependencies
       working-directory: ./UBReads_frontend
