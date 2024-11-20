@@ -1,7 +1,2 @@
-import React from 'react';
-import { Library } from '../library.jsx';
-
-test('Test de la biblioteca', async () => {
-    //const titulo
-    //expect()
-})
+import ".styles/library.css";
+import React from "react";
