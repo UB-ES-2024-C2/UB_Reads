@@ -23,7 +23,7 @@ import Logo from "./assets/logo.png";
 import Lupa from "./assets/lupa.png";
 
 // Javascript calls
-import utils from "./utils/getData.js";
+import utils from "./services/getData.js";
 
 /*const fetchCurrentUser = async () => {
   try {
