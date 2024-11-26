@@ -14,6 +14,7 @@ import { blue } from '@mui/material/colors';
 export const BookCard = ({ bookData, onClick }) => {
 
     const book = {
+        id: bookData.id,
         title: bookData.volumeInfo.title,
         author: bookData.volumeInfo.authors ? bookData.volumeInfo.authors[0] : 'Unknown',
         cover: (bookData.volumeInfo.imageLinks && bookData.volumeInfo.imageLinks.thumbnail) ? bookData.volumeInfo.imageLinks.thumbnail : '/book_placeholder.jpg',
