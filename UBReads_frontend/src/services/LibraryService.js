@@ -1,28 +1,24 @@
 import backendAPI from '../backend-api';
 
-class BookService {
-    getGoogleBookById(id) {
-        return booksAPI.get(`/volumes/${id}`)
+class LibraryService {
+    /**
+     * Adds a book to a user library given the user and book ids
+     * @param {number} userId 
+     * @param {number} bookId 
+     */
+    addBookToUser(userId, bookId) {
+        return backendAPI.post(`/users/${userId}/books/${bookId}`)
             .then((response) => response);
-    }
-      
-    getSavedBooks(token) {
-        return backendAPI.get(`/books/`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
     }
 
     /**
-     * Returns all the books saved by a user from a given userId
+     * Gets all the books from a user
      * @param {number} userId 
-     * @returns {book: Object} Array of objects containing book data and read status
      */
-    getBooksByUserId(userId) {
-        return backendAPI.get(`/books/${userId}`)
+    getBooksByUser(userId) {
+        return backendAPI.get(`/users/${userId}/books/`)
             .then((response) => response);
     }
 }
 
-export default new BookService();
+export default new LibraryService();
