@@ -87,8 +87,8 @@ export const NavBar = ({ onSearch }) => {
     navigate("/userProfile");
   };
 
-  const friendList = () => {
-    navigate("/friends");
+  const followingList = () => {
+    navigate("/following");
   }
 
   useEffect(() => {
@@ -159,9 +159,9 @@ export const NavBar = ({ onSearch }) => {
               </Typography>
             </MenuItem>
 
-            <MenuItem onClick={friendList}>
+            <MenuItem onClick={followingList}>
               <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
-                Friends
+                Following
               </Typography>
             </MenuItem>
 

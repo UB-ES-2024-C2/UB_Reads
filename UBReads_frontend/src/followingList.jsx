@@ -4,7 +4,7 @@ import {blue} from "@mui/material/colors";
 import {Container} from "@mui/system";
 import React from "react";
 
-export const FriendList = () => {
+export const FollowingList = () => {
   return (
     <Container disableGutters className="home-container" maxWidth="false">
         <NavBar/>
