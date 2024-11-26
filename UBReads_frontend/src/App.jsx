@@ -10,16 +10,41 @@ import { FriendList } from "./friendList";
 
 // BrowserRouter import
 import { Route, Routes } from "react-router-dom";
+import ProtectedRoute from './components/ProtectedRoute'
 
 // React Component
 const App = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<SignupForm />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/userProfile" element={<Profile />} />
-      <Route path="/friends" element={<FriendList />} />
+
+      {/* Protected Routes */}
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/userProfile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/friends"
+        element={
+          <ProtectedRoute>
+            <FriendList />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
