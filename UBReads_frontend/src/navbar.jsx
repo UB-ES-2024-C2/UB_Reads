@@ -87,6 +87,10 @@ export const NavBar = ({ onSearch }) => {
     navigate("/userProfile");
   };
 
+  const followingList = () => {
+    navigate("/following");
+  }
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (anchorElUser && !anchorElUser.contains(event.target)) {
@@ -150,16 +154,19 @@ export const NavBar = ({ onSearch }) => {
             sx={{ mt: "0.5rem", minWidth: "13vw" }}
           >
             <MenuItem onClick={profilePage}>
-              <Typography
-                sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
                 Perfil
               </Typography>
             </MenuItem>
+
+            <MenuItem onClick={followingList}>
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
+                Following
+              </Typography>
+            </MenuItem>
+
             <MenuItem onClick={logOut}>
-              <Typography
-                sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
                 Log Out
               </Typography>
             </MenuItem>
