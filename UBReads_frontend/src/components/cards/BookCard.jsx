@@ -4,7 +4,7 @@ import React from 'react';
 // Material UI components
 import { Rating } from '@mui/material';
 import { Typography } from '@mui/material';
-import { Card, CardMedia, CardContent, CardActionArea, Button } from '@mui/material';
+import { Card, CardMedia, CardContent, CardActionArea } from '@mui/material';
 
 // Material UI icons
 import StarIcon from '@mui/icons-material/Star'; // Icons
@@ -52,7 +52,6 @@ export const BookCard = ({ bookData, onClick }) => {
                         emptyIcon={<StarIcon  fontSize='inherit'/>}
                     />
                 </div>
-                <Button variant="outlined" color="success" sx={{ mt: 2 }} onClick={() => {}} size='large'>Afegir</Button>
           </CardContent>
         </CardActionArea>
       </Card>

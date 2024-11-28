@@ -41,20 +41,24 @@ export const Home = () => {
     setSelectedBook(null);
   };
 
-  return (
-    <Container disableGutters className="home-container" maxWidth="false">
-      <NavBar onSearch={ handleQuery }></NavBar>
-      <div id="home-content-container">
-        {selectedBook ? (
-          <Book book={ selectedBook }></Book>
-        ) : query !== '' ? (
-          <Search query={ query } onBookSelect={ handleBookSelect }></Search>
-        ) : (
-          <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
-            Benvingut a UBReads!
-          </Typography>
-        )}
-      </div>
-    </Container>
-  )
+  //if (!localStorage.getItem("access_token")){
+    //navigate("/");
+  //} else {
+    return (
+      <Container disableGutters className="home-container" maxWidth="false">
+        <NavBar onSearch={ handleQuery }></NavBar>
+        <div id="home-content-container">
+          {selectedBook ? (
+            <Book book={ selectedBook }></Book>
+          ) : query !== '' ? (
+            <Search query={ query } onBookSelect={ handleBookSelect }></Search>
+          ) : (
+            <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
+              Benvingut a UBReads!
+            </Typography>
+          )}
+        </div>
+      </Container>
+    )
+  //}
 }
