@@ -1,5 +1,22 @@
 import profileImage from "../assets/avatarImg.png";
 
+export const getAllUsers = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/users", {
+      method: "GET"
+    });
+
+    if (!response.ok) {
+      console.warn("Respuesta no valida")
+      return NaN
+    }
+    return await response.json();
+
+  } catch (e) {
+    console.log('Connection error');
+  }
+}
+
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
   const userData = {
@@ -60,8 +77,6 @@ const deleteUser = async (token) => {
     return false;
   }
 };
-
-// Generador de cadenas aleatorias
 const generateRandomString = () => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
@@ -76,4 +91,4 @@ const generateRandomString = () => {
 };
 
 // Exportación de las funciones
-export default { getUserData, deleteUser, generateRandomString };
+export default { getUserData, deleteUser, generateRandomString, getAllUsers };
