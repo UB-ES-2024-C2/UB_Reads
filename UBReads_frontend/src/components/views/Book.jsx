@@ -7,6 +7,12 @@ import { green, blue } from '@mui/material/colors'; // Colors
 import { Typography, Button, Rating, Box } from '@mui/material'; // Components
 
 export const Book = ({ book }) => {
+    const [checked, setChecked] = React.useState(false);
+
+    const handleChange = () => {
+        setChecked(!checked);
+    };
+
 
     const labels = {
         0: "0",
@@ -55,6 +61,13 @@ export const Book = ({ book }) => {
                     {book.averageRating !== null && (
                         <Box sx={{ ml: '1rem' }}>{ book.averageRating }</Box>
                     )}
+                    <label>
+                        <input
+                            type="checkbox" />
+                            checked={checked}
+                            onChange={handleChange}
+                        Llegit
+                    </label>
                 </div>
                 <Button
                         variant="contained"
@@ -72,7 +85,7 @@ export const Book = ({ book }) => {
                     <div id="content-container">
                         <Typography variant="h5" component="p" sx={{ maxHeight: readMorePressed ? 'none' : '2lh', overflow: 'hidden' }}>{ book.desciption }</Typography>
                         <Typography variant="h5" component="span" sx={{ fontWeight: 'bold', color: blue[800], cursor: 'pointer' }} onClick={showMore}>
-                            {readMorePressed ? 'Veure menys' : 'Veure més'}
+                            {readMorePressed ? 'Veure menys' : 'Veure mÃ©s'}
                         </Typography>
                     </div>
                 )}
