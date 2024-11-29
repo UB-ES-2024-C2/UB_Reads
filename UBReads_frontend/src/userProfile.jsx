@@ -55,87 +55,83 @@ export const Profile = () => {
     }
 };
 
-  if (!localStorage.getItem("access_token")){
-    navigate("/");
-  } else {
-    return (
-      <Container disableGutters className="home-container" maxWidth="false" sx={{
+  return (
+    <Container disableGutters className="home-container" maxWidth="false" sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh'
+    }}>
+      <NavBar/>
+      <Container className="content-container" maxWidth="false" sx={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh'
+        justifyContent: 'center',
+        gap: 2
       }}>
-        <NavBar/>
-        <Container className="content-container" maxWidth="false" sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2
-        }}>
-          <Card
-            data-resizable
-            sx={{
-              textAlign: 'center',
-              alignItems: 'center',
-              width: 343,
-              overflow: 'auto',
-              '--icon-size': '100px',
-            }}
-          >
-            <CardOverflow variant="solid" sx={{bgcolor: blue[800]}}>
-              <AspectRatio
-                variant="outlined"
-                ratio="1"
-                sx={{
-                  m: 'auto',
-                  transform: 'translateY(50%)',
-                  borderRadius: '50%',
-                  width: 'var(--icon-size)',
-                  boxShadow: 'sm',
-                  bgcolor: 'background.surface',
-                  position: 'relative',
-                  color: blue[800],
-                }}
-              >
-                <div>
-                  <img src={userData['profImage']} alt="User avatar"/>
-                </div>
-              </AspectRatio>
-            </CardOverflow>
-            <CardContent sx={{maxWidth: '40ch'}}>
+        <Card
+          data-resizable
+          sx={{
+            textAlign: 'center',
+            alignItems: 'center',
+            width: 343,
+            overflow: 'auto',
+            '--icon-size': '100px',
+          }}
+        >
+          <CardOverflow variant="solid" sx={{bgcolor: blue[800]}}>
+            <AspectRatio
+              variant="outlined"
+              ratio="1"
+              sx={{
+                m: 'auto',
+                transform: 'translateY(50%)',
+                borderRadius: '50%',
+                width: 'var(--icon-size)',
+                boxShadow: 'sm',
+                bgcolor: 'background.surface',
+                position: 'relative',
+                color: blue[800],
+              }}
+            >
               <div>
-                <Typography level="title-lg" sx={{mt: 'calc(var(--icon-size) / 2)', color: blue[800]}}>
-                  Nom d&#39;usuari
-                </Typography>
-                <Typography level="body-lg">
-                  {userData['usernameSTR']}
-                </Typography>
+                <img src={userData['profImage']} alt="User avatar"/>
               </div>
-              <div>
-                <Typography level="title-lg" sx={{mt: '3vh', color: blue[800]}}>
-                  Correu electrònic
-                </Typography>
-                <Typography level="body-lg">
-                  {userData['emailSTR']}
-                </Typography>
-              </div>
-            </CardContent>
-          </Card>
+            </AspectRatio>
+          </CardOverflow>
+          <CardContent sx={{maxWidth: '40ch'}}>
+            <div>
+              <Typography level="title-lg" sx={{mt: 'calc(var(--icon-size) / 2)', color: blue[800]}}>
+                Nom d&#39;usuari
+              </Typography>
+              <Typography level="body-lg">
+                {userData['usernameSTR']}
+              </Typography>
+            </div>
+            <div>
+              <Typography level="title-lg" sx={{mt: '3vh', color: blue[800]}}>
+                Correu electrònic
+              </Typography>
+              <Typography level="body-lg">
+                {userData['emailSTR']}
+              </Typography>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Button
-            variant="solid"
-            style={buttonStyle}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            onClick={deleteAccount}
-            sx={{maxWidth: '20ch'}}
-          >
-            <b>Eliminar Compte</b>
-          </Button>
-        </Container>
+        <Button
+          variant="solid"
+          style={buttonStyle}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          onClick={deleteAccount}
+          sx={{maxWidth: '20ch'}}
+        >
+          <b>Eliminar Compte</b>
+        </Button>
       </Container>
-    );
-  }
+    </Container>
+  );
 };
