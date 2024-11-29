@@ -55,12 +55,12 @@ export const NavBar = ({ onSearch }) => {
   const searchInputRef = useRef();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    /*const fetchUserData = async () => {
       const token = localStorage.getItem("access_token");
       const data = await utils.getUserData(token);
       setUserData(data);
     };
-    fetchUserData();
+    fetchUserData();*/
   }, []);
 
   const handleSearch = (e) => {

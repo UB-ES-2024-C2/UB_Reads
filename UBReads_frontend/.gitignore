@@ -32,5 +32,3 @@ coverage/
 
 # Linux executables
 .sh
-
-package-lock.json
