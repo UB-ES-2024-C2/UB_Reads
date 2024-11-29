@@ -61,14 +61,11 @@ export const Book = ({ book }) => {
                     {book.averageRating !== null && (
                         <Box sx={{ ml: '1rem' }}>{ book.averageRating }</Box>
                     )}
-                    <label>
-                        <input
-                            type="checkbox" />
-                            checked={checked}
-                            onChange={handleChange}
-                        Llegit
-                    </label>
                 </div>
+                <label style={{ display:'block', marginBottom: '1rem' }}>
+                    Llegit
+                    <input disable type="checkbox" onChange={handleChange}/>
+                </label>
                 <Button
                         variant="contained"
                         sx={{
