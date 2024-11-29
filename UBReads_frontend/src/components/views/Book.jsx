@@ -7,6 +7,12 @@ import { green, blue } from '@mui/material/colors'; // Colors
 import { Typography, Button, Rating, Box } from '@mui/material'; // Components
 
 export const Book = ({ book }) => {
+    const [checked, setChecked] = React.useState(false);
+
+    const handleChange = () => {
+        setChecked(!checked);
+    };
+
 
     const labels = {
         0: "0",
@@ -55,7 +61,12 @@ export const Book = ({ book }) => {
                     {book.averageRating !== null && (
                         <Box sx={{ ml: '1rem' }}>{ book.averageRating }</Box>
                     )}
+                    
                 </div>
+                <label style={{ display:'block', marginBottom: '1rem' }}>
+                    Llegit
+                    <input type="checkbox" onChange={handleChange} />
+                </label>
                 <Button
                         variant="contained"
                         sx={{
