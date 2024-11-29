@@ -55,6 +55,7 @@ export const Book = ({ book }) => {
                     {book.averageRating !== null && (
                         <Box sx={{ ml: '1rem' }}>{ book.averageRating }</Box>
                     )}
+                    <input type="checkbox" />
                 </div>
                 <Button
                         variant="contained"
