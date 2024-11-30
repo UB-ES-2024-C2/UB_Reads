@@ -11,17 +11,34 @@ book_users = Table(
     Column("is_read", Boolean),
 )
 
+# Tabla de asociación para seguidores
+followers = Table(
+    "followers",
+    Base.metadata,
+    Column("follower_id", Integer, ForeignKey("users.id"), primary_key=True),  # Usuario que sigue
+    Column("followed_id", Integer, ForeignKey("users.id"), primary_key=True),  # Usuario seguido
+)
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
     refresh_token = Column(String(255))
-    # Many-to-many:user can own multiple books, book can be owned by multiple users
-    books = relationship("Book", secondary=book_users, back_populates="owners")
 
+    # Many-to-many relationships for followers
+    following = relationship(
+        "User",
+        secondary=followers,
+        primaryjoin=id == followers.c.follower_id,
+        secondaryjoin=id == followers.c.followed_id,
+        backref="followers",
+    )
+
+    # Many-to-many relationship with books
+    books = relationship("Book", secondary=book_users, back_populates="owners")
 
 class Book(Base):
     __tablename__ = "books"
@@ -36,7 +53,6 @@ class Book(Base):
 
     # Many-to-many relationship: a book can have multiple owners (users)
     owners = relationship("User", secondary=book_users, back_populates="books")
-
 
 def create_tables():
     Base.metadata.create_all(engine)

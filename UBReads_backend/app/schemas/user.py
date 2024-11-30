@@ -1,8 +1,9 @@
+from typing import List
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class UserBase(BaseModel):
+    id: int
     username: str
     email: str
 
@@ -23,7 +24,9 @@ class UserLogin(BaseModel):
 
 
 class User(UserBase):
-    id: int
+    
+    followers: List[UserBase] = []  # Lista de seguidores
+    following: List[UserBase] = []  # Lista de usuarios seguidos
 
     class Config:
         from_attributes = True
