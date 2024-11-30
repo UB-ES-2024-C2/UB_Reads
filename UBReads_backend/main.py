@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.database import create_tables
+#from app.core.database import create_tables
 from app.routers.user_router import router as user_router
 
 app = FastAPI()
 
-create_tables()
+#reset_database()
+#create_tables()
 
 app.include_router(user_router)
 

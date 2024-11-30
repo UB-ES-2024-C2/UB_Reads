@@ -24,8 +24,13 @@ class Book(Base):
     __tablename__ = "books"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    author = Column(String)
-    
+    id_book = Column(String(50))
+    title = Column(String(255))
+    author = Column(String(255))
+    description = Column(String(120))
+    category = Column(String(50))
+    year = Column(Integer)
+    cover_url = Column(String(255))
+
     # Many-to-many relationship: a book can have multiple owners (users)
     owners = relationship("User", secondary=user_books, back_populates="books")
