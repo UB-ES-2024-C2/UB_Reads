@@ -19,6 +19,15 @@ class LibraryService {
         return backendAPI.get(`/users/${userId}/books/`)
             .then((response) => response);
     }
+
+    /**
+     * 
+     * @param {*} userId 
+     * @param {*} bookId 
+     */
+    getBookByUser(userId, bookId) {
+        return backendAPI.get('ruta').then((response) => response);
+    }
 }
 
 export default new LibraryService();
