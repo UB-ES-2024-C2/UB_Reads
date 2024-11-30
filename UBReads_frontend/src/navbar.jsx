@@ -25,25 +25,6 @@ import Lupa from "./assets/lupa.png";
 // Javascript calls
 import utils from "./utils/getData.js";
 
-/*const fetchCurrentUser = async () => {
-  try {
-    const response = await fetch("http://localhost:8000/me", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch user");
-    }
-    const user = await response.json();
-    console.log(user);
-  } catch (error) {
-    console.error(error);
-  }
-};*/
-
-//fetchCurrentUser();
-
 export const NavBar = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);

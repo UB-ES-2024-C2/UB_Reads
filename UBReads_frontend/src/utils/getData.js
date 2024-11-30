@@ -1,21 +1,21 @@
 import profileImage from "../assets/avatarImg.png";
 
-export const getAllUsers = async () => {
-  try {
-    const response = await fetch("http://localhost:8000/users", {
-      method: "GET"
-    });
-
-    if (!response.ok) {
-      console.warn("Respuesta no valida")
-      return NaN
-    }
-    return await response.json();
-
-  } catch (e) {
-    console.log('Connection error');
-  }
-}
+// export const getAllUsers = async () => {
+//   try {
+//     const response = await fetch("http://localhost:8000/users", {
+//       method: "GET"
+//     });
+//
+//     if (!response.ok) {
+//       console.warn("Respuesta no valida")
+//       return NaN
+//     }
+//     return await response.json();
+//
+//   } catch (e) {
+//     console.log('Connection error');
+//   }
+// }
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
@@ -91,4 +91,4 @@ const generateRandomString = () => {
 };
 
 // Exportación de las funciones
-export default { getUserData, deleteUser, generateRandomString, getAllUsers };
+export default { getUserData, deleteUser, generateRandomString };

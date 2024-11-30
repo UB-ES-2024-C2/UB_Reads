@@ -3,21 +3,13 @@ import { Container } from "@mui/system";
 import React, { useState } from "react";
 import UserList from "./components/views/userList";
 import { grey } from "@mui/material/colors";
-import { Typography, TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import { getAllUsers } from "./utils/getData"
+import {Box, TextField, Button, Typography} from '@mui/material';
 
 export const FollowingList = () => {
-
-  const users = getAllUsers().catch();
-  console.log(users);
-
-
 
   const getFollowing = () => {
     // TODO
 
-    return users;
     return Array.from({ length: 15 }, (_, x) => ({
       id: x,
       username: String.fromCharCode(x + 97),
@@ -43,25 +35,44 @@ export const FollowingList = () => {
       <NavBar />
       {/* Search bar under the navbar, aligned to the top-right corner */}
       <Box
+      sx={{
+        mt: 1,
+        display: 'flex',
+        justifyContent: 'flex-end',
+        paddingRight: '2rem',
+      }}
+    >
+      <TextField
+        variant="outlined"
+        placeholder="Search users..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        size="small"
         sx={{
-          mt: 1,
-          display: "flex",
-          justifyContent: "flex-end", // Align search bar to the right
-          paddingRight: "2rem", // Adds padding from the right side
+          width: '250px',
+          marginRight: '1rem',
+          '& .MuiOutlinedInput-root': {
+            height: '40px',
+          },
+        }}
+      />
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        size="small"
+        sx={{
+          textTransform: 'none',
+          height: '40px',
+          minWidth: '120px',
         }}
       >
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="Search new users..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: "250px" }} // Adjust width as needed
-        />
-      </Box>
+        Cerca Usuari
+      </Button>
+    </Box>
 
       {/* Title centered */}
-      <Box sx={{ mt: 4, flexShrink: 0 }}>
+      <Box sx={{mt: 4, flexShrink: 0}}>
         <Typography
           variant="h4"
           align="center"
