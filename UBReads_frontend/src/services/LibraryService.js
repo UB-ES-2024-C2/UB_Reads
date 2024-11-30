@@ -21,7 +21,7 @@ class LibraryService {
     }
 
     /**
-     * 
+     * Gets a specific book from a user.
      * @param {*} userId 
      * @param {*} bookId 
      */
