@@ -22,8 +22,8 @@ class LibraryService {
 
     /**
      * Gets a specific book from a user.
-     * @param {*} userId 
-     * @param {*} bookId 
+     * @param {number} userId 
+     * @param {number} bookId 
      */
     getBookByUser(userId, bookId) {
         return backendAPI.get('ruta').then((response) => response);
