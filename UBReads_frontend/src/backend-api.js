@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const apiURL = import.meta.env.VITE_API_URL;
+const apiURL = import.meta.env.VITE_BACKEND_API_URL;
 
 const backendAPI = axios.create({
-  googleAPIbaseURL: apiURL,
+  baseURL: apiURL,
   headers: {
     'Content-type': 'application/json'
   }
