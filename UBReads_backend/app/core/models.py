@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, Boolean, Text
 from sqlalchemy.orm import relationship
 from .database import Base, engine
 
@@ -9,6 +9,8 @@ book_users = Table(
     Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
     Column("book_id", Integer, ForeignKey("books.id"), primary_key=True),
     Column("is_read", Boolean),
+    Column("rating", Integer),
+    Column("comment", Text)
 )
 
 
