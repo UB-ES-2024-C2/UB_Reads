@@ -90,7 +90,7 @@ const generateRandomString = () => {
   return result;
 };
 
-const followUser = async (token, userId, toFollowId) => {
+const followUserWithId = async (token, userId, toFollowId) => {
   try {
     const response = await fetch(`http://localhost:8000/${userId}/follow/${toFollowId}`, {
       method: "POST",
@@ -113,6 +113,34 @@ const followUser = async (token, userId, toFollowId) => {
     return false;
   }
 };
+
+const followUserWithName = async (token, username, toFollowUsername) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/users/${username}/follow/${toFollowUsername}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.warn("Error al seguir al usuario.");
+      return false;
+    }
+
+    const data = await response.json();
+    console.log(data.message); // Mensaje de éxito
+    return true;
+  } catch (error) {
+    console.error("Error en la solicitud para seguir a un usuario:", error);
+    return false;
+  }
+};
+
 
 const unfollowUser = async (token, userId, toUnfollowId) => {
   try {
@@ -189,7 +217,8 @@ export default {
   getUserData,
   deleteUser,
   generateRandomString,
-  followUser,
+  followUserWithId,
+  followUserWithName,
   unfollowUser,
   getFollowers,
   getFollowing,
