@@ -8,6 +8,7 @@ class BookController:
     @staticmethod
     def insert_book(db: Session, book_create: BookCreate):
         db_book = Book(
+            id_book=book_create.id_book,
             title=book_create.title,
             author=book_create.author,
             category=book_create.category,
