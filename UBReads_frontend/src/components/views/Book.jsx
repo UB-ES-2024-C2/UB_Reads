@@ -10,7 +10,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 // Services
 import getUserData from '../../services/getData.js';
-import LibraryService from '../../services/LibraryService.js';
 
 // MUI Layouts
 import { Container, Box } from '@mui/material';
@@ -43,57 +42,9 @@ export const Book = () => {
     const [bookAdded, setBookAdded] = React.useState(false);
     const [readMorePressed, setReadMorePressed] = React.useState(false);
 
-    /**
-     * Adds a book to the user's library
-     */
-    const addBookToUser = async () => {
-        const token = localStorage.getItem("access_token"); // Get user token
-        // Try to add book to user's library
-        try {
-            const user = await getUserData.getUserData(token);
-            await LibraryService.addBookToUser(user.id, book.id);
-            setBookAdded(!bookAdded);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    /**
-     * Removes a book from user's library
-     */
-    const removeBookFromUser = async () => {
-        const token = localStorage.getItem("access_token"); // Get user token
-        // Try to remove book from user's library
-        try {
-            const user = await getUserData.getUserData(token);
-            await LibraryService.removeBookFromUser(user.id, book.id);
-            setBookAdded(!bookAdded);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    /**
-     * Checks if book is in user's library
-     */
-    const isBookAdded = async () => {
-        const token = localStorage.getItem("access_token"); // Get user token
-        // Try to check if book is in user's library
-        try {
-            const user = await getUserData.getUserData(token);
-            const response = await LibraryService.getBooksByUser(user.id);
-            const library = response.data;
-            library.forEach((_book) => {
-                if (_book.id === book.id) setBookAdded(true);
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     return (
         /* Main container */
-        <Container maxWidth="false" onLoad={isBookAdded} sx={{
+        <Container maxWidth="false" sx={{
             width: '100%',
             height: '100%',
             display: 'flex',
@@ -125,7 +76,6 @@ export const Book = () => {
                             fontSize: '1.2rem',
                             borderRadius: '0.5rem'
                         }}
-                        onClick={bookAdded ? removeBookFromUser : addBookToUser}
                         >
                             {bookAdded ? 'Eliminar' : 'Afegir'}
                     </Button>
