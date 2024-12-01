@@ -21,8 +21,8 @@ import { Typography, Box } from "@mui/material";
 import { blue } from "@mui/material/colors";
 
 // Own Components
-import { Navbar } from "../";
-import { Book, Search, Profile } from '../';
+import { Navbar } from "..";
+import { Book, Search, Profile, Library } from '..';
 
 /**
  * @returns Home page with an empty div
@@ -58,6 +58,7 @@ export const Home = () => {
           } />
           <Route path="/book" element={<Book />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/library" element={<Library />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </Box>
