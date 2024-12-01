@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react';
-import { NavBar } from "../../navbar.jsx";  // Component
+import { Navbar } from "../";  // Component
 
 import { Container } from "@mui/system";
 
@@ -12,7 +12,7 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
-import utils from "../../utils/getData.js";
+import utils from "../../services/getData.js";
 import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
@@ -63,7 +63,6 @@ export const Profile = () => {
       alignItems: 'center',
       minHeight: '100vh'
     }}>
-      <NavBar/>
       <Container className="content-container" maxWidth="false" sx={{
         display: 'flex',
         flexDirection: 'column',
