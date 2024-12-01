@@ -19,6 +19,16 @@ class LibraryService {
         return backendAPI.get(`/users/${userId}/books/`)
             .then((response) => response);
     }
+
+    /**
+     * Deletes a book from a user library given the user and book ids
+     * @param {number} userId 
+     * @param {number} bookId 
+     */
+    deleteBookFromUser(userId, bookId) {
+        return backendAPI.delete(`/users/${userId}/books/${bookId}`)
+            .then((response) => response);
+    }
 }
 
 export default new LibraryService();

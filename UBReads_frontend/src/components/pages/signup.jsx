@@ -1,10 +1,14 @@
 import "./styles/signup.css";
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+<<<<<<< HEAD:UBReads_frontend/src/signup.jsx
 import { signup } from "./services/UserService.js"
+=======
+import { signup } from "../../services/UserServices.js"
+>>>>>>> sprint2/US11/feature/frontend/aplicar-logica-llibreria:UBReads_frontend/src/components/pages/signup.jsx
 import { Link, useNavigate } from "react-router-dom";
 
-export const SignupForm = () => {
+export const Signup = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");

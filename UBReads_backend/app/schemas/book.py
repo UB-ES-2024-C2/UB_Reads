@@ -3,6 +3,7 @@ from typing import List, Optional
 
 
 class BookBase(BaseModel):
+    id_book: str
     title: str
     author: str
     category: str

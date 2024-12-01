@@ -1,5 +1,9 @@
 import "./styles/login.css";
+<<<<<<< HEAD:UBReads_frontend/src/login.jsx
 import { get_login } from "./services/UserService.js"
+=======
+import { get_login } from "../../services/UserServices.js"
+>>>>>>> sprint2/US11/feature/frontend/aplicar-logica-llibreria:UBReads_frontend/src/components/pages/login.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 
