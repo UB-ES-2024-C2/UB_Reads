@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  backend:
+    image: quimlr/backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_HOST=localhost
+      - DB_NAME=db
+      - DB_PORT=5432
+
+  frontend:
+    image: quimlr/frontend:latest
+    ports:
+      - "5173:5173"
+    environment:
+      - WEBSITES_PORT=5173
+      - VITE_BACKEND_API_URL=http://localhost:8000
+      - VITE_GOOGLE_BOOKS_API_URL=https://www.googleapis.com/books/v1
+      - VITE_GOOGLE_API_KEY=AIzaSyCw78QPx6xzqcMAUTu5_30li3lGBtI3qaU
+    depends_on:
+      - backend

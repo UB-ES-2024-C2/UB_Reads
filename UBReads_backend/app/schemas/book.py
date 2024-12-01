@@ -1,5 +1,4 @@
-from pydantic import BaseModel, constr
-from typing import List, Optional
+from pydantic import BaseModel
 
 
 class BookBase(BaseModel):

@@ -1,8 +1,5 @@
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.core.models import User
-from app.core.database import get_db
-from sqlalchemy import text
 import os
 from typing import Optional
 from datetime import datetime, timedelta, timezone

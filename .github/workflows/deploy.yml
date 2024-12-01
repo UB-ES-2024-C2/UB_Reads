@@ -1,0 +1,45 @@
+name: Build and Push to Docker Hub
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Build and Push Backend Image
+      run: |
+        docker build -t quimlr/backend:latest ./UBReads_backend
+        docker push quimlr/backend:latest
+
+    - name: Build and Push Frontend Image
+      run: |
+        docker build -t quimlr/frontend:latest ./UBReads_frontend
+        docker push quimlr/frontend:latest
+
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: UBReads
+        images: |
+          ubreads.azurecr.io/backend:latest
+          ubreads.azurecr.io/frontend:latest
+        docker-compose-file: docker-compose.yml
