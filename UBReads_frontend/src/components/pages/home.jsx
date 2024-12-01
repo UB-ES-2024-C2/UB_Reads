@@ -1,60 +1,67 @@
-// React import
+/**
+ * ??-??-2024
+ * @description: Home page
+ * @author: @neorefraction && @subiranet
+ */
 
-// eslint-disable-next-line no-unused-vars
+// React
 import React from "react";
-import { NavBar } from "./navbar";
-import { Book } from './components/views/Book';
-
-import { Search } from './components/views/Search';
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 // Style import
 import './styles/home.css';
 
-/* Material UI imports */
-// Layout
+// MUI Layout
 import { Container } from "@mui/system";
 
-// Component
-import { Typography } from "@mui/material";
+// MUI Components
+import { Typography, Box } from "@mui/material";
 
+// MUI Colors
 import { blue } from "@mui/material/colors";
 
+// Own Components
+import { Navbar } from "../";
+import { Book, Search, Library, Profile } from '../';
+
 /**
- * 
  * @returns Home page with an empty div
  */
 export const Home = () => {
-  const [query, setQuery] = React.useState('');
-  const [selectedBook, setSelectedBook] = React.useState(null);
 
-  const handleQuery = (newQuery) => {
-    setQuery(newQuery);
-    setSelectedBook(null);
+  // React Hook used to navigate through pages
+  const navigate = useNavigate();
+
+  /**
+   * Handles the query from the search bar
+   * navigating to the search page if the query is not empty
+   * @param {string} query 
+   */
+  const handleQuery = (query) => {
+    if (query !== '') {
+      navigate('search', { state: { query: query } });
+    }
   }
 
-  const handleBookSelect = (book) => {
-    setSelectedBook(book);
-
-  };
-
-  const handleBackToSearch = () => {
-    setSelectedBook(null);
-  };
-
   return (
-    <Container disableGutters className="home-container" maxWidth="false">
-      <NavBar onSearch={ handleQuery }></NavBar>
-      <div id="home-content-container">
-        {selectedBook ? (
-          <Book book={ selectedBook }></Book>
-        ) : query !== '' ? (
-          <Search query={ query } onBookSelect={ handleBookSelect }></Search>
-        ) : (
-          <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], alignSelf: 'center', justifySelf: 'center' }}>
-            Benvingut a UBReads!
-          </Typography>
-        )}
-      </div>
+    // Main container
+    <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100vh', overflow: 'hidden' }}>
+      {/* Navigation bar */}
+      <Navbar onSearch={ handleQuery }></Navbar>
+      {/* Variable Content */}
+      <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Routes>
+          <Route path="/" element={
+            <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], height: '100%', width: '100%' }}>
+              Benvingut a UBReads!
+            </Typography>
+          } />
+          <Route path="/book" element={<Book />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Box>
     </Container>
   )
 }
