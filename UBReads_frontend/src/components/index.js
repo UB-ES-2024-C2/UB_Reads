@@ -7,6 +7,7 @@ export { Home } from './pages/Home';
 export { Book } from './views/Book';
 export { Search } from './views/Search';
 export { Profile } from './views/Profile';
+export { Library } from './views/Library';
 
 // Layout components
 export { Navbar } from './layout/Navbar';
