@@ -3,22 +3,31 @@ import { Container } from "@mui/system";
 import React, { useState } from "react";
 import UserList from "./components/views/userList";
 import { grey } from "@mui/material/colors";
-import {Box, TextField, Button, Typography} from '@mui/material';
+import { Typography, TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import UserCard from "./components/cards/userCard";
 
 export const FollowingList = () => {
-
   const getFollowing = () => {
-    // TODO
-
     return Array.from({ length: 15 }, (_, x) => ({
       id: x,
       username: String.fromCharCode(x + 97),
       email: "email@example.com",
+      following: Math.random() < 0.5,
     }));
   };
 
   const allFollowing = getFollowing();
   const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUser, setFilteredUser] = useState(null);
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    const user = allFollowing.find((u) =>
+      u.username.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredUser(user || null); // Null if no match found
+  };
 
   return (
     <Container
@@ -35,44 +44,47 @@ export const FollowingList = () => {
       <NavBar />
       {/* Search bar under the navbar, aligned to the top-right corner */}
       <Box
-      sx={{
-        mt: 1,
-        display: 'flex',
-        justifyContent: 'flex-end',
-        paddingRight: '2rem',
-      }}
-    >
-      <TextField
-        variant="outlined"
-        placeholder="Search users..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        size="small"
         sx={{
-          width: '250px',
-          marginRight: '1rem',
-          '& .MuiOutlinedInput-root': {
-            height: '40px',
-          },
-        }}
-      />
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        size="small"
-        sx={{
-          textTransform: 'none',
-          height: '40px',
-          minWidth: '120px',
+          mt: 1,
+          display: "flex",
+          justifyContent: "flex-end",
+          paddingRight: "2rem",
+          position: "relative",
         }}
       >
-        Cerca Usuari
-      </Button>
-    </Box>
+        <TextField
+          variant="outlined"
+          placeholder="Search users..."
+          value={searchTerm}
+          onChange={(e) => handleSearch(e.target.value)}
+          size="small"
+          sx={{
+            width: "20%",
+            marginRight: "1rem",
+          }}
+        />
+
+        {/* Dropdown with UserCard */}
+        {searchTerm && (
+          <Box
+            sx={{
+              position: "absolute",
+              marginRight: '1rem',
+              top: "50px",
+              width: "20%",
+              backgroundColor: "white",
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
+              zIndex: 10,
+            }}
+          >
+            <UserCard user={filteredUser} />
+          </Box>
+        )}
+      </Box>
 
       {/* Title centered */}
-      <Box sx={{mt: 4, flexShrink: 0}}>
+      <Box sx={{ mt: 4, flexShrink: 0 }}>
         <Typography
           variant="h4"
           align="center"
