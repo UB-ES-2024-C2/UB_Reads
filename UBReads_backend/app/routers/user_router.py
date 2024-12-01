@@ -145,13 +145,22 @@ async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
 from app.controllers.user_controller import UserController
 
 @router.post("/{user_id}/follow/{to_follow_id}")
-def follow_user_endpoint(user_id: int, to_follow_id: int, db: Session = Depends(get_db)):
+def follow_user_with_id(user_id: int, to_follow_id: int, db: Session = Depends(get_db)):
     try:
-        UserController.follow_user(db, user_id, to_follow_id)
+        UserController.follow_user_with_id(db, user_id, to_follow_id)
         return {"message": f"User {user_id} is now following {to_follow_id}"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@router.post("/users/{username}/follow/{to_follow_username}")
+def follow_user_with_username(
+    username: str, to_follow_username: str, db: Session = Depends(get_db)
+):
+    try:
+        UserController.follow_user_with_username(db, username, to_follow_username)
+        return {"message": f"{username} is now following {to_follow_username}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/{user_id}/followers")
 def get_followers(user_id: int, db: Session = Depends(get_db)):
