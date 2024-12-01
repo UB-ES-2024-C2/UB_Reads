@@ -2,22 +2,28 @@
 import "./styles/App.css";
 
 // Components import
-import { Home } from "./home";
-import { Login } from "./login";
-import { SignupForm } from "./signup";
-import { Profile } from "./userProfile";
+import { Login, Signup, Home } from "./components";
 
 // BrowserRouter import
 import { Route, Routes } from "react-router-dom";
+import ProtectedRoute from './components/ProtectedRoute'
 
-// React Component
+/**
+ * Main App component
+ * @returns 
+ */
 const App = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Login />} />
-      <Route path="/signup" element={<SignupForm />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/userProfile" element={<Profile />} />
+      <Route path="/signup" element={<Signup />} />
+
+      {/* Protected Routes */}
+      <Route path="/home/*" element={
+          <ProtectedRoute><Home /></ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
