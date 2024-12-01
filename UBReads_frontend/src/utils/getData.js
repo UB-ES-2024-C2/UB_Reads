@@ -90,5 +90,108 @@ const generateRandomString = () => {
   return result;
 };
 
-// Exportación de las funciones
-export default { getUserData, deleteUser, generateRandomString };
+const followUser = async (token, userId, toFollowId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/${userId}/follow/${toFollowId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al seguir al usuario.");
+      return false;
+    }
+
+    const data = await response.json();
+    console.log(data.message);
+    return true;
+  } catch (error) {
+    console.error("Error en la solicitud para seguir a un usuario:", error);
+    return false;
+  }
+};
+
+const unfollowUser = async (token, userId, toUnfollowId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/${userId}/unfollow/${toUnfollowId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al dejar de seguir al usuario.");
+      return false;
+    }
+
+    const data = await response.json();
+    console.log(data.message);
+    return true;
+  } catch (error) {
+    console.error("Error en la solicitud para dejar de seguir a un usuario:", error);
+    return false;
+  }
+};
+
+const getFollowers = async (token, userId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/${userId}/followers`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al obtener la lista de seguidores.");
+      return [];
+    }
+
+    const data = await response.json();
+    return data.followers;
+  } catch (error) {
+    console.error("Error en la solicitud para obtener seguidores:", error);
+    return [];
+  }
+};
+
+const getFollowing = async (token, userId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/${userId}/following`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al obtener la lista de usuarios seguidos.");
+      return [];
+    }
+
+    const data = await response.json();
+    return data.following;
+  } catch (error) {
+    console.error("Error en la solicitud para obtener usuarios seguidos:", error);
+    return [];
+  }
+};
+
+// Exportar todas las funciones
+export default {
+  getUserData,
+  deleteUser,
+  generateRandomString,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
+};
+
