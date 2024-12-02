@@ -37,7 +37,15 @@ export const Library = () => {
         try {
             const user = await getUserData.getUserData(token);
             const response = await LibraryService.getBooksByUser(user.id);
-            setBooks(response.data);
+            const books = await Promise.all(response.data.map(async book => {
+                const apiBook = await BookService.getGoogleBookById(book.book.id_book);
+                return ({
+                    ...book.book,
+                    averageRating: apiBook.data.volumeInfo.averageRating,
+                    personalRating: 0
+                });
+            }));
+            setBooks(books);
         } catch (error) {
             console.error(error);
         }
@@ -102,7 +110,7 @@ export const Library = () => {
                         </Grid2>
                         <Grid2 size={4}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar variant="rounded" src={book.cover} />
+                                <Avatar variant="rounded" src={book.cover_url} />
                                 <Box sx={{ marginInline: '1rem' }}>
                                     <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
                                     <Typography variant="h6" color="text.secondary">{book.author}</Typography>
