@@ -52,9 +52,11 @@ export const Book = () => {
             title: book.title,
             author: book.author,
             category: book.category,
-            year: Number(book.year),
+            year: book.year != 'Unknown' ? Number(book.year) : 0,
             cover_url: book.cover_url
         }
+
+        console.log(book.year);
 
         const token = localStorage.getItem('access_token');
         let bookId = null;
