@@ -16,10 +16,33 @@ import profileImage from "../assets/avatarImg.png";
 //     console.log('Connection error');
 //   }
 // }
+const getAllUsers = async (token) => {
+  try {
+    const response = await fetch("http://localhost:8000/users", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al obtener todos los usuarios.");
+      return [];
+    }
+
+    const data = await response.json();
+    return data.users; // Asegúrate de que el backend devuelve un objeto con una lista de usuarios
+  } catch (error) {
+    console.error("Error en la solicitud para obtener usuarios:", error);
+    return [];
+  }
+};
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
   const userData = {
+    id: 0,
     usernameSTR: "Username",
     emailSTR: "username@example.com",
     profImage: profileImage,
@@ -44,6 +67,7 @@ const getUserData = async (token) => {
     const data = await response.json();
 
     // Asignar valores si están presentes en la respuesta
+    if (data.id) userData.id = data.id;
     if (data.username) userData.usernameSTR = data.username;
     if (data.email) userData.emailSTR = data.email;
     if (data.image) userData.profImage = data.image;
@@ -214,6 +238,7 @@ const getFollowing = async (token, userId) => {
 
 // Exportar todas las funciones
 export default {
+  getAllUsers,
   getUserData,
   deleteUser,
   generateRandomString,
