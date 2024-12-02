@@ -1,9 +1,10 @@
 import "./styles/signup.css";
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import { signup } from "../../services/UserService.js";
 import { Link, useNavigate } from "react-router-dom";
 
-export const SignupForm = () => {
+export const Signup = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -58,32 +59,14 @@ export const SignupForm = () => {
 
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
       // Submit form logic (e.g., send data to server)
-      try {
-        const response = await fetch("http://127.0.0.1:8000/users/", { // URL completa
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            password: password
-          })
-        });
-  
-        // Verifica si la respuesta es exitosa
-        if (response.ok) {
-          // Redirige al usuario a la página de inicio después de un registro exitoso
-          navigate("/");
-        } else {
-          // Muestra un mensaje de error si ocurre algún problema
-          const errorData = await response.json();
-          alert(errorData.message || "Error al registrarse");
-        }
-      } catch (error) {
-        console.error("Error al conectar con el backend:", error);
-        alert(`Hubo un problema al conectarse con el servidor: ${error.message}`);
-      }
+      const response = await signup(username, email, password)
+      if (response.ok) {
+        // Redirect to the login page or home after successful signup
+        navigate("/");
+    } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Error during registration. Please try again.");
+    }
       //navigate("/home");
     } else {
       setUnameError(uNameErorrMsg);

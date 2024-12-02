@@ -1,24 +1,32 @@
+from typing import List
 from pydantic import BaseModel
-from typing import List, Optional
+
 
 class UserBase(BaseModel):
+    id: int
     username: str
     email: str
 
+
 class UserCreate(BaseModel):
-     username: str
-     email: str
-     password: str
+    username: str
+    email: str
+    password: str
+
 
 class UserUpdate(UserBase):
     password: str
+
 
 class UserLogin(BaseModel):
     username: str
     password: str
 
+
 class User(UserBase):
-    id: int
+    
+    followers: List[UserBase] = []  # Lista de seguidores
+    following: List[UserBase] = []  # Lista de usuarios seguidos
 
     class Config:
         from_attributes = True
