@@ -8,6 +8,9 @@ from typing import Optional
 from datetime import datetime, timedelta, timezone
 import jwt
 from passlib.context import CryptContext
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -30,6 +33,7 @@ class UserController:
 
         existing_email = db.query(User).filter(User.email == email).first()
         if existing_email:
+            print('ADIOS')
             raise ValueError("El correo electrónico ya está registrado")
 
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
@@ -74,6 +78,7 @@ class UserController:
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES
             )
         to_encode.update({"exp": expire})
+        print(f"Encoding token with SECRET_KEY: {SECRET_KEY} and ALGORITHM: {ALGORITHM}")
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
 
@@ -84,3 +89,61 @@ class UserController:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
+    
+    @staticmethod
+    def follow_user_with_id(db: Session, user_id: int, to_follow_id: int):
+        user = db.query(User).filter(User.id == user_id).first()
+        to_follow = db.query(User).filter(User.id == to_follow_id).first()
+
+        if not user or not to_follow:
+            raise ValueError("User or target to follow not found")
+
+        if to_follow in user.following:
+            raise ValueError("User is already following this target")
+
+        user.following.append(to_follow)
+        db.commit()
+
+    @staticmethod
+    def follow_user_with_username(db: Session, username: str, to_follow_username: str):
+        # Buscar al usuario actual y al objetivo por username
+        user = db.query(User).filter(User.username == username).first()
+        to_follow = db.query(User).filter(User.username == to_follow_username).first()
+
+        if not user or not to_follow:
+            raise ValueError("User or target to follow not found")
+
+        if to_follow in user.following:
+            raise ValueError("User is already following this target")
+
+        # Agregar el usuario objetivo a la lista de "following"
+        user.following.append(to_follow)
+        db.commit()
+
+    @staticmethod
+    def unfollow_user(db: Session, user_id: int, to_unfollow_id: int):
+        user = db.query(User).filter(User.id == user_id).first()
+        to_unfollow = db.query(User).filter(User.id == to_unfollow_id).first()
+
+        if not user or not to_unfollow:
+            raise ValueError("User or target to unfollow not found")
+
+        if to_unfollow not in user.following:
+            raise ValueError("User is not following this target")
+
+        user.following.remove(to_unfollow)
+        db.commit()
+
+    @staticmethod
+    def get_followers(db: Session, user_id: int):
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise ValueError("User not found")
+        return user.followers
+
+    @staticmethod
+    def get_following(db: Session, user_id: int):
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise ValueError("User not found")
+        return user.following

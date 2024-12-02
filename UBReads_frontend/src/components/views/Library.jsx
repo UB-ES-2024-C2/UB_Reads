@@ -5,10 +5,9 @@
  */
 
 // React
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // MUI Icons
-import StarIcon from '@mui/icons-material/Star';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 // MUI Components
@@ -24,58 +23,44 @@ import { Grid2, Container, Box } from '@mui/material';
 import { BookRating } from "../";
 
 // Services
-import getUserData from '../../services/getData';
-import LibraryService from '../../services/LibraryService';
+import getUserData from '../../services/getData.js';
+import LibraryService from '../../services/LibraryService.js';
+import BookService from '../../services/BookService.js';
 
 export const Library = () => {
 
-    const [books, setBooks] = React.useState([
-        { id: 1, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 2, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 3, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 4, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 5, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 6, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 7, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 8, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 9, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 10, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 11, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 12, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 },
-        { id: 13, title: "El Quijote", author: "Cervantes", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 4 },
-        { id: 14, title: "Cien años de soledad", author: "García Márquez", cover: "https://picsum.photos/200", averageRating: 4.5, personalRating: 3 }
-    ]);
+    const [books, setBooks] = useState([]);
 
-    // Fetch books from user
-    React.useEffect(() => {
+    const fetchUserBooks = async () => {
         const token = localStorage.getItem('access_token');
-        getUserData.getUserData(token).then((userData) => {
-            LibraryService.getBooksByUser(userData.id).then((response) => {
-                if (response.data.length > 0) {
-                    setBooks(response.data);
-                }
-            });
-        });
-    }, []);
+
+        try {
+            const user = await getUserData.getUserData(token);
+            const response = await LibraryService.getBooksByUser(user.id);
+            setBooks(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     /**
      * Deletes a book from the user's library
      * @param {string} bookId 
      */
-    const handleDeleteBook = (bookId) => {
+    const handleDeleteBook = async (bookId) => {
         // TODO: Llamar a la api para obtener el id del libro y eliminar el libro
-        console.log(bookId)
-        const confirmed = confirm('Estás segur que vols eliminar aquest llibre?')
-    
-        if(confirmed) {
+        confirm('Estás segur que vols eliminar aquest llibre?')
+
+        if (confirmed) {
             const token = localStorage.getItem('access_token');
-            getUserData.getUserData(token).then((userData) => {
-                LibraryService.deleteBookFromUser(userData.id, bookId).then(() => {
-                    setBooks(books.filter((book) => book.id !== bookId));
-                });
-            });
+            const user = await getUserData.getUserData(token);
+            const response = await LibraryService.deleteBookFromUser(user.id, bookId);
         }
     }
+
+    useEffect(() => {
+        fetchUserBooks();
+    }, []);
 
     return (
         /* Main container */

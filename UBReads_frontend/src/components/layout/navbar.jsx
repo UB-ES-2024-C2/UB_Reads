@@ -25,7 +25,10 @@ import Logo from "../../assets/logo.png";
 import Lupa from "../../assets/lupa.png";
 
 // Javascript calls
+
 import utils from "../../services/getData.js";
+
+import { Library } from "../";
 
 export const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
@@ -103,6 +106,7 @@ export const Navbar = ({ onSearch }) => {
         <Box>
           <Stack direction="row" spacing={2}>
             <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Home</Button>
+            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Library</Button>
           </Stack>
         </Box>
 

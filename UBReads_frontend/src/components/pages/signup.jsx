@@ -1,7 +1,7 @@
 import "./styles/signup.css";
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { signup } from "../../services/UserServices.js"
+import { signup } from "../../services/UserService.js";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Signup = () => {
