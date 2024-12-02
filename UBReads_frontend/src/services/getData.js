@@ -1,4 +1,5 @@
 import profileImage from "../assets/avatarImg.png";
+import backendAPI from "../backend-api.js";
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
@@ -10,27 +11,26 @@ const getUserData = async (token) => {
 
   try {
     // Solicitud al endpoint /me
-    const response = await fetch("http://localhost:8000/me", {
-      method: "GET",
+    const response = await backendAPI.get(`/me`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
-      },
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
     });
 
     // Verificar si la respuesta no es exitosa
-    if (!response.ok) {
+    if (response.status !== 200) {
       console.warn("Error de credenciales o respuesta no válida.");
       return userData; // Retornar datos por defecto en caso de error
     }
 
     // Parsear la respuesta JSON
-    const data = await response.json();
 
     // Asignar valores si están presentes en la respuesta
-    if (data.username) userData.usernameSTR = data.username;
-    if (data.email) userData.emailSTR = data.email;
-    if (data.image) userData.profImage = data.image;
-    if (data.id) userData.id = data.id;
+    if (response.data.username) userData.usernameSTR = response.data.username;
+    if (response.data.email) userData.emailSTR = response.data.email;
+    if (response.data.image) userData.profImage = response.data.image;
+    if (response.data.id) userData.id = response.data.id;
 
     return userData; // Retornar los datos del usuario
   } catch (error) {

@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-
-#from app.core.database import create_tables
+from app.core.models import create_tables, reset_database
 from app.routers.user_router import router as user_router
 from app.routers.book_router import router as book_router
 from app.routers.book_user_router import router as book_user_router

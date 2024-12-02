@@ -5,7 +5,7 @@
  */
 
 // React
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // MUI Icons
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -28,6 +28,8 @@ import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
 
 export const Library = () => {
+
+    const [books, setBooks] = useState([]);
 
     const fetchUserBooks = async () => {
         const token = localStorage.getItem('access_token');

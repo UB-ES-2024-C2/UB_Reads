@@ -8,6 +8,9 @@ from typing import Optional
 from datetime import datetime, timedelta, timezone
 import jwt
 from passlib.context import CryptContext
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -30,6 +33,7 @@ class UserController:
 
         existing_email = db.query(User).filter(User.email == email).first()
         if existing_email:
+            print('ADIOS')
             raise ValueError("El correo electrónico ya está registrado")
 
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
@@ -74,6 +78,7 @@ class UserController:
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES
             )
         to_encode.update({"exp": expire})
+        print(f"Encoding token with SECRET_KEY: {SECRET_KEY} and ALGORITHM: {ALGORITHM}")
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
 

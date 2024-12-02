@@ -7,6 +7,6 @@ const backendAPI = axios.create({
   headers: {
     'Content-type': 'application/json'
   }
-})
+});
 
 export default backendAPI;
