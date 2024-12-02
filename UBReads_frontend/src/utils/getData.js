@@ -1,21 +1,5 @@
 import profileImage from "../assets/avatarImg.png";
 
-// export const getAllUsers = async () => {
-//   try {
-//     const response = await fetch("http://localhost:8000/users", {
-//       method: "GET"
-//     });
-//
-//     if (!response.ok) {
-//       console.warn("Respuesta no valida")
-//       return NaN
-//     }
-//     return await response.json();
-//
-//   } catch (e) {
-//     console.log('Connection error');
-//   }
-// }
 const getAllUsers = async (token, userId) => {
   try {
     const response = await fetch("http://localhost:8000/users", {

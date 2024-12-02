@@ -5,7 +5,7 @@ import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import UserList from "./components/views/userList";
-import UserCard from "./components/cards/userCard";
+import UserCard from "./components/cards/userCard"; // Import UserCard
 import utils from "./utils/getData.js";
 
 export const FollowingList = () => {
@@ -13,31 +13,28 @@ export const FollowingList = () => {
 
   const [followingUsers, setFollowingUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUser, setFilteredUser] = useState(null);
 
-  // Función para obtener los usuarios seguidos
   const fetchFollowingUsers = async () => {
     try {
-      const userData = await utils.getUserData(token); // Datos del usuario actual
-      const users = await utils.getFollowing(token, userData.id); // Usuarios seguidos
+      const userData = await utils.getUserData(token);
+      const users = await utils.getFollowing(token, userData.id);
       if (Array.isArray(users)) {
-        setFollowingUsers(users); // Actualizar el estado
+        setFollowingUsers(users);
       } else {
         console.warn("El backend no devolvió un arreglo.");
-        setFollowingUsers([]); // Estado vacío en caso de error
+        setFollowingUsers([]);
       }
     } catch (error) {
       console.error("Error al obtener usuarios seguidos:", error);
-      setFollowingUsers([]); // Estado vacío en caso de error
+      setFollowingUsers([]);
     }
   };
 
-  // Función para obtener todos los usuarios
   const fetchAllUsers = async () => {
     try {
-      const userData = await utils.getUserData(token); // Datos del usuario actual
+      const userData = await utils.getUserData(token);
       const allUsersData = await utils.getAllUsers(token, userData.id);
       if (Array.isArray(allUsersData)) {
         setAllUsers(allUsersData);
@@ -51,7 +48,6 @@ export const FollowingList = () => {
     }
   };
 
-  // Sincronizar el estado "following" de los usuarios
   const updateAllUsersFollowing = () => {
     const followingIds = new Set(followingUsers.map((item) => item.id));
     const updatedArray = allUsers.map((item) => ({
@@ -61,7 +57,6 @@ export const FollowingList = () => {
     setAllUsers(updatedArray);
   };
 
-  // Usar useEffect para evitar re-renderizados infinitos
   useEffect(() => {
     if (followingUsers.length === 0) {
       fetchFollowingUsers();
@@ -80,13 +75,27 @@ export const FollowingList = () => {
     }
   }, [followingUsers, allUsers]);
 
-  // Manejar búsqueda
   const handleSearch = (term) => {
     setSearchTerm(term);
     const user = allUsers.find((u) =>
       u.username.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredUser(user || null);
+  };
+
+  const handleFollowChange = async (userId, follow) => {
+    try {
+      const userData = await utils.getUserData(token);
+      if (follow) {
+        await utils.followUserWithId(token, userData.id, userId);
+      } else {
+        await utils.unfollowUser(token, userData.id, userId);
+      }
+      fetchFollowingUsers();
+      fetchAllUsers();
+    } catch (error) {
+      console.error("Error al cambiar el estado de seguimiento:", error);
+    }
   };
 
   return (
@@ -103,7 +112,6 @@ export const FollowingList = () => {
     >
       <NavBar />
 
-      {/* Barra de búsqueda */}
       <Box
         sx={{
           mt: 1,
@@ -125,7 +133,6 @@ export const FollowingList = () => {
           }}
         />
 
-        {/* Mostrar el usuario encontrado */}
         {searchTerm && (
           <Box
             sx={{
@@ -139,12 +146,15 @@ export const FollowingList = () => {
               zIndex: 10,
             }}
           >
-            <UserCard user={filteredUser} verticalLayout={true}/>
+            <UserCard
+              user={filteredUser}
+              verticalLayout={true}
+              onFollowChange={handleFollowChange}
+            />
           </Box>
         )}
       </Box>
 
-      {/* Título */}
       <Box sx={{ mt: 4, flexShrink: 0 }}>
         <Typography
           variant="h4"
@@ -158,7 +168,6 @@ export const FollowingList = () => {
         </Typography>
       </Box>
 
-      {/* Lista de usuarios seguidos */}
       <Box
         sx={{
           flex: 1,
@@ -180,7 +189,7 @@ export const FollowingList = () => {
             gap: 2,
           }}
         >
-          <UserList users={followingUsers} />
+          <UserList users={followingUsers} onFollowChange={handleFollowChange} />
         </Box>
       </Box>
     </Container>

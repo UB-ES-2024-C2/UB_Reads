@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { grey, red, green } from "@mui/material/colors";
 import { Avatar, Button, ListItem, ListItemAvatar, Typography, Box } from "@mui/material";
 
-const UserCard = ({ user, verticalLayout = false }) => {
+const UserCard = ({ user, verticalLayout = false, onFollowChange }) => {
+  const [isFollowing, setIsFollowing] = useState(user?.following || false);
+
+  const handleFollowChange = () => {
+    if (isFollowing) {
+      console.log('unfollowbutton ', user.username);
+      onFollowChange(user.id, false);
+    } else {
+      console.log('followbutton ', user.username);
+      onFollowChange(user.id, true);
+    }
+    setIsFollowing(!isFollowing);
+  };
+
   const getButton = (following) => {
     const buttonStyles = {
       backgroundColor: following ? red["A700"] : green["A700"],
@@ -19,13 +32,17 @@ const UserCard = ({ user, verticalLayout = false }) => {
     };
 
     return (
-      <Button variant="contained" sx={buttonStyles}>
+      <Button
+        variant="contained"
+        sx={buttonStyles}
+        onClick={handleFollowChange}
+      >
         {following ? "Unfollow" : "Follow"}
       </Button>
     );
   };
 
-  if (user === null) {
+  if (!user) {
     return (
       <ListItem
         key={0}
@@ -59,7 +76,7 @@ const UserCard = ({ user, verticalLayout = false }) => {
       sx={{
         display: "flex",
         flexDirection: verticalLayout ? "column" : "row",
-        alignItems: verticalLayout ? "center" : "center",
+        alignItems: "center",
         width: "100%",
         padding: 2,
         backgroundColor: "white",
@@ -103,7 +120,7 @@ const UserCard = ({ user, verticalLayout = false }) => {
           {user.email}
         </Typography>
       </Box>
-      {getButton(user.following)}
+      {getButton(isFollowing)}
     </ListItem>
   );
 };
