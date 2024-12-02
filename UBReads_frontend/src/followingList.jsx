@@ -37,7 +37,8 @@ export const FollowingList = () => {
   // Función para obtener todos los usuarios
   const fetchAllUsers = async () => {
     try {
-      const allUsersData = await utils.getAllUsers(token);
+      const userData = await utils.getUserData(token); // Datos del usuario actual
+      const allUsersData = await utils.getAllUsers(token, userData.id);
       if (Array.isArray(allUsersData)) {
         setAllUsers(allUsersData);
       } else {

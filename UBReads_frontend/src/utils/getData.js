@@ -16,7 +16,7 @@ import profileImage from "../assets/avatarImg.png";
 //     console.log('Connection error');
 //   }
 // }
-const getAllUsers = async (token) => {
+const getAllUsers = async (token, userId) => {
   try {
     const response = await fetch("http://localhost:8000/users", {
       method: "GET",
@@ -31,12 +31,16 @@ const getAllUsers = async (token) => {
       return [];
     }
 
-    return await response.json(); // Asegúrate de que el backend devuelve un objeto con una lista de usuarios
+    const users = await response.json(); // Suponiendo que el backend devuelve un array de usuarios
+
+    // Filtrar para eliminar el usuario con el id correspondiente
+    return users.filter(user => user.id !== userId);
   } catch (error) {
     console.error("Error en la solicitud para obtener usuarios:", error);
     return [];
   }
 };
+
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
