@@ -19,6 +19,11 @@ class BookService {
             .then((response) => response)
             .catch((error) => {console.error('GET error:', error)});
     }
+
+    addBookToBackend(book) {
+        return backendAPI.post(`/books/`, book)
+            .then((response) => response);
+    }
 }
 
 export default new BookService();
