@@ -6,27 +6,43 @@ import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import UserCard from "./components/cards/userCard";
+import utils from "./utils/getData.js";
 
 export const FollowingList = () => {
-  const getFollowing = () => {
-    return Array.from({ length: 15 }, (_, x) => ({
-      id: x,
-      username: String.fromCharCode(x + 97),
-      email: "email@example.com",
-      following: Math.random() < 0.5,
-    }));
+  const token = localStorage.getItem("access_token");
+  const [followingUsers, setFollowingUsers] = useState([]); // Estado para usuarios seguidos
+  const [searchTerm, setSearchTerm] = useState(""); // Término de búsqueda
+  const [filteredUser, setFilteredUser] = useState(null); // Usuario filtrado
+
+  // Función para obtener los usuarios seguidos por el usuario actual
+  const fetchFollowingUsers = async () => {
+    try {
+      const userData = await utils.getUserData(token); // Obtiene los datos del usuario actual
+      const users = await utils.getFollowing(token, userData.id); // Obtiene los usuarios seguidos
+      if (Array.isArray(users)) {
+        setFollowingUsers(users); // Actualiza el estado con los usuarios seguidos
+      } else {
+        console.warn("El backend no devolvió un arreglo.");
+        setFollowingUsers([]); // Estado vacío en caso de error
+      }
+    } catch (error) {
+      console.error("Error al obtener usuarios seguidos:", error);
+      setFollowingUsers([]); // Estado vacío en caso de error
+    }
   };
 
-  const allFollowing = getFollowing();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUser, setFilteredUser] = useState(null);
+  // Llama a fetchFollowingUsers solo si followingUsers está vacío
+  if (followingUsers.length === 0) {
+    fetchFollowingUsers();
+  }
 
+  // Función para manejar la búsqueda
   const handleSearch = (term) => {
     setSearchTerm(term);
-    const user = allFollowing.find((u) =>
+    const user = followingUsers.find((u) =>
       u.username.toLowerCase().includes(term.toLowerCase())
     );
-    setFilteredUser(user || null); // Null if no match found
+    setFilteredUser(user || null); // Null si no se encuentra coincidencia
   };
 
   return (
@@ -42,7 +58,8 @@ export const FollowingList = () => {
       }}
     >
       <NavBar />
-      {/* Search bar under the navbar, aligned to the top-right corner */}
+
+      {/* Barra de búsqueda */}
       <Box
         sx={{
           mt: 1,
@@ -54,7 +71,7 @@ export const FollowingList = () => {
       >
         <TextField
           variant="outlined"
-          placeholder="Search users..."
+          placeholder="Search following users..."
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           size="small"
@@ -64,18 +81,19 @@ export const FollowingList = () => {
           }}
         />
 
-        {/* Dropdown with UserCard */}
-        {searchTerm && (
+        {/* Mostrar el usuario encontrado */}
+        {searchTerm && filteredUser && (
           <Box
             sx={{
               position: "absolute",
-              marginRight: '1rem',
+              marginRight: "1rem",
               top: "50px",
               width: "20%",
               backgroundColor: "white",
               boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
               borderRadius: "8px",
               zIndex: 10,
+              padding: "1rem",
             }}
           >
             <UserCard user={filteredUser} />
@@ -83,7 +101,7 @@ export const FollowingList = () => {
         )}
       </Box>
 
-      {/* Title centered */}
+      {/* Título */}
       <Box sx={{ mt: 4, flexShrink: 0 }}>
         <Typography
           variant="h4"
@@ -93,11 +111,11 @@ export const FollowingList = () => {
             color: grey[800],
           }}
         >
-          You are currently following:
+          Users You Are Following:
         </Typography>
       </Box>
 
-      {/* Users List */}
+      {/* Lista de usuarios seguidos */}
       <Box
         sx={{
           flex: 1,
@@ -119,7 +137,7 @@ export const FollowingList = () => {
             gap: 2,
           }}
         >
-          <UserList users={allFollowing} />
+          <UserList users={followingUsers} />
         </Box>
       </Box>
     </Container>
