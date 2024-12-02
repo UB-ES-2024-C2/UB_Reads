@@ -58,6 +58,7 @@ const getUserData = async (token) => {
     if (data.username) userData.usernameSTR = data.username;
     if (data.email) userData.emailSTR = data.email;
     if (data.image) userData.profImage = data.image;
+    if (data.id) userData.id = data.id;
 
     return userData; // Retornar los datos del usuario
   } catch (error) {

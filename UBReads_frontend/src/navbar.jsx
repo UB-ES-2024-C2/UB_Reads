@@ -23,7 +23,7 @@ import Logo from "./assets/logo.png";
 import Lupa from "./assets/lupa.png";
 
 // Javascript calls
-import utils from "./utils/getData.js";
+import utils from "./services/getData.js";
 
 export const NavBar = ({ onSearch }) => {
   const navigate = useNavigate();
@@ -67,10 +67,6 @@ export const NavBar = ({ onSearch }) => {
   const profilePage = () => {
     navigate("/userProfile");
   };
-
-  const followingList = () => {
-    navigate("/following");
-  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -135,19 +131,16 @@ export const NavBar = ({ onSearch }) => {
             sx={{ mt: "0.5rem", minWidth: "13vw" }}
           >
             <MenuItem onClick={profilePage}>
-              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
+              <Typography
+                sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}
+              >
                 Perfil
               </Typography>
             </MenuItem>
-
-            <MenuItem onClick={followingList}>
-              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
-                Following
-              </Typography>
-            </MenuItem>
-
             <MenuItem onClick={logOut}>
-              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
+              <Typography
+                sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}
+              >
                 Log Out
               </Typography>
             </MenuItem>
