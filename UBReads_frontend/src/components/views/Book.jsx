@@ -1,6 +1,9 @@
 import './book.css';
 import React from 'react';
 
+import getUserData from '../../services/getData.js';
+import LibraryService from '../../services/LibraryService.js';
+
 // Material UI imports
 import StarIcon from '@mui/icons-material/Star'; // Icons
 import { green, blue } from '@mui/material/colors'; // Colors
@@ -13,6 +16,8 @@ export const Book = ({ book }) => {
         setChecked(!checked);
     };
 
+
+    const [bookAdded, setBookAdded] = React.useState(false);
 
     const labels = {
         0: "0",
@@ -38,7 +43,35 @@ export const Book = ({ book }) => {
         setReadMorePressed(!readMorePressed);
     }
 
-    console.log(book);
+    const addBookToUser = () => {
+        const token = localStorage.getItem("access_token");
+        console.log(book);
+        getUserData.getUserData(token).then((user) => {
+            LibraryService.addBookToUser(user.id, book.id).then(() => {
+                setBookAdded(true);
+            });
+        });
+    }
+
+    const removeBookFromUser = () => {
+        const token = localStorage.getItem("access_token");
+        getUserData.getUserData(token).then((user) => {
+            LibraryService.removeBookFromUser(user.id, book.id).then(() => {
+                setBookAdded(false);
+            });
+        });
+    }
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        getUserData.getUserData(token).then((user) => {
+            LibraryService.getBooksByUser(user.id).then((books) => {
+                books.data.forEach((b2) => {
+                    if (b2.id === book.id) setBookAdded(true);
+                });
+            });
+        });
+    }, []);
 
     return (
         <div id="book-container">
@@ -61,26 +94,25 @@ export const Book = ({ book }) => {
                     {book.averageRating !== null && (
                         <Box sx={{ ml: '1rem' }}>{ book.averageRating }</Box>
                     )}
-                    <label>
-                        <input
-                            type="checkbox" />
-                            checked={checked}
-                            onChange={handleChange}
-                        Llegit
-                    </label>
                 </div>
+                <label style={{ display:'block', marginBottom: '1rem' }}>
+                    Llegit
+                    <input disable type="checkbox" onChange={handleChange}/>
+                </label>
                 <Button
-                        variant="contained"
-                        sx={{
-                            bgcolor: green['A700'],
-                            paddingInline: '3rem',
-                            textTransform: 'capitalize',
-                            fontSize: '1.2rem',
-                            borderRadius: '0.5rem'
-                        }}
-                        >
-                            Afegir
-                        </Button>
+                    id="add-button"
+                    variant="contained"
+                    sx={{
+                        bgcolor: green['A700'],
+                        paddingInline: '3rem',
+                        textTransform: 'capitalize',
+                        fontSize: '1.2rem',
+                        borderRadius: '0.5rem'
+                    }}
+                    onClick={bookAdded ? removeBookFromUser : addBookToUser}
+                    >
+                        {bookAdded ? 'Eliminar' : 'Afegir'}
+                </Button>
                 {book.desciption !== undefined && (
                     <div id="content-container">
                         <Typography variant="h5" component="p" sx={{ maxHeight: readMorePressed ? 'none' : '2lh', overflow: 'hidden' }}>{ book.desciption }</Typography>
