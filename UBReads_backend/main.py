@@ -18,12 +18,16 @@ app.include_router(book_user_router)
 origins = [
     "http://localhost",
     "http://localhost:5173", # Development frontend URL
-    "https://<YOUR_PRODUCTION_URL>", # Production frontend URL
+    "http://localhost:80", # Development frontend URL
+    "https://ubreads-cjeqabfdg8e3fjgp.spaincentral-01.azurewebsites.net", # Production frontend URL
+    "http://frontend",
+    "http://frontend:5173",
+    "http://frontend:80",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], #origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

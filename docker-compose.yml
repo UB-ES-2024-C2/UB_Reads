@@ -1,17 +1,6 @@
 version: "3.8"
 
 services:
-  backend:
-    image: quimlr/backend:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_USER=admin
-      - DB_PASSWORD=admin
-      - DB_HOST=localhost
-      - DB_NAME=db
-      - DB_PORT=5432
-
   frontend:
     image: quimlr/frontend:latest
     ports:
@@ -23,3 +12,14 @@ services:
       - VITE_GOOGLE_API_KEY=AIzaSyCw78QPx6xzqcMAUTu5_30li3lGBtI3qaU
     depends_on:
       - backend
+
+  backend:
+    image: quimlr/backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_HOST=localhost
+      - DB_NAME=db
+      - DB_PORT=5432
