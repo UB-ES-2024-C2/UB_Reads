@@ -1,49 +1,40 @@
-export const get_login = async (username, password) => {
-    //const navigate = useNavigate(); // Add `async` to the function declaration
-    try {
-        const response = await fetch("http://localhost:8000/token", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-        username, 
-        password,
-        }),
-        });
+import backendAPI from '../backend-api';
+
+class UserService {
+
+    async getLogin(username, password) {
+        const params = new URLSearchParams();
+        params.append('username', username);
+        params.append('password', password);
+        try {
+            const response = await backendAPI.post('/token', params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
     
-        if (!response.ok) {
+            if (response.status === 200) {
+                return response.data.access_token;
+            }
+
             alert("Credenciales inválidas");
             return null;
+            
+        } catch (error) {
+            console.error("Error en la solicitud:", error);
+            alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
         }
-    
-        const data = await response.json();
-        return data.access_token;
-        //localStorage.setItem("access_token", data.access_token);
-    
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-        alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
     }
+
+    
+    async signup(username, email, password) {
+        try {
+            await backendAPI.post('/users/', {username, email, password});
+        } catch (error) {
+            console.error("Error connecting to the backend:", error);
+            alert(`There was a problem connecting to the server: ${error.message}`);
+        }
     };
-    
-export const signup = async (username, email, password) => {
-    try {
-        const response = await fetch("http://localhost:8000/users/", { 
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                email,
-                password
-            })
-        });
-        return response;
-    
-    } catch (error) {
-        console.error("Error connecting to the backend:", error);
-        alert(`There was a problem connecting to the server: ${error.message}`);
-    }
-};
+}
+
+export default new UserService();
