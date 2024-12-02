@@ -26,6 +26,8 @@ import { Typography, Button, IconButton } from '@mui/material';
 // Own Components
 import { BookRating } from '../';
 
+import LibraryService from '../../services/LibraryService.js';
+
 /**
  * @returns Book view
  */
@@ -41,7 +43,25 @@ export const Book = () => {
     // Component states
     const [bookAdded, setBookAdded] = React.useState(false);
     const [readMorePressed, setReadMorePressed] = React.useState(false);
-    
+
+    const handleAddBook = async () => {
+        const token = localStorage.getItem('access_token');
+        const user = await getUserData.getUserData(token);
+        const response = await LibraryService.addBookToUser(user.id, book.id);
+        if (response.status === 200) {
+            setBookAdded(true);
+        }
+    }
+
+    const handleRemoveBook = async () => {
+        const token = localStorage.getItem('access_token');
+        const user = await getUserData.getUserData(token);
+        const response = await LibraryService.deleteBookFromUser(user.id, book.id);
+        if (response.status === 200) {
+            setBookAdded(false);
+        }
+    }
+
     return (
         /* Main container */
         <Container maxWidth="false" sx={{
@@ -69,6 +89,7 @@ export const Book = () => {
                     <Button
                         id="add-button"
                         variant="contained"
+                        onClick={() => bookAdded ? handleRemoveBook() : handleAddBook()}
                         sx={{
                             bgcolor: bookAdded ? pink[700] : green['A700'],
                             paddingInline: '3rem',
