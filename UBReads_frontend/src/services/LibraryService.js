@@ -26,7 +26,7 @@ class LibraryService {
      * @param {number} bookId 
      */
     getBookByUser(userId, bookId) {
-        return backendAPI.get('ruta').then((response) => response);
+        return backendAPI.get(`/users/${userId}/books/${bookId}`).then((response) => response);
     }
 }
 
