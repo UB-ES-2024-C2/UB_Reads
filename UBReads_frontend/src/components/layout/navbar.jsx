@@ -26,7 +26,7 @@ import Lupa from "../../assets/lupa.png";
 
 // Javascript calls
 
-import utils from "../../services/getData.js";
+import getData from "../../services/getData.js";
 
 import { Library } from "../";
 
@@ -40,12 +40,17 @@ export const Navbar = ({ onSearch }) => {
   });
   const searchInputRef = useRef();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token");
-      const data = await utils.getUserData(token);
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const data = await getData.getUserData(token);
       setUserData(data);
-    };
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 

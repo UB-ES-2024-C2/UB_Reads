@@ -1,7 +1,7 @@
 import "./styles/signup.css";
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { signup } from "../../services/UserService.js";
+import UserService from "../../services/UserService.js";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Signup = () => {
@@ -59,15 +59,12 @@ export const Signup = () => {
 
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
       // Submit form logic (e.g., send data to server)
-      const response = await signup(username, email, password)
-      if (response.ok) {
-        // Redirect to the login page or home after successful signup
+      try {
+        UserService.signup(username, email, password)
         navigate("/");
-    } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Error during registration. Please try again.");
-    }
-      //navigate("/home");
+      } catch (error) {
+        alert(error.message || "Error during registration. Please try again.");
+      }
     } else {
       setUnameError(uNameErorrMsg);
       setEmailError(emailErrorMsg);

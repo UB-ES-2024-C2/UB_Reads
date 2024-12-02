@@ -8,7 +8,7 @@ import { Card, CardMedia, CardContent, Box, Button } from '@mui/material';
 
 import BookService from '../../services/BookService.js';
 import LibraryService from '../../services/LibraryService.js';
-import getUserData from '../../services/getData.js';
+import getData from '../../services/getData.js';
 
 // Material UI icons
 import StarIcon from '@mui/icons-material/Star'; // Icons
@@ -53,7 +53,7 @@ export const BookCard = ({ bookData, onClick }) => {
         });
 
         if (bookId !== null) {
-            const user = await getUserData.getUserData(token);
+            const user = await getData.getUserData(token);
             const response = await LibraryService.addBookToUser(user.id, bookId);
             if (response.status === 200) {
                 setBookAdded(true);
@@ -67,7 +67,7 @@ export const BookCard = ({ bookData, onClick }) => {
                 }
             });
 
-            const user = await getUserData.getUserData(token);
+            const user = await getData.getUserData(token);
             const response = await LibraryService.addBookToUser(user.id, bookId);
             if (response.status === 200) {
                 setBookAdded(true);
@@ -84,7 +84,7 @@ export const BookCard = ({ bookData, onClick }) => {
                 bookId = backendBook.id;
             }
         });
-        const user = await getUserData.getUserData(token);
+        const user = await getData.getUserData(token);
         const response = await LibraryService.deleteBookFromUser(user.id, bookId);
         if (response.status === 200) {
             setBookAdded(false);
@@ -93,7 +93,7 @@ export const BookCard = ({ bookData, onClick }) => {
 
     const checkBookAdded = async () => {
         const token = localStorage.getItem('access_token');
-        const user = await getUserData.getUserData(token);
+        const user = await getData.getUserData(token);
         const response = await LibraryService.getBooksByUser(user.id);
         response.data.forEach(_book => {
             if (_book.book.id_book === book.id) {

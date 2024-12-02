@@ -1,80 +1,53 @@
 import profileImage from "../assets/avatarImg.png";
 import backendAPI from "../backend-api.js";
 
-const getUserData = async (token) => {
-  // Objeto por defecto para el usuario
-  const userData = {
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: profileImage,
-  };
+class getData {
+  async getUserData(token) {
 
-  try {
-    // Solicitud al endpoint /me
-    const response = await backendAPI.get(`/me`, {
+    const data = await backendAPI.get(`/me`, {
       headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
       }
     });
 
-    // Verificar si la respuesta no es exitosa
-    if (response.status !== 200) {
-      console.warn("Error de credenciales o respuesta no válida.");
-      return userData; // Retornar datos por defecto en caso de error
+    if (data.status === 200) {
+      return {
+        id: data.data.id ? data.data.id : null,
+        profImage: data.data.image ? data.data.image : profileImage,
+        usernameSTR: data.data.username ? data.data.username : "Username",
+        emailSTR: data.data.email ? data.data.email : "username@example.com",
+      };
     }
-
-    // Parsear la respuesta JSON
-
-    // Asignar valores si están presentes en la respuesta
-    if (response.data.username) userData.usernameSTR = response.data.username;
-    if (response.data.email) userData.emailSTR = response.data.email;
-    if (response.data.image) userData.profImage = response.data.image;
-    if (response.data.id) userData.id = response.data.id;
-
-    return userData; // Retornar los datos del usuario
-  } catch (error) {
-    // Manejo de errores de red o del servidor
-    console.error("Error en la solicitud:", error);
-    return userData; // Retornar datos por defecto en caso de error
+    console.warn("Error de credenciales o respuesta no válida.");
   }
-};
 
-const deleteUser = async (token) => {
-  try {
-    const response = await fetch("http://localhost:8000/users-delete/", {
-      method: "DELETE",
+  async deleteUser(token) {
+    const response = await backendAPI.delete(`/users-delete/`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
-      },
+          'Authorization': `Bearer ${token}`,
+      }
     });
 
-    if (!response.ok) {
-      console.warn("La solicitud DELETE no fue exitosa.");
-      return false;
+    if(response.status === 200) {
+      return true;
     }
-    
-    return true;
-  } catch (error) {
-    alert("Caught error from back");
-    console.error("Error en la solicitud:", error);
+
+    console.warn("La solicitud DELETE no fue exitosa.");
     return false;
   }
-};
 
-// Generador de cadenas aleatorias
-const generateRandomString = () => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
-  let result = "";
-  const charactersLength = characters.length;
+  async generateRandomString() {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
+    let result = "";
+    const charactersLength = characters.length;
+  
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  
+    return result;
+  };
+}
 
-  for (let i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  return result;
-};
-
-// Exportación de las funciones
-export default { getUserData, deleteUser, generateRandomString };
+export default new getData();
