@@ -9,7 +9,7 @@ from app.routers.book_user_router import router as book_user_router
 app = FastAPI()
 
 #reset_database()
-#create_tables()
+create_tables()
 
 app.include_router(book_router)
 app.include_router(user_router)
