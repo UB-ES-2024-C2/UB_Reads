@@ -31,8 +31,7 @@ const getAllUsers = async (token) => {
       return [];
     }
 
-    const data = await response.json();
-    return data.users; // Asegúrate de que el backend devuelve un objeto con una lista de usuarios
+    return await response.json(); // Asegúrate de que el backend devuelve un objeto con una lista de usuarios
   } catch (error) {
     console.error("Error en la solicitud para obtener usuarios:", error);
     return [];
@@ -228,7 +227,14 @@ const getFollowing = async (token, userId) => {
       return [];
     }
 
-    const data = await response.json();
+    let data = await response.json();
+
+    // Com que aquesta funcio nomes retorna usuaris que estas seguin, els hi podem posar a tots following true
+    data.following = data.following.map(item => ({
+      ...item,
+      following: true
+    }));
+
     return data.following;
   } catch (error) {
     console.error("Error en la solicitud para obtener usuarios seguidos:", error);
