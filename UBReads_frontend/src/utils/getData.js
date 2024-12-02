@@ -1,25 +1,35 @@
 import profileImage from "../assets/avatarImg.png";
 
-// export const getAllUsers = async () => {
-//   try {
-//     const response = await fetch("http://localhost:8000/users", {
-//       method: "GET"
-//     });
-//
-//     if (!response.ok) {
-//       console.warn("Respuesta no valida")
-//       return NaN
-//     }
-//     return await response.json();
-//
-//   } catch (e) {
-//     console.log('Connection error');
-//   }
-// }
+const getAllUsers = async (token, userId) => {
+  try {
+    const response = await fetch("http://localhost:8000/users", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.warn("Error al obtener todos los usuarios.");
+      return [];
+    }
+
+    const users = await response.json(); // Suponiendo que el backend devuelve un array de usuarios
+
+    // Filtrar para eliminar el usuario con el id correspondiente
+    return users.filter(user => user.id !== userId);
+  } catch (error) {
+    console.error("Error en la solicitud para obtener usuarios:", error);
+    return [];
+  }
+};
+
 
 const getUserData = async (token) => {
   // Objeto por defecto para el usuario
   const userData = {
+    id: 0,
     usernameSTR: "Username",
     emailSTR: "username@example.com",
     profImage: profileImage,
@@ -44,6 +54,7 @@ const getUserData = async (token) => {
     const data = await response.json();
 
     // Asignar valores si están presentes en la respuesta
+    if (data.id) userData.id = data.id;
     if (data.username) userData.usernameSTR = data.username;
     if (data.email) userData.emailSTR = data.email;
     if (data.image) userData.profImage = data.image;
@@ -204,7 +215,14 @@ const getFollowing = async (token, userId) => {
       return [];
     }
 
-    const data = await response.json();
+    let data = await response.json();
+
+    // Com que aquesta funcio nomes retorna usuaris que estas seguin, els hi podem posar a tots following true
+    data.following = data.following.map(item => ({
+      ...item,
+      following: true
+    }));
+
     return data.following;
   } catch (error) {
     console.error("Error en la solicitud para obtener usuarios seguidos:", error);
@@ -214,6 +232,7 @@ const getFollowing = async (token, userId) => {
 
 // Exportar todas las funciones
 export default {
+  getAllUsers,
   getUserData,
   deleteUser,
   generateRandomString,

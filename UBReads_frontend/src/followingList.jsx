@@ -1,32 +1,101 @@
+import React, { useState, useEffect } from "react";
 import { NavBar } from "./navbar";
 import { Container } from "@mui/system";
-import React, { useState } from "react";
-import UserList from "./components/views/userList";
 import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
-import UserCard from "./components/cards/userCard";
+import UserList from "./components/views/userList";
+import UserCard from "./components/cards/userCard"; // Import UserCard
+import utils from "./utils/getData.js";
 
 export const FollowingList = () => {
-  const getFollowing = () => {
-    return Array.from({ length: 15 }, (_, x) => ({
-      id: x,
-      username: String.fromCharCode(x + 97),
-      email: "email@example.com",
-      following: Math.random() < 0.5,
-    }));
-  };
+  const token = localStorage.getItem("access_token");
 
-  const allFollowing = getFollowing();
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUser, setFilteredUser] = useState(null);
 
+  const fetchFollowingUsers = async () => {
+    try {
+      const userData = await utils.getUserData(token);
+      const users = await utils.getFollowing(token, userData.id);
+      if (Array.isArray(users)) {
+        setFollowingUsers(users);
+      } else {
+        console.warn("El backend no devolvió un arreglo.");
+        setFollowingUsers([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener usuarios seguidos:", error);
+      setFollowingUsers([]);
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    try {
+      const userData = await utils.getUserData(token);
+      const allUsersData = await utils.getAllUsers(token, userData.id);
+      if (Array.isArray(allUsersData)) {
+        setAllUsers(allUsersData);
+      } else {
+        console.warn("El backend no devolvió un arreglo.");
+        setAllUsers([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener todos los usuarios:", error);
+      setAllUsers([]);
+    }
+  };
+
+  const updateAllUsersFollowing = () => {
+    const followingIds = new Set(followingUsers.map((item) => item.id));
+    const updatedArray = allUsers.map((item) => ({
+      ...item,
+      following: followingIds.has(item.id),
+    }));
+    setAllUsers(updatedArray);
+  };
+
+  useEffect(() => {
+    if (followingUsers.length === 0) {
+      fetchFollowingUsers();
+    }
+  }, [followingUsers]);
+
+  useEffect(() => {
+    if (allUsers.length === 0) {
+      fetchAllUsers();
+    }
+  }, [allUsers]);
+
+  useEffect(() => {
+    if (followingUsers.length > 0 && allUsers.length > 0) {
+      updateAllUsersFollowing();
+    }
+  }, [followingUsers, allUsers]);
+
   const handleSearch = (term) => {
     setSearchTerm(term);
-    const user = allFollowing.find((u) =>
+    const user = allUsers.find((u) =>
       u.username.toLowerCase().includes(term.toLowerCase())
     );
-    setFilteredUser(user || null); // Null if no match found
+    setFilteredUser(user || null);
+  };
+
+  const handleFollowChange = async (userId, follow) => {
+    try {
+      const userData = await utils.getUserData(token);
+      if (follow) {
+        await utils.followUserWithId(token, userData.id, userId);
+      } else {
+        await utils.unfollowUser(token, userData.id, userId);
+      }
+      fetchFollowingUsers();
+      fetchAllUsers();
+    } catch (error) {
+      console.error("Error al cambiar el estado de seguimiento:", error);
+    }
   };
 
   return (
@@ -42,7 +111,7 @@ export const FollowingList = () => {
       }}
     >
       <NavBar />
-      {/* Search bar under the navbar, aligned to the top-right corner */}
+
       <Box
         sx={{
           mt: 1,
@@ -54,7 +123,7 @@ export const FollowingList = () => {
       >
         <TextField
           variant="outlined"
-          placeholder="Search users..."
+          placeholder="Search following users..."
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           size="small"
@@ -64,7 +133,6 @@ export const FollowingList = () => {
           }}
         />
 
-        {/* Dropdown with UserCard */}
         {searchTerm && (
           <Box
             sx={{
@@ -78,12 +146,15 @@ export const FollowingList = () => {
               zIndex: 10,
             }}
           >
-            <UserCard user={filteredUser} />
+            <UserCard
+              user={filteredUser}
+              verticalLayout={true}
+              onFollowChange={handleFollowChange}
+            />
           </Box>
         )}
       </Box>
 
-      {/* Title centered */}
       <Box sx={{ mt: 4, flexShrink: 0 }}>
         <Typography
           variant="h4"
@@ -93,11 +164,10 @@ export const FollowingList = () => {
             color: grey[800],
           }}
         >
-          You are currently following:
+          Users You Are Following:
         </Typography>
       </Box>
 
-      {/* Users List */}
       <Box
         sx={{
           flex: 1,
@@ -119,7 +189,7 @@ export const FollowingList = () => {
             gap: 2,
           }}
         >
-          <UserList users={allFollowing} />
+          <UserList users={followingUsers} onFollowChange={handleFollowChange} />
         </Box>
       </Box>
     </Container>
