@@ -3,10 +3,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_HOST: ${{ secrets.AZURE_DB_HOST }}
-      DB_USER: ${{ secrets.AZURE_DB_USER }}
-      DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
-      DB_NAME: ${{ secrets.AZURE_DB_NAME }}
+      DB_HOST: localhost
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_NAME: db
 
     steps:
     - name: Checkout code
