@@ -2,6 +2,7 @@
 export { Login } from './pages/Login';
 export { Signup } from './pages/Signup';
 export { Home } from './pages/Home';
+export { FollowingList } from './views/followingList';
 
 // View components
 export { Book } from './views/Book';

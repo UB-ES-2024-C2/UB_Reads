@@ -22,7 +22,9 @@ import { blue } from "@mui/material/colors";
 
 // Own Components
 import { Navbar } from "..";
-import { Book, Search, Profile, Library } from '..';
+import { Book, Search, Profile, Library } from '../';
+
+import { FollowingList } from "../";
 
 /**
  * @returns Home page with an empty div
@@ -60,6 +62,7 @@ export const Home = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/library" element={<Library />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/following" element={<FollowingList />} />
         </Routes>
       </Box>
     </Container>

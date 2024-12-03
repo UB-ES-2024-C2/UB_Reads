@@ -28,8 +28,6 @@ import Lupa from "../../assets/lupa.png";
 
 import getData from "../../services/getData.js";
 
-import { Library } from "../";
-
 export const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -77,6 +75,10 @@ export const Navbar = ({ onSearch }) => {
   const profilePage = () => {
     navigate("profile");
   };
+
+  const followingList = () => {
+    navigate("/home/following");
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -152,16 +154,19 @@ export const Navbar = ({ onSearch }) => {
             sx={{ mt: "0.5rem", minWidth: "13vw" }}
           >
             <MenuItem onClick={profilePage}>
-              <Typography
-                sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
                 Perfil
               </Typography>
             </MenuItem>
+
+            <MenuItem onClick={followingList}>
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
+                Following
+              </Typography>
+            </MenuItem>
+
             <MenuItem onClick={logOut}>
-              <Typography
-                sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
                 Log Out
               </Typography>
             </MenuItem>
