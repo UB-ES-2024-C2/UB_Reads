@@ -37,3 +37,18 @@ def get_users_by_book(book_id: int, db: Session = Depends(get_db)):
 def remove_book_from_user(user_id: int, book_id: int, db: Session = Depends(get_db)):
     BookUserController.delete_book_user(db=db, user_id=user_id, book_id=book_id)
     return {"detail": "Book removed from user"}
+
+@router.patch("/users/{user_id}/books/{book_id}/read-status")
+def update_book_read_status(
+    user_id: int,
+    book_id: int,
+    status: UserBookUpdate,
+    db: Session = Depends(get_db),
+):
+    try:
+        result = BookUserController.update_read_status(
+            db=db, user_id=user_id, book_id=book_id, is_read=status.is_read
+        )
+        return {"detail": "Read status updated", "data": result}
+    except HTTPException as e:
+        raise e

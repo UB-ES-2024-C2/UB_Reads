@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from .book import Book
+from app.schemas.book import Book
 
 
 class UserBookResponse(BaseModel):

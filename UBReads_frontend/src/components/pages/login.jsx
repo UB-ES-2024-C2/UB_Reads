@@ -1,5 +1,6 @@
 import "./styles/login.css";
-import { get_login } from "./utils/UserServices.js"
+
+import UserService from "../../services/UserService.js"
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 
@@ -12,7 +13,7 @@ export const Login = () => {
     const username = e.target.username.value;
     const password = e.target.password.value;
 
-    const token = await get_login(username, password);
+    const token = await UserService.getLogin(username, password);
     localStorage.setItem("access_token", token);
 
     if (token) {

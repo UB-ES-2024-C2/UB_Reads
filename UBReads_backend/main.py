@@ -7,7 +7,7 @@ from app.routers.book_user_router import router as book_user_router
 
 app = FastAPI()
 
-reset_database()
+#reset_database()
 create_tables()
 
 app.include_router(book_router)
@@ -18,12 +18,16 @@ app.include_router(book_user_router)
 origins = [
     "http://localhost",
     "http://localhost:5173", # Development frontend URL
-    "https://lively-water-0a1c52e03.5.azurestaticapps.net", # Production frontend URL
+    "http://localhost:80", # Development frontend URL
+    "https://ubreads-cjeqabfdg8e3fjgp.spaincentral-01.azurewebsites.net", # Production frontend URL
+    "http://frontend",
+    "http://frontend:5173",
+    "http://frontend:80",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], #origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

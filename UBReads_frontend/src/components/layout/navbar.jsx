@@ -14,37 +14,21 @@ import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
+import { Button } from "@mui/material";
+
 // Colors
 import { pink, blue } from "@mui/material/colors";
 
 // Style imports
 import "./styles/navbar.css";
-import Logo from "./assets/logo.png";
-import Lupa from "./assets/lupa.png";
+import Logo from "../../assets/logo.png";
+import Lupa from "../../assets/lupa.png";
 
 // Javascript calls
-import utils from "./utils/getData.js";
 
-/*const fetchCurrentUser = async () => {
-  try {
-    const response = await fetch("http://localhost:8000/me", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch user");
-    }
-    const user = await response.json();
-    console.log(user);
-  } catch (error) {
-    console.error(error);
-  }
-};*/
+import getData from "../../services/getData.js";
 
-//fetchCurrentUser();
-
-export const NavBar = ({ onSearch }) => {
+export const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userData, setUserData] = useState({
@@ -54,12 +38,17 @@ export const NavBar = ({ onSearch }) => {
   });
   const searchInputRef = useRef();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token");
-      const data = await utils.getUserData(token);
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const data = await getData.getUserData(token);
       setUserData(data);
-    };
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -84,8 +73,12 @@ export const NavBar = ({ onSearch }) => {
   };
 
   const profilePage = () => {
-    navigate("/userProfile");
+    navigate("profile");
   };
+
+  const followingList = () => {
+    navigate("/home/following");
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -106,13 +99,24 @@ export const NavBar = ({ onSearch }) => {
       className="navbar-container"
       sx={{ bgcolor: blue[800] }}
     >
-      <Stack direction="row" className="navbar-stack">
+
+      
+      <Stack direction="row" className="navbar-stack" spacing={30}>
         <Link to="/home">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {/* Logo */}
             <img src={Logo} alt="Logo" className="Logo" />
           </Box>
         </Link>
+
+        {/* Navigation Options */}
+        <Box>
+          <Stack direction="row" spacing={2}>
+            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Home</Button>
+            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Library</Button>
+          </Stack>
+        </Box>
+
         {/* Searchbox */}
         <form className="search-container" onSubmit={handleSearch}>
           <Box className="search-box">
@@ -127,7 +131,7 @@ export const NavBar = ({ onSearch }) => {
         <Box className="navbar-item">
           {/* Avatar */}
           <Tooltip title="User menu">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} disableRipple>
               <Avatar src={userData.profImage} />
               <Box className="user-data">
                 <Typography className="user-text">
@@ -150,16 +154,19 @@ export const NavBar = ({ onSearch }) => {
             sx={{ mt: "0.5rem", minWidth: "13vw" }}
           >
             <MenuItem onClick={profilePage}>
-              <Typography
-                sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
                 Perfil
               </Typography>
             </MenuItem>
+
+            <MenuItem onClick={followingList}>
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
+                Following
+              </Typography>
+            </MenuItem>
+
             <MenuItem onClick={logOut}>
-              <Typography
-                sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
                 Log Out
               </Typography>
             </MenuItem>

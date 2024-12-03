@@ -2,21 +2,22 @@ import React from 'react';
 import { BookCard } from '../cards/BookCard';
 import { ImageList, ImageListItem } from '@mui/material';
 import BookService from '../../services/BookService.js';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export const Search = ({ query, onBookSelect }) => {
+export const Search = ({ onBookSelect }) => {
+    const navigate = useNavigate();
 
+    const { state } = useLocation();
     const [results, setResults] = React.useState([]);
 
     React.useEffect(() => {
-        if (query) {
-            BookService.getGoogleBooksByQuery(query).then((response) => {
-                setResults(response.data.items);
-            });
-        }
-      }, [query]); // Se ejecuta cada vez que query cambia
+        BookService.getGoogleBooksByQuery(state.query).then((response) => {
+            setResults(response.data.items);
+        });
+      }, []);
 
       const handleClick = (book) => {
-        onBookSelect(book);
+        navigate('/home/book', { state: { book: book } });
       };
 
     return (

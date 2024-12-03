@@ -11,10 +11,10 @@ from fastapi.security import (
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
-from typing import Annotated
-from pydantic import ValidationError
-from jwt.exceptions import InvalidTokenError
 from jose import JWTError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -41,6 +41,7 @@ async def get_current_user(
     )
 
     try:
+        print(f"Decoding token with SECRET_KEY: {SECRET_KEY} and ALGORITHM: {ALGORITHM}")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         print(f"Decoded JWT Payload: {payload}")  # Depuración
         username: str = payload.get("sub")
@@ -140,3 +141,59 @@ async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
 
     new_access_token = UserController.create_access_token(data={"sub": username})
     return {"access_token": new_access_token, "token_type": "bearer"}
+
+
+from app.controllers.user_controller import UserController
+
+@router.post("/{user_id}/follow/{to_follow_id}")
+def follow_user_with_id(user_id: int, to_follow_id: int, db: Session = Depends(get_db)):
+    try:
+        UserController.follow_user_with_id(db, user_id, to_follow_id)
+        return {"message": f"User {user_id} is now following {to_follow_id}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/users/{username}/follow/{to_follow_username}")
+def follow_user_with_username(
+    username: str, to_follow_username: str, db: Session = Depends(get_db)
+):
+    try:
+        UserController.follow_user_with_username(db, username, to_follow_username)
+        return {"message": f"{username} is now following {to_follow_username}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/{user_id}/followers")
+def get_followers(user_id: int, db: Session = Depends(get_db)):
+    try:
+        followers = UserController.get_followers(db, user_id)
+        return {
+            "followers": [
+                {"id": follower.id, "username": follower.username, "email": follower.email}
+                for follower in followers
+            ]
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@router.get("/{user_id}/following")
+def get_following(user_id: int, db: Session = Depends(get_db)):
+    try:
+        following = UserController.get_following(db, user_id)
+        return {
+            "following": [
+                {"id": user.id, "username": user.username, "email": user.email}
+                for user in following
+            ]
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@router.delete("/{user_id}/unfollow/{to_unfollow_id}")
+def unfollow_user(user_id: int, to_unfollow_id: int, db: Session = Depends(get_db)):
+    try:
+        UserController.unfollow_user(db, user_id, to_unfollow_id)
+        return {"message": f"User {user_id} has unfollowed {to_unfollow_id}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
