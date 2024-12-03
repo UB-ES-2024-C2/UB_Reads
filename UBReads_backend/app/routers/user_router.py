@@ -11,9 +11,6 @@ from fastapi.security import (
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
-from typing import Annotated
-from pydantic import ValidationError
-from jwt.exceptions import InvalidTokenError
 from jose import JWTError
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
