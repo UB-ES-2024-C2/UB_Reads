@@ -38,3 +38,9 @@ jobs:
         python -m coverage run -m pytest
         python -m coverage report
         python -m coverage xml
+
+    - name: Upload coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage.xml
