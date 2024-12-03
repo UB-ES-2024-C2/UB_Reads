@@ -6,6 +6,7 @@ import { Home } from "./home";
 import { Login } from "./login";
 import { SignupForm } from "./signup";
 import { Profile } from "./userProfile";
+import { FollowingList } from "./followingList";
 
 // BrowserRouter import
 import { Route, Routes } from "react-router-dom";
@@ -33,6 +34,14 @@ const App = () => {
         element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/following"
+        element={
+          <ProtectedRoute>
+            <FollowingList />
           </ProtectedRoute>
         }
       />

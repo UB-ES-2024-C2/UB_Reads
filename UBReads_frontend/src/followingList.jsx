@@ -6,7 +6,7 @@ import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import UserList from "./components/views/userList";
 import UserCard from "./components/cards/userCard"; // Import UserCard
-import utils from "./utils/getData.js";
+import utils from "./services/getData";
 
 export const FollowingList = () => {
   const token = localStorage.getItem("access_token");
