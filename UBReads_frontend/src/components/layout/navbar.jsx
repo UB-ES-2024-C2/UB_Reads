@@ -26,9 +26,7 @@ import Lupa from "../../assets/lupa.png";
 
 // Javascript calls
 
-import utils from "../../services/getData.js";
-
-import { Library } from "../";
+import getData from "../../services/getData.js";
 
 export const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
@@ -40,12 +38,17 @@ export const Navbar = ({ onSearch }) => {
   });
   const searchInputRef = useRef();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token");
-      const data = await utils.getUserData(token);
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const data = await getData.getUserData(token);
       setUserData(data);
-    };
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -72,6 +75,10 @@ export const Navbar = ({ onSearch }) => {
   const profilePage = () => {
     navigate("profile");
   };
+
+  const followingList = () => {
+    navigate("/home/following");
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -147,16 +154,19 @@ export const Navbar = ({ onSearch }) => {
             sx={{ mt: "0.5rem", minWidth: "13vw" }}
           >
             <MenuItem onClick={profilePage}>
-              <Typography
-                sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
                 Perfil
               </Typography>
             </MenuItem>
+
+            <MenuItem onClick={followingList}>
+              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
+                Following
+              </Typography>
+            </MenuItem>
+
             <MenuItem onClick={logOut}>
-              <Typography
-                sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}
-              >
+              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
                 Log Out
               </Typography>
             </MenuItem>
