@@ -15,12 +15,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/upload-artifact@v3
+      uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.12' # Ajusta la versión según tus necesidades
+        python-version: '3.12'
 
     - name: Install dependencies
       run: |
