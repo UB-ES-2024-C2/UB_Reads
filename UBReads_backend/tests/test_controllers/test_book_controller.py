@@ -23,7 +23,7 @@ def book_controller(db_session):
 
 def test_insert_book(book_controller, db_session):
     book_create = BookCreate(
-        #id_book="1",  # Asegúrate de que sea una cadena
+        id_book="1",  # Asegúrate de que sea una cadena
         title="Test Book",
         author="Test Author",
         category="Fiction",
@@ -31,7 +31,7 @@ def test_insert_book(book_controller, db_session):
         cover_url="http://example.com/cover.jpg"
     )
     book = book_controller.insert_book(db_session, book_create)
-    #assert book.id_book == "1"  # Verifica que el id_book sea ahora una cadena
+    assert book.id_book == "1"  # Verifica que el id_book sea ahora una cadena
     assert book.title == "Test Book"
     assert book.author == "Test Author"
     assert book.category == "Fiction"
@@ -41,7 +41,7 @@ def test_insert_book(book_controller, db_session):
 # Prueba de obtener un libro por ID
 def test_get_book(book_controller, db_session):
     book_create = BookCreate(
-        #id_book="1",  # Asegúrate de que sea una cadena
+        id_book="1",  # Asegúrate de que sea una cadena
         title="Test Book",
         author="Test Author",
         category="Fiction",
@@ -50,7 +50,7 @@ def test_get_book(book_controller, db_session):
     )
     book_controller.insert_book(db_session, book_create)
     book = book_controller.get_book(db_session, "1")  # Usa una cadena para el ID
-    #assert book.id_book == "1"
+    assert book.id_book == "1"
     assert book.title == "Test Book"
     assert book.author == "Test Author"
 
