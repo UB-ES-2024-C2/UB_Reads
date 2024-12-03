@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class BookBase(BaseModel):
+    id_book: str
     title: str
     author: str
     category: str

@@ -1,246 +1,200 @@
 import profileImage from "../assets/avatarImg.png";
+import backendAPI from "../backend-api.js";
 
-const getAllUsers = async (token, userId) => {
-  try {
-    const response = await fetch("http://localhost:8000/users", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+class getData {
 
-    if (!response.ok) {
-      console.warn("Error al obtener todos los usuarios.");
+  async getAllUsers(token, userId) {
+    try {
+      const response = await backendAPI.get(`/users`, {
+          headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response !== 200) {
+        console.warn("Error al obtener todos los usuarios.");
+        return [];
+      }
+  
+      const users = await response.data; // Suponiendo que el backend devuelve un array de usuarios
+  
+      // Filtrar para eliminar el usuario con el id correspondiente
+      return users.filter(user => user.id !== userId);
+    } catch (error) {
+      console.error("Error en la solicitud para obtener usuarios:", error);
       return [];
     }
+  };
+  
+  async getUserData(token) {
 
-    const users = await response.json(); // Suponiendo que el backend devuelve un array de usuarios
+    const data = await backendAPI.get(`/me`, {
+      headers: {
+          'Authorization': `Bearer ${token}`,
+      }
+    });
 
-    // Filtrar para eliminar el usuario con el id correspondiente
-    return users.filter(user => user.id !== userId);
-  } catch (error) {
-    console.error("Error en la solicitud para obtener usuarios:", error);
-    return [];
-  }
-};
-
-
-const getUserData = async (token) => {
-  // Objeto por defecto para el usuario
-  const userData = {
-    id: 0,
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: profileImage,
+    if (data.status === 200) {
+      return {
+        id: data.data.id ? data.data.id : null,
+        profImage: data.data.image ? data.data.image : profileImage,
+        usernameSTR: data.data.username ? data.data.username : "Username",
+        emailSTR: data.data.email ? data.data.email : "username@example.com",
+      };
+    }
+    console.warn("Error de credenciales o respuesta no válida.");
   };
 
-  try {
-    // Solicitud al endpoint /me
-    const response = await fetch("http://localhost:8000/me", {
-      method: "GET",
+  async deleteUser(token) {
+    const response = await backendAPI.delete(`/users-delete/`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
-      },
+          'Authorization': `Bearer ${token}`,
+      }
     });
 
-    // Verificar si la respuesta no es exitosa
-    if (!response.ok) {
-      console.warn("Error de credenciales o respuesta no válida.");
-      return userData; // Retornar datos por defecto en caso de error
+    if(response.status === 200) {
+      return true;
     }
 
-    // Parsear la respuesta JSON
-    const data = await response.json();
-
-    // Asignar valores si están presentes en la respuesta
-    if (data.id) userData.id = data.id;
-    if (data.username) userData.usernameSTR = data.username;
-    if (data.email) userData.emailSTR = data.email;
-    if (data.image) userData.profImage = data.image;
-    if (data.id) userData.id = data.id;
-
-    return userData; // Retornar los datos del usuario
-  } catch (error) {
-    // Manejo de errores de red o del servidor
-    console.error("Error en la solicitud:", error);
-    return userData; // Retornar datos por defecto en caso de error
-  }
-};
-
-const deleteUser = async (token) => {
-  try {
-    const response = await fetch("http://localhost:8000/users-delete/", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`, // Se asegura de que el token esté en el formato correcto
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("La solicitud DELETE no fue exitosa.");
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    alert("Caught error from back");
-    console.error("Error en la solicitud:", error);
+    console.warn("La solicitud DELETE no fue exitosa.");
     return false;
-  }
-};
-const generateRandomString = () => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
-  let result = "";
-  const charactersLength = characters.length;
+  };
 
-  for (let i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  return result;
-};
-
-const followUserWithId = async (token, userId, toFollowId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/${userId}/follow/${toFollowId}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("Error al seguir al usuario.");
-      return false;
+  async generateRandomString() {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
+    let result = "";
+    const charactersLength = characters.length;
+  
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
+  
+    return result;
+  };
 
-    const data = await response.json();
-    console.log(data.message);
-    return true;
-  } catch (error) {
-    console.error("Error en la solicitud para seguir a un usuario:", error);
-    return false;
-  }
-};
-
-const followUserWithName = async (token, username, toFollowUsername) => {
-  try {
-    const response = await fetch(
-      `http://localhost:8000/users/${username}/follow/${toFollowUsername}`,
-      {
-        method: "POST",
+  async followUserWithId(token, userId, toFollowId){
+    try {
+      const response = await backendAPI.post(`/${userId}/follow/${toFollowId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+      });
+  
+      if (response !== 200) {
+        console.warn("Error al seguir al usuario.");
+        return false;
       }
-    );
-
-    if (!response.ok) {
-      console.warn("Error al seguir al usuario.");
+  
+      const data = response.data;
+      console.log(data.message);
+      return true;
+    } catch (error) {
+      console.error("Error en la solicitud para seguir a un usuario:", error);
       return false;
     }
-
-    const data = await response.json();
-    console.log(data.message); // Mensaje de éxito
-    return true;
-  } catch (error) {
-    console.error("Error en la solicitud para seguir a un usuario:", error);
-    return false;
-  }
-};
-
-
-const unfollowUser = async (token, userId, toUnfollowId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/${userId}/unfollow/${toUnfollowId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("Error al dejar de seguir al usuario.");
+  };
+  
+  async followUserWithName(token, username, toFollowUsername){
+    try {
+      const response = await backendAPI.post(`/users/${username}/follow/${toFollowUsername}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response !== 200) {
+        console.warn("Error al seguir al usuario.");
+        return false;
+      }
+  
+      const data = response.data;
+      console.log(data.message); // Mensaje de éxito
+      return true;
+    } catch (error) {
+      console.error("Error en la solicitud para seguir a un usuario:", error);
       return false;
     }
-
-    const data = await response.json();
-    console.log(data.message);
-    return true;
-  } catch (error) {
-    console.error("Error en la solicitud para dejar de seguir a un usuario:", error);
-    return false;
-  }
-};
-
-const getFollowers = async (token, userId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/${userId}/followers`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("Error al obtener la lista de seguidores.");
+  };
+  
+  
+  async unfollowUser(token, userId, toUnfollowId){
+    try {
+      const response = await backendAPI.delete(`/${userId}/unfollow/${toUnfollowId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response !== 200) {
+        console.warn("Error al dejar de seguir al usuario.");
+        return false;
+      }
+  
+      const data = response.data;
+      console.log(data.message);
+      return true;
+    } catch (error) {
+      console.error("Error en la solicitud para dejar de seguir a un usuario:", error);
+      return false;
+    }
+  };
+  
+  async getFollowers(token, userId){
+    try {
+      const response = await backendAPI.get(`/${userId}/followers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response !== 200) {
+        console.warn("Error al obtener la lista de seguidores.");
+        return [];
+      }
+  
+      const data = response.data;
+      return data.followers;
+    } catch (error) {
+      console.error("Error en la solicitud para obtener seguidores:", error);
       return [];
     }
+  };
 
-    const data = await response.json();
-    return data.followers;
-  } catch (error) {
-    console.error("Error en la solicitud para obtener seguidores:", error);
-    return [];
-  }
-};
-
-const getFollowing = async (token, userId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/${userId}/following`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("Error al obtener la lista de usuarios seguidos.");
+  async getFollowing(token, userId) {
+    try {
+      const response = await backendAPI.get(`/${userId}/following`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+  
+      if (response !== 200) {
+        console.warn("Error al obtener la lista de usuarios seguidos.");
+        return [];
+      }
+  
+      const data = response.data;
+  
+      // Com que aquesta funcio nomes retorna usuaris que estas seguin, els hi podem posar a tots following true
+      data.following = data.following.map(item => ({
+        ...item,
+        following: true
+      }));
+  
+      return data.following;
+    } catch (error) {
+      console.error("Error en la solicitud para obtener usuarios seguidos:", error);
       return [];
     }
+  };
 
-    let data = await response.json();
+}
 
-    // Com que aquesta funcio nomes retorna usuaris que estas seguin, els hi podem posar a tots following true
-    data.following = data.following.map(item => ({
-      ...item,
-      following: true
-    }));
-
-    return data.following;
-  } catch (error) {
-    console.error("Error en la solicitud para obtener usuarios seguidos:", error);
-    return [];
-  }
-};
-
-// Exportar todas las funciones
-export default {
-  getAllUsers,
-  getUserData,
-  deleteUser,
-  generateRandomString,
-  followUserWithId,
-  followUserWithName,
-  unfollowUser,
-  getFollowers,
-  getFollowing,
-};
-
+export default new getData();

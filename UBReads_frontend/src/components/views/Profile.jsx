@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react';
-import { NavBar } from "./navbar";  // Component
+import { Navbar } from "../";  // Component
 
 import { Container } from "@mui/system";
 
@@ -12,7 +12,8 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
-import utils from "./services/getData.js";
+
+import getData from "../../services/getData.js";
 import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
@@ -29,25 +30,32 @@ export const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("access_token");
-      const data = await utils.getUserData(token);
-      setUserData(data);
+      try {
+        const data = await getData.getUserData(token);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
     fetchUserData();
   }, []);
 
   const deleteAccount = async () => {
     const token = localStorage.getItem("access_token");
-    const randomSTR = utils.generateRandomString(); // Generate a random string
+    const randomSTR = getData.generateRandomString(); // Generate a random string
     const answer = prompt("Per confirmar que vols eliminar el compte, introdueix el text al requadre:\n\n" + randomSTR);
 
     if (answer === randomSTR) {
-      const result = await utils.deleteUser(token);
-
-      if(result) {
-        alert('L\'usuari s\'ha eliminat correctament de la base de dades.\n' +
-          'Seguidament seras redirigit a la pàgina de login.')
-        localStorage.removeItem('access_token');
-        navigate("/");
+      try {
+        const result = await getData.deleteUser(token);
+        if(result) {
+          alert('L\'usuari s\'ha eliminat correctament de la base de dades.\n' +
+            'Seguidament seras redirigit a la pàgina de login.')
+          localStorage.removeItem('access_token');
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
       }
 
     } else {
@@ -63,7 +71,6 @@ export const Profile = () => {
       alignItems: 'center',
       minHeight: '100vh'
     }}>
-      <NavBar/>
       <Container className="content-container" maxWidth="false" sx={{
         display: 'flex',
         flexDirection: 'column',

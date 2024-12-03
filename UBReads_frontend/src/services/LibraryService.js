@@ -21,12 +21,13 @@ class LibraryService {
     }
 
     /**
-     * Gets a specific book from a user.
+     * Deletes a book from a user library given the user and book ids
      * @param {number} userId 
      * @param {number} bookId 
      */
-    getBookByUser(userId, bookId) {
-        return backendAPI.get(`/users/${userId}/books/${bookId}`).then((response) => response);
+    deleteBookFromUser(userId, bookId) {
+        return backendAPI.delete(`/users/${userId}/books/${bookId}`)
+            .then((response) => response);
     }
 }
 

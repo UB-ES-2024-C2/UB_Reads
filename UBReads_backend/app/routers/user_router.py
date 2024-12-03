@@ -12,6 +12,9 @@ from fastapi.security import (
     SecurityScopes,
 )
 from jose import JWTError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -38,6 +41,7 @@ async def get_current_user(
     )
 
     try:
+        print(f"Decoding token with SECRET_KEY: {SECRET_KEY} and ALGORITHM: {ALGORITHM}")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         print(f"Decoded JWT Payload: {payload}")  # Depuración
         username: str = payload.get("sub")

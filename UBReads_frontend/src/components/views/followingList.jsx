@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { NavBar } from "./navbar";
+import { Navbar } from "..";
 import { Container } from "@mui/system";
 import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
-import UserList from "./components/views/userList";
-import UserCard from "./components/cards/userCard"; // Import UserCard
-import utils from "./services/getData";
+import UserList from "./userList";
+import UserCard from "../cards/userCard"; // Import UserCard
+import getData from "../../services/getData.js";
 
 export const FollowingList = () => {
   const token = localStorage.getItem("access_token");
@@ -18,8 +18,8 @@ export const FollowingList = () => {
 
   const fetchFollowingUsers = async () => {
     try {
-      const userData = await utils.getUserData(token);
-      const users = await utils.getFollowing(token, userData.id);
+      const userData = await getData.getUserData(token);
+      const users = await getData.getFollowing(token, userData.id);
       if (Array.isArray(users)) {
         setFollowingUsers(users);
       } else {
@@ -34,8 +34,8 @@ export const FollowingList = () => {
 
   const fetchAllUsers = async () => {
     try {
-      const userData = await utils.getUserData(token);
-      const allUsersData = await utils.getAllUsers(token, userData.id);
+      const userData = await getData.getUserData(token);
+      const allUsersData = await getData.getAllUsers(token, userData.id);
       if (Array.isArray(allUsersData)) {
         setAllUsers(allUsersData);
       } else {
@@ -85,11 +85,11 @@ export const FollowingList = () => {
 
   const handleFollowChange = async (userId, follow) => {
     try {
-      const userData = await utils.getUserData(token);
+      const userData = await getData.getUserData(token);
       if (follow) {
-        await utils.followUserWithId(token, userData.id, userId);
+        await getData.followUserWithId(token, userData.id, userId);
       } else {
-        await utils.unfollowUser(token, userData.id, userId);
+        await getData.unfollowUser(token, userData.id, userId);
       }
       fetchFollowingUsers();
       fetchAllUsers();
@@ -110,8 +110,6 @@ export const FollowingList = () => {
         overflow: "hidden",
       }}
     >
-      <NavBar />
-
       <Box
         sx={{
           mt: 1,

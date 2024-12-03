@@ -8,6 +8,6 @@ const backendAPI = axios.create({
     'Access-Control-Allow-Origin': 'http://localhost:5173',
     'Content-Type': 'application/json',
   }
-})
+});
 
 export default backendAPI;
