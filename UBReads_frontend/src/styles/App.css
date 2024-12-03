@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #242424;
-  background-color: #efe5d6;
+  color: white;
+  background-color: white;
 }
 
 /* Selection tool style */
@@ -30,7 +30,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #efe5d6;
+  background-color: white;
+}
+
+html {
+  background-color: white !important;
 }
 
 a {
