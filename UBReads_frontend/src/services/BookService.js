@@ -1,5 +1,5 @@
-import googleAPI from '../google-api';
-import backendAPI from '../backend-api';
+import googleAPI from '../api/google-api';
+import backendAPI from '../api/backend-api';
 
 
 class BookService {

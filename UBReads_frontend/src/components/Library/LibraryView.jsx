@@ -20,7 +20,7 @@ import { pink, blue } from '@mui/material/colors';
 import { Grid2, Container, Box } from '@mui/material';
 
 // Components
-import { BookRating } from "../";
+import { BookRating } from "../index.js";
 
 // Services
 import getUserData from '../../services/getData.js';

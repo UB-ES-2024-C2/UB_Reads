@@ -24,7 +24,7 @@ import { green, blue, pink } from '@mui/material/colors';
 import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../';
+import { BookRating } from '../index.js';
 
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';

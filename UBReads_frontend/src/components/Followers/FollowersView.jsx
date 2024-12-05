@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Navbar } from "..";
+import { Navbar } from "../index.js";
 import { Container } from "@mui/system";
 import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import UserList from "./userList";
-import UserCard from "../cards/userCard"; // Import UserCard
+import UserCard from "./userCard.jsx"; // Import UserCard
 import getData from "../../services/getData.js";
 
 export const FollowingList = () => {

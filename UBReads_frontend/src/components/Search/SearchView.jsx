@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookCard } from '../cards/BookCard';
+import { BookCard } from './SearchBookCard.jsx';
 import { ImageList, ImageListItem } from '@mui/material';
 import BookService from '../../services/BookService.js';
 import { useLocation, useNavigate } from 'react-router-dom';

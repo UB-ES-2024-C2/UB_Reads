@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react';
-import { Navbar } from "../";  // Component
+import { Navbar } from "../index.js";  // Component
 
 import { Container } from "@mui/system";
 
