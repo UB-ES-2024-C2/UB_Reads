@@ -37,7 +37,7 @@ export const HomePage = () => {
   /**
    * Handles the query from the SearchView bar
    * navigating to the SearchView page if the query is not empty
-   * @param {string} query 
+   * @param {string} query
    */
   const handleQuery = (query) => {
     if (query !== '') {
@@ -47,14 +47,14 @@ export const HomePage = () => {
 
   return (
     // Main container
-    <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100vh', overflow: 'hidden' }}>
+    <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100dvh', overflow: 'hidden' }}>
       {/* Navigation bar */}
-      <Nav onSearch={ handleQuery }></Nav>
+      <Nav onSearch={ handleQuery } />
       {/* Variable Content */}
-      <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box sx={{ height: '100%', overflow: 'hidden' }}>
         <Routes>
           <Route path="/" element={
-            <Typography variant="h2" align="center" sx={{ fontWeight: 'bold', color: blue[800], height: '100%', width: '100%' }}>
+            <Typography variant="h2" sx={{ fontWeight: 'bold', color: blue[800], height: '100%', width: '100%', alignContent: 'center' }}>
               Benvingut a UBReads!
             </Typography>
           } />
