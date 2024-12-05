@@ -25,6 +25,19 @@ export const Profile = () => {
     profImage: "",
   });
 
+  function generateRandomString() {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+/?,<>.:;{}[]()-*&^%$#@!~";
+    let result = "";
+    const charactersLength = characters.length;
+  
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  
+    return result;
+  };
+
   const buttonStyle = { background: hover ? pink[500] : pink[400] };
 
   useEffect(() => {
