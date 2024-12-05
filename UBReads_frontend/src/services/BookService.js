@@ -1,4 +1,4 @@
-import booksAPI from '../books-api';
+import googleAPI from '../google-api';
 import backendAPI from '../backend-api';
 
 
