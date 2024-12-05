@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react';
-import { Navbar } from "../index.js";  // Component
 
 import { Container } from "@mui/system";
 
@@ -13,10 +12,10 @@ import Typography from '@mui/joy/Typography';
 import { pink, blue } from "@mui/material/colors";
 
 
-import getData from "../../services/getData.js";
+import UserService from "../../services/UserService.js";
 import {useNavigate} from "react-router-dom";
 
-export const Profile = () => {
+export const ProfileView = () => {
   const navigate = useNavigate();
   const [hover, setHover] = useState(false);
   const [userData, setUserData] = useState({
@@ -44,7 +43,7 @@ export const Profile = () => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const data = await getData.getUserData(token);
+        const data = await UserService.getUserData(token);
         setUserData(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -55,12 +54,12 @@ export const Profile = () => {
 
   const deleteAccount = async () => {
     const token = localStorage.getItem("access_token");
-    const randomSTR = getData.generateRandomString(); // Generate a random string
+    const randomSTR = generateRandomString(); // Generate a random string
     const answer = prompt("Per confirmar que vols eliminar el compte, introdueix el text al requadre:\n\n" + randomSTR);
 
     if (answer === randomSTR) {
       try {
-        const result = await getData.deleteUser(token);
+        const result = await UserService.deleteUser(token);
         if(result) {
           alert('L\'usuari s\'ha eliminat correctament de la base de dades.\n' +
             'Seguidament seras redirigit a la pàgina de login.')

@@ -37,7 +37,7 @@ class UserService {
         if (data.status === 200) {
           return {
             id: data.data.id ? data.data.id : null,
-            profImage: data.data.image ? data.data.image : profileImage,
+            profImage: data.data.image,
             usernameSTR: data.data.username ? data.data.username : "Username",
             emailSTR: data.data.email ? data.data.email : "username@example.com",
           };

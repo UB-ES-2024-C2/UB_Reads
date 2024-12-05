@@ -1,21 +1,20 @@
-import './bookcard.css';
 import React, { useState, useEffect } from 'react';
 
 // Material UI components
-import { Rating } from '@mui/material';
+import { BookRating } from '../Common/BookRating';
 import { Typography } from '@mui/material';
 import { Card, CardMedia, CardContent, Box, Button } from '@mui/material';
 
 import BookService from '../../services/BookService.js';
 import LibraryService from '../../services/LibraryService.js';
-import getData from '../../services/getData.js';
+import UserService from '../../services/UserService.js';
 
 // Material UI icons
 import StarIcon from '@mui/icons-material/Star'; // Icons
 
 import { blue, pink, green } from '@mui/material/colors';
 
-export const BookCard = ({ bookData, onClick }) => {
+export const SearchBookCard = ({ bookData, onClick }) => {
 
     const [bookAdded, setBookAdded] = useState(false);
 
@@ -53,7 +52,7 @@ export const BookCard = ({ bookData, onClick }) => {
         });
 
         if (bookId !== null) {
-            const user = await getData.getUserData(token);
+            const user = await UserService.getUserData(token);
             const response = await LibraryService.addBookToUser(user.id, bookId);
             if (response.status === 200) {
                 setBookAdded(true);
@@ -67,7 +66,7 @@ export const BookCard = ({ bookData, onClick }) => {
                 }
             });
 
-            const user = await getData.getUserData(token);
+            const user = await UserService.getUserData(token);
             const response = await LibraryService.addBookToUser(user.id, bookId);
             if (response.status === 200) {
                 setBookAdded(true);
@@ -84,7 +83,7 @@ export const BookCard = ({ bookData, onClick }) => {
                 bookId = backendBook.id;
             }
         });
-        const user = await getData.getUserData(token);
+        const user = await UserService.getUserData(token);
         const response = await LibraryService.deleteBookFromUser(user.id, bookId);
         if (response.status === 200) {
             setBookAdded(false);
@@ -93,7 +92,7 @@ export const BookCard = ({ bookData, onClick }) => {
 
     const checkBookAdded = async () => {
         const token = localStorage.getItem('access_token');
-        const user = await getData.getUserData(token);
+        const user = await UserService.getUserData(token);
         const response = await LibraryService.getBooksByUser(user.id);
         response.data.forEach(_book => {
             if (_book.book.id_book === book.id) {
@@ -127,16 +126,7 @@ export const BookCard = ({ bookData, onClick }) => {
                 <Typography variant="h5" component="p" sx={{ color: blue[800] }}>
                     {book.author}
                 </Typography>
-                <div id="rating-container">
-                    <Rating readOnly
-                        name="hover-feedback"
-                        size="large"
-                        value={book.averageRating}
-                        precision={0.5}
-                        sx={{ display: 'flex', alignContent: 'center' }}
-                        emptyIcon={<StarIcon  fontSize='inherit'/>}
-                    />
-                </div>
+                <BookRating rating={book.averageRating} />
                 <Button variant="contained" sx={{ mt: 2, bgcolor: bookAdded ? pink[700] : green['A700'], }} size="large" onClick={
                     (e) =>{
                         e.stopPropagation();

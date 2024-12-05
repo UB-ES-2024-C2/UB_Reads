@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Navbar } from "../index.js";
 import { Container } from "@mui/system";
 import { grey } from "@mui/material/colors";
 import { Typography, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
-import UserList from "./userList";
-import UserCard from "./userCard.jsx"; // Import UserCard
-import getData from "../../services/getData.js";
+import { UserList } from "./userList";
+import { UserCard } from "./userCard"; // Import UserCard
+import UserService from "../../services/UserService.js";
 
-export const FollowingList = () => {
+export const FollowersView = () => {
   const token = localStorage.getItem("access_token");
 
   const [followingUsers, setFollowingUsers] = useState([]);
@@ -18,8 +17,8 @@ export const FollowingList = () => {
 
   const fetchFollowingUsers = async () => {
     try {
-      const userData = await getData.getUserData(token);
-      const users = await getData.getFollowing(token, userData.id);
+      const userData = await UserService.getUserData(token);
+      const users = await UserService.getFollowing(token, userData.id);
       if (Array.isArray(users)) {
         setFollowingUsers(users);
       } else {
@@ -34,8 +33,8 @@ export const FollowingList = () => {
 
   const fetchAllUsers = async () => {
     try {
-      const userData = await getData.getUserData(token);
-      const allUsersData = await getData.getAllUsers(token, userData.id);
+      const userData = await UserService.getUserData(token);
+      const allUsersData = await UserService.getAllUsers(token, userData.id);
       if (Array.isArray(allUsersData)) {
         setAllUsers(allUsersData);
       } else {
@@ -85,11 +84,11 @@ export const FollowingList = () => {
 
   const handleFollowChange = async (userId, follow) => {
     try {
-      const userData = await getData.getUserData(token);
+      const userData = await UserService.getUserData(token);
       if (follow) {
-        await getData.followUserWithId(token, userData.id, userId);
+        await UserService.followUserWithId(token, userData.id, userId);
       } else {
-        await getData.unfollowUser(token, userData.id, userId);
+        await UserService.unfollowUser(token, userData.id, userId);
       }
       fetchFollowingUsers();
       fetchAllUsers();

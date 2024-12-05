@@ -2,30 +2,30 @@
 import "./styles/App.css";
 
 // Components import
-import { Login, Signup, Home } from "./components";
+import { LoginPage, SignupPage, HomePage } from "./components";
 
 // BrowserRouter import
-import { Route, Routes } from "react-router-dom";
-import ProtectedRoute from './components/ProtectedRoute'
+import { Route, Routes, Navigate } from "react-router-dom";
 
 /**
  * Main App component
  * @returns 
  */
-const App = () => {
+export const App = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-
-      {/* Protected Routes */}
-      <Route path="/home/*" element={
-          <ProtectedRoute><Home /></ProtectedRoute>
-        }
+      <Route
+        path="/"
+        element={<LoginPage />}
+      />
+      <Route
+        path="/signup"
+        element={<SignupPage />}
+      />
+      <Route
+        path="/home/*"
+        element={(localStorage.getItem('access_token') ? <HomePage /> : <Navigate to="/" replace />)}
       />
     </Routes>
   );
 }
-
-export default App;

@@ -4,12 +4,12 @@ import backendAPI from '../api/backend-api';
 
 class BookService {
     getGoogleBookById(id) {
-        return booksAPI.get(`/volumes/${id}`)
+        return googleAPI.get(`/volumes/${id}`)
             .then((response) => response);
     }
       
     getGoogleBooksByQuery(query) {
-        return booksAPI.get(`/volumes?q=${query}`)
+        return googleAPI.get(`/volumes?q=${query}`)
             .then((response) => response)
             .catch((error) => {console.error('GET error:', error)});
     }

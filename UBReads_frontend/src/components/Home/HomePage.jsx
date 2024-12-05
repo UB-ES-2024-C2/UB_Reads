@@ -9,7 +9,7 @@ import React from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 // Style import
-import './styles/home.css';
+import './home.css';
 
 // MUI Layout
 import { Container } from "@mui/system";
@@ -21,22 +21,22 @@ import { Typography, Box } from "@mui/material";
 import { blue } from "@mui/material/colors";
 
 // Own Components
-import { Navbar } from "..";
-import { Book, Search, Profile, Library } from '../';
+import { Nav } from "..";
+import { BookView, SearchView, ProfileView, LibraryView } from '..';
 
-import { FollowingList } from "../";
+import { FollowersView } from "..";
 
 /**
  * @returns Home page with an empty div
  */
-export const Home = () => {
+export const HomePage = () => {
 
   // React Hook used to navigate through pages
   const navigate = useNavigate();
 
   /**
-   * Handles the query from the search bar
-   * navigating to the search page if the query is not empty
+   * Handles the query from the SearchView bar
+   * navigating to the SearchView page if the query is not empty
    * @param {string} query 
    */
   const handleQuery = (query) => {
@@ -49,7 +49,7 @@ export const Home = () => {
     // Main container
     <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100vh', overflow: 'hidden' }}>
       {/* Navigation bar */}
-      <Navbar onSearch={ handleQuery }></Navbar>
+      <Nav onSearch={ handleQuery }></Nav>
       {/* Variable Content */}
       <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Routes>
@@ -58,11 +58,11 @@ export const Home = () => {
               Benvingut a UBReads!
             </Typography>
           } />
-          <Route path="/book" element={<Book />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/following" element={<FollowingList />} />
+          <Route path="book" element={<BookView />} />
+          <Route path="search" element={<SearchView />} />
+          <Route path="library" element={<LibraryView />} />
+          <Route path="profile" element={<ProfileView />} />
+          <Route path="following" element={<FollowersView />} />
         </Routes>
       </Box>
     </Container>

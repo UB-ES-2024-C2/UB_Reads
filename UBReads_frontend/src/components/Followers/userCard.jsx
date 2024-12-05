@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { grey, red, green } from "@mui/material/colors";
 import { Avatar, Button, ListItem, ListItemAvatar, Typography, Box } from "@mui/material";
 
-const UserCard = ({ user, verticalLayout = false, onFollowChange }) => {
+export const UserCard = ({ user, verticalLayout = false, onFollowChange }) => {
   const [isFollowing, setIsFollowing] = useState(user?.following || false);
 
   const handleFollowChange = () => {
@@ -124,5 +124,3 @@ const UserCard = ({ user, verticalLayout = false, onFollowChange }) => {
     </ListItem>
   );
 };
-
-export default UserCard;

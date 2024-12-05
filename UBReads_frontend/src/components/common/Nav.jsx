@@ -20,15 +20,15 @@ import { Button } from "@mui/material";
 import { pink, blue } from "@mui/material/colors";
 
 // Style imports
-import "./styles/navbar.css";
+import "./nav.css";
 import Logo from "../../assets/logo.png";
 import Lupa from "../../assets/lupa.png";
 
 // Javascript calls
 
-import getData from "../../services/getData.js";
+import UserService from "../../services/UserService.js";
 
-export const Navbar = ({ onSearch }) => {
+export const Nav = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userData, setUserData] = useState({
@@ -41,7 +41,7 @@ export const Navbar = ({ onSearch }) => {
   const fetchUserData = async () => {
     const token = localStorage.getItem("access_token");
     try {
-      const data = await getData.getUserData(token);
+      const data = await UserService.getUserData(token);
       setUserData(data);
     } catch (error) {
       console.error("Error fetching user data:", error);
