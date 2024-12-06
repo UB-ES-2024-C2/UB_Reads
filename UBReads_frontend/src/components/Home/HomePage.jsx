@@ -8,9 +8,6 @@
 import React from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
-// Style import
-import './home.css';
-
 // MUI Layout
 import { Container } from "@mui/system";
 
@@ -54,7 +51,7 @@ export const HomePage = () => {
       <Box sx={{ height: '100%', overflow: 'hidden' }}>
         <Routes>
           <Route path="/" element={
-            <Typography variant="h2" sx={{ fontWeight: 'bold', color: blue[800], height: '100%', width: '100%', alignContent: 'center' }}>
+            <Typography variant="h2" sx={{ fontWeight: 'bold', color: blue[800], height: '100%', width: '100%', alignContent: 'center', textAlign: 'center' }}>
               Benvingut a UBReads!
             </Typography>
           } />

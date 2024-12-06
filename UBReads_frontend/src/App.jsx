@@ -7,6 +7,11 @@ import { LoginPage, SignupPage, HomePage } from "./components";
 // BrowserRouter import
 import { Route, Routes, Navigate } from "react-router-dom";
 
+const ProtectedRoute = ({ children }) => {
+  const hasToken = localStorage.getItem('access_token'); // Check for access token
+  return hasToken ? children : <Navigate to="/" />;
+};
+
 /**
  * Main App component
  * @returns 
@@ -24,7 +29,11 @@ export const App = () => {
       />
       <Route
         path="/home/*"
-        element={(localStorage.getItem('access_token') ? <HomePage /> : <Navigate to="/" replace />)}
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
       />
     </Routes>
   );
