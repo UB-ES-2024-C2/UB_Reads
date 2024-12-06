@@ -15,6 +15,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
 import { Button } from "@mui/material";
+import TextField from '@mui/material/TextField';
+
 
 // Colors
 import { pink, blue } from "@mui/material/colors";
@@ -22,7 +24,7 @@ import { pink, blue } from "@mui/material/colors";
 // Style imports
 import "./nav.css";
 import Logo from "../../assets/logo.png";
-import Lupa from "../../assets/lupa.png";
+import SearchIcon from '@mui/icons-material/Search';
 
 // Javascript calls
 
@@ -36,7 +38,8 @@ export const Nav = ({ onSearch }) => {
     emailSTR: "username@example.com",
     profImage: "",
   });
-  const searchInputRef = useRef();
+
+  const [input, setInput] = useState("");
 
   const fetchUserData = async () => {
     const token = localStorage.getItem("access_token");
@@ -54,7 +57,7 @@ export const Nav = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(searchInputRef.current.value.trim());
+    onSearch(input.trim());
   };
 
   const handleOpenUserMenu = (event) => {
@@ -80,6 +83,12 @@ export const Nav = ({ onSearch }) => {
     navigate("/home/following");
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (anchorElUser && !anchorElUser.contains(event.target)) {
@@ -97,15 +106,15 @@ export const Nav = ({ onSearch }) => {
       disableGutters
       maxWidth="false"
       className="navbar-container"
-      sx={{ bgcolor: blue[800] }}
+      sx={{ bgcolor: blue[800], width: '100%', height: '5rem', position: 'sticky', top: 0 }}
     >
 
       
-      <Stack direction="row" className="navbar-stack" spacing={30}>
+      <Stack direction="row" spacing={30} sx={{ height: '100%', marginInline: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
         <Link to="/home">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {/* Logo */}
-            <img src={Logo} alt="Logo" className="Logo" />
+            <Avatar sx={{ height: 'auto' }} variant="square" src={Logo} alt="Logo" />
           </Box>
         </Link>
 
@@ -118,26 +127,46 @@ export const Nav = ({ onSearch }) => {
         </Box>
 
         {/* Searchbox */}
-        <form className="search-container" onSubmit={handleSearch}>
-          <Box className="search-box">
-            <img src={Lupa} alt="Lupa" className="search-icon" />
-            <input type="text" className="search-bar" ref={searchInputRef} />
-          </Box>
-          <button type="submit" className="submit-btn" onClick={handleSearch}>
-            Cerca
-          </button>
-        </form>
+        <Box sx={{ minHeight: '4.5dvh', minWidth: '30vw' }} onKeyDown={handleKeyDown}>
+          <Stack direction="row" spacing={2}>
+            <Box sx={{ display: 'flex', padding: 0, borderRadius: '5px', minWidth: '25vw', alignItems: 'center' }}>
+                <SearchIcon sx={{ 
+                  color: 'white',
+                  marginLeft: '0.5dvw',
+                  fontSize: '3rem',
+                }}/>
+                <TextField fullWidth 
+                  onChange={(event) => {
+                    setInput(event.target.value);
+                  }}
+                sx={{ marginLeft: '0.5dvw',
+                color: 'white',
+                height: '100%',
+                width: '100%',
+                justifyContent:'center',
+                alignContent: 'center',
+                '& .MuiInputBase-input': {
+                    backgroundColor: 'white',
+                    height: '3.5rem',
+                  }
+                }} />
+            </Box>
+            <Button variant="outlined" sx={{ color: '#ffffff', borderColor: '#ffffff', backgroundColor: blue[800], marginLeft: '0.5dvw' }} onClick={handleSearch}>
+              Cerca
+            </Button>
+          </Stack>
+        </Box>
 
-        <Box className="navbar-item">
+        <Box sx={{ minWidth: '5dvw'}}>
           {/* Avatar */}
           <Tooltip title="User menu">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} disableRipple>
               <Avatar src={userData.profImage} />
-              <Box className="user-data">
-                <Typography className="user-text">
+              <Box sx={{ paddingInline: '1dvw'}}>
+                <Typography sx={{ textAlign: 'left', color: 'white'}}>
                   {userData.usernameSTR}
                 </Typography>
-                <Typography className="user-text">
+                <Typography sx={{ textAlign: 'left', color: 'white'}}>
                   {userData.emailSTR}
                 </Typography>
               </Box>
