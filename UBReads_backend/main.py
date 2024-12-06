@@ -9,7 +9,7 @@ app = FastAPI()
 
 #reset_database()
 create_tables()
-
+print("I WAS IN THE SERVER")
 app.include_router(book_router)
 app.include_router(user_router)
 app.include_router(book_user_router)

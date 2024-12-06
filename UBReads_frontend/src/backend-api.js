@@ -5,7 +5,7 @@ const apiURL = import.meta.env.VITE_BACKEND_API_URL;
 const backendAPI = axios.create({
   baseURL: apiURL,
   headers: {
-    'Access-Control-Allow-Origin': 'http://localhost:5173',
+    'Access-Control-Allow-Origin': 'http://ubreads-dev-public-bucket.s3-website-eu-west-1.amazonaws.com',
     'Content-Type': 'application/json',
   }
 });
