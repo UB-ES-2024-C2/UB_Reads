@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Services
-import getUserData from '../../services/getData.js';
+import getUserData from '../../services/UserService.js';
 
 // MUI Layouts
 import { Container, Box } from '@mui/material';
@@ -24,7 +24,7 @@ import { green, blue, pink } from '@mui/material/colors';
 import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../';
+import { BookRating } from '../index.js';
 
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
@@ -32,7 +32,7 @@ import BookService from '../../services/BookService.js';
 /**
  * @returns Book view
  */
-export const Book = () => {
+export const BookView = () => {
 
     // React Hook used to navigate through pages
     const navigate = useNavigate();

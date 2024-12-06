@@ -1,10 +1,10 @@
-import "./styles/login.css";
+import "./login.css";
 
 import UserService from "../../services/UserService.js"
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 
-export const Login = () => {
+export const LoginPage = () => {
   const navigate = useNavigate(); // Hook para redirigir
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario

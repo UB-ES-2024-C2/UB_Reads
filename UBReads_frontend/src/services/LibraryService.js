@@ -1,4 +1,4 @@
-import backendAPI from '../backend-api';
+import backendAPI from '../api/backend-api';
 
 class LibraryService {
     /**

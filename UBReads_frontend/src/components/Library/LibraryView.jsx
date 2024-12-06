@@ -20,14 +20,14 @@ import { pink, blue } from '@mui/material/colors';
 import { Grid2, Container, Box } from '@mui/material';
 
 // Components
-import { BookRating } from "../";
+import { BookRating } from "../index.js";
 
 // Services
-import getUserData from '../../services/getData.js';
+import getUserData from '../../services/UserService.js';
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
 
-export const Library = () => {
+export const LibraryView = () => {
 
     const [books, setBooks] = useState([]);
 

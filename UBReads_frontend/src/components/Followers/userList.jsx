@@ -1,8 +1,8 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import UserCard from "../cards/userCard";
+import { UserCard } from "./userCard";
 
-const UserList = ({ users, onFollowChange }) => {
+export const UserList = ({ users, onFollowChange }) => {
   return (
     <Box
       sx={{
@@ -17,5 +17,3 @@ const UserList = ({ users, onFollowChange }) => {
     </Box>
   );
 };
-
-export default UserList;
