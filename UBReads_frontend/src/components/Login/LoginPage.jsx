@@ -13,12 +13,17 @@ export const LoginPage = () => {
     const username = e.target.username.value;
     const password = e.target.password.value;
 
-    const token = await UserService.getLogin(username, password);
-    localStorage.setItem("access_token", token);
+    try {
+      const token = await UserService.getLogin(username, password);
+      localStorage.setItem("access_token", token);
 
-    if (token) {
-      localStorage.setItem("access_token", token); // Store the token
-      navigate("/home"); // Redirect to home if token exists
+      if (token) {
+        localStorage.setItem("access_token", token); // Store the token
+        navigate("/home"); // Redirect to home if token exists
+      }
+    }
+    catch (error) {
+      console.error("Error al iniciar sessió:", error);
     }
   }
   return (

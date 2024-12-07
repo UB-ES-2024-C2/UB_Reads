@@ -20,14 +20,19 @@ class BookService {
             author: volumeInfo.authors ? volumeInfo.authors[0] : 'Autor Desconegut',
             description: volumeInfo.description ? volumeInfo.description : 'Sense descripció',
             category: volumeInfo.categories ? volumeInfo.categories[0] : 'Categoria Desconeguda',
-            year: volumeInfo.publishedDate ? volumeInfo.publishedDate.split('-')[0] : 'Data de publicació desconeguda',
-            cover_uri: volumeInfo.imageLinks.thumbnail ? volumeInfo.imageLinks.thumbnail : '../assets/placeholder.jpg'
+            year: volumeInfo.publishedDate ? volumeInfo.publishedDate.split('-')[0] : 0,
+            cover_url: volumeInfo.imageLinks && volumeInfo.imageLinks.thumbnail ? volumeInfo.imageLinks.thumbnail : '../assets/placeholder.jpg'
         }
     }
 
+    /**
+     * Returns the books from the Google Books API given a query
+     * @param {String} query 
+     * @returns 
+     */
     async getGoogleBooksByQuery(query) {
         // Get the books from the Google Books API
-        const response = await googleAPI.get(`/volumes?q=${query}`)
+        const response = await googleAPI.get(`/volumes?q=${query}&maxResults=15`);
         // Manage response
         switch (response.status) {
             case 200:
@@ -68,6 +73,10 @@ class BookService {
 
     /* BACKEND API FUNCTIONS */
 
+    /**
+     * Returns all the books from the backend
+     * @returns Array with all the books from the backend
+     */
     async getAllBackendBooks() {
         // Get the book data from the backend API
         const response = await backendAPI.get(`/books/`)
@@ -87,12 +96,12 @@ class BookService {
      * @param {Object} book 
      */
     async addBookToBackend(book) {
-        const response = backendAPI.post(`/books/`, book);
+        // Add a book to the backend
+        const response = await backendAPI.post(`/books/`, book);
+        // Manage errors
         switch (response.status) {
             case 500:
                 throw new Error('Error intern en el servidor');
-            default:
-                throw new Error('Error desconegut en l\'API del backend');
         }
     }
 }

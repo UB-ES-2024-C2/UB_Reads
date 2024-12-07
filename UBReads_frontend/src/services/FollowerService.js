@@ -1,126 +1,92 @@
+// API
 import backendAPI from '../api/backend-api';
 
+// Auxiliar services
+import UserService from './UserService.js';
+
 class FollowerService {
-    async followUserWithId(token, userId, toFollowId){
-        try {
-          const response = await backendAPI.post(`/${userId}/follow/${toFollowId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-      
-          if (response !== 200) {
-            console.warn("Error al seguir al usuario.");
-            return false;
-          }
-      
-          const data = response.data;
-          console.log(data.message);
-          return true;
-        } catch (error) {
-          console.error("Error en la solicitud para seguir a un usuario:", error);
-          return false;
+    /**
+     * Follows a user given the token and the username of the user to follow
+     * @param {String} token token of the user
+     * @param {String} toFollowUsername username of the user to follow
+     */
+    async followUserByUsername(token, toFollowUsername) {
+        // Get the user data from the token
+        const user = await UserService.getUserData(token);
+        const response = await backendAPI.post(`users/${user.usernameSTR}/follow/${toFollowUsername}`);
+        // Manage errors
+        switch (response.status) {
+            case 400:
+                return alert('Usuari no trobat');
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 422:
+                throw new Error('Format del user username o follow username incorrecte');
         }
-      };
+    }
 
-      async followUserWithName(token, username, toFollowUsername){
-        try {
-          const response = await backendAPI.post(`/users/${username}/follow/${toFollowUsername}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-      
-          if (response !== 200) {
-            console.warn("Error al seguir al usuario.");
-            return false;
-          }
-      
-          const data = response.data;
-          console.log(data.message); // Mensaje de éxito
-          return true;
-        } catch (error) {
-          console.error("Error en la solicitud para seguir a un usuario:", error);
-          return false;
+    /**
+     * Unfollows a user given the token and the username of the user to unfollow
+     * @param {String} token token used to identify the user
+     * @param {String} toUnfollowUsername username of the user to unfollow
+     */
+    async unfollowUserByUsername(token, toUnfollowUsername) {
+        // Finds the user to unfollow id
+        const users = await UserService.getAllUsers(token);
+        const userToUnfollow = users.find(user => user.usernameSTR === toUnfollowUsername);
+        // Get the user data from the token
+        const user = await UserService.getUserData(token);
+        // Send the request to the backend
+        const response = await backendAPI.delete(`users/${user.id}/follow/${userToUnfollow.id}`);
+        // Manage errors
+        switch (response.status) {
+            case 400:
+                return alert('Usuari no trobat');
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 422:
+                throw new Error('Format del user username o follow username incorrecte');
         }
-      };
+    }
 
-      async unfollowUser(token, userId, toUnfollowId){
-        try {
-          const response = await backendAPI.delete(`/${userId}/unfollow/${toUnfollowId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-      
-          if (response !== 200) {
-            console.warn("Error al dejar de seguir al usuario.");
-            return false;
-          }
-      
-          const data = response.data;
-          console.log(data.message);
-          return true;
-        } catch (error) {
-          console.error("Error en la solicitud para dejar de seguir a un usuario:", error);
-          return false;
+    /**
+     * Returns the users followed by a user given its token
+     * @param {String} token 
+     * @returns 
+     */
+    async getUsersFollowed(token) {
+        // Get the user data from the token
+        const user = await UserService.getUserData(token);
+        const response = await backendAPI.get(`/${user.id}/following`);
+        // Manage errors
+        switch (response.status) {
+            case 200:
+                return response.data.following;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 422:
+                throw new Error('Format de ID incorrecte');
         }
-      };
+    }
 
-      async getFollowing(token, userId) {
-        try {
-          const response = await backendAPI.get(`/${userId}/following`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          })
-      
-          if (response !== 200) {
-            console.warn("Error al obtener la lista de usuarios seguidos.");
-            return [];
-          }
-      
-          const data = response.data;
-      
-          // Com que aquesta funcio nomes retorna usuaris que estas seguin, els hi podem posar a tots following true
-          data.following = data.following.map(item => ({
-            ...item,
-            following: true
-          }));
-      
-          return data.following;
-        } catch (error) {
-          console.error("Error en la solicitud para obtener usuarios seguidos:", error);
-          return [];
+    /**
+     * Returns the followers of a user given its token
+     * @param {String} token used to identify the user
+     */
+    async getFollowers(token){
+        // Get the user data from the token
+        const user = await UserService.getUserData(token);
+        const response = await backendAPI.get(`/${user.id}/followers`);
+        // Manage errors
+        switch (response.status) {
+            case 200:
+                return response.data.followers;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 422:
+                throw new Error('Format de ID incorrecte');
         }
-      };
-
-      async getFollowers(token, userId){
-        try {
-          const response = await backendAPI.get(`/${userId}/followers`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-      
-          if (response !== 200) {
-            console.warn("Error al obtener la lista de seguidores.");
-            return [];
-          }
-      
-          const data = response.data;
-          return data.followers;
-        } catch (error) {
-          console.error("Error en la solicitud para obtener seguidores:", error);
-          return [];
-        }
-      };
-
+    };
 }
 
 export default new FollowerService();

@@ -5,32 +5,24 @@
  */
 
 // React
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Services
-import getUserData from '../../services/UserService.js';
+import LibraryService from '../../services/LibraryService.js';
 
-// MUI Layouts
-import { Container, Box } from '@mui/material';
-
-// MUI Icons
-import ClearIcon from '@mui/icons-material/Clear';
-
-// MUI Colors
-import { green, blue, pink } from '@mui/material/colors';
-
-// MUI Components
-import { Typography, Button, IconButton } from '@mui/material';
+// Material UI
+import { Container, Box } from '@mui/material';  // Layout
+import ClearIcon from '@mui/icons-material/Clear';  // Icon
+import { green, blue, pink } from '@mui/material/colors';  // Colors
+import { Typography, Button, IconButton } from '@mui/material';  // Components
 
 // Own Components
 import { BookRating } from '../index.js';
 
-import LibraryService from '../../services/LibraryService.js';
-import BookService from '../../services/BookService.js';
-
 /**
- * @returns Book view
+ * Book view component
+ * @returns Book view component
  */
 export const BookView = () => {
 
@@ -41,10 +33,13 @@ export const BookView = () => {
     const { state } = useLocation();
     const book = state.book;
 
-    // Component states
+    // Component states used to manage the book added status and the read more button
     const [bookAdded, setBookAdded] = React.useState(false);
     const [readMorePressed, setReadMorePressed] = React.useState(false);
 
+    /**
+     * Adds a book to the user library
+     */
     const addBook = async () => {
         try {
             const token = localStorage.getItem('access_token');
@@ -55,6 +50,9 @@ export const BookView = () => {
         }
     }
 
+    /**
+     * Removes a book from the user library
+     */
     const removeBook = async () => {
         try {
             const token = localStorage.getItem('access_token');
@@ -65,6 +63,9 @@ export const BookView = () => {
         }
     }
 
+    /**
+     * Checks if a book is already added to the user library
+     */
     const isBookAdded = async () => {
         try {
             const token = localStorage.getItem('access_token');
@@ -75,7 +76,8 @@ export const BookView = () => {
         }
     }
 
-    useEffect(() => {
+    // Check if a book is already added to the user library when the component is mounted
+    React.useEffect(() => {
         isBookAdded();
     }, []);
 
@@ -91,7 +93,7 @@ export const BookView = () => {
         }}>
             {/* Cover container */}
             <Box sx={{ width: '25vw', height: '100%', paddingInline: '1rem' }}>
-                <img src={book.cover_uri} alt={book.title} style={{ border: '1px solid', width: '100%', height: 'auto' }} />
+                <img src={book.cover_url} alt={book.title} style={{ border: '1px solid', width: '100%', height: 'auto' }} />
             </Box>
             {/* Data container */}
             <Box sx={{ width: '75vw', height: '100%', paddingInline: '1rem' }}>
@@ -129,6 +131,7 @@ export const BookView = () => {
                     )}
                 </Box>
             </Box>
+            {/* Close view button */}
             <Box>
                 <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate('/home')}>
                     <ClearIcon sx={{ color: pink[700], width: '3.5rem', height: '3.5rem' }} />

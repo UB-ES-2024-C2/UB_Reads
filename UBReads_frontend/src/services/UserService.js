@@ -2,96 +2,119 @@ import backendAPI from '../api/backend-api';
 
 class UserService {
 
-    async getAllUsers(token, userId) {
-        try {
-          const response = await backendAPI.get(`/users`, {
-              headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-      
-          if (response !== 200) {
-            console.warn("Error al obtener todos los usuarios.");
-            return [];
-          }
-      
-          const users = await response.data; // Suponiendo que el backend devuelve un array de usuarios
-      
-          // Filtrar para eliminar el usuario con el id correspondiente
-          return users.filter(user => user.id !== userId);
-        } catch (error) {
-          console.error("Error en la solicitud para obtener usuarios:", error);
-          return [];
-        }
-    };
+    /**
+     * Auxiliar function used to create a user object from the backend user data
+     * @param {Object} user backend user data
+     * @returns Object with user data
+     */
+    createUserFromBacken(user) {
+        return {
+            profImage: user.image,
+            id: user.id ? user.id : null,
+            usernameSTR: user.username ? user.username : "Username",
+            emailSTR: user.email ? user.email : "username@example.com",
+        };
+    }
 
+    /**
+     * Returns all the users from the backend
+     * @param {String} token used to identify the user
+     */
+    async getAllUsers(token) {
+        // Get all users from the backend
+        const response = await backendAPI.get(`/users`);
+        // Get user data
+        const currentUser = await this.getUserData(token);
+        // Manage errors
+        switch (response.status) {
+            case 200:
+                return response.data.filter(user => user.id !== currentUser.id);
+            case 500:
+                throw new Error('Error intern en el servidor');
+        }
+    }
+
+    /**
+     * Return the user data given a token
+     * @param {String} token used to identify the user
+     * @returns Object with user data
+     */
     async getUserData(token) {
-
-        const data = await backendAPI.get(`/me`, {
-          headers: {
-              'Authorization': `Bearer ${token}`,
-          }
+        // Get the user data from the token
+        const response = await backendAPI.get(`/me`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
-    
-        if (data.status === 200) {
-          return {
-            id: data.data.id ? data.data.id : null,
-            profImage: data.data.image,
-            usernameSTR: data.data.username ? data.data.username : "Username",
-            emailSTR: data.data.email ? data.data.email : "username@example.com",
-          };
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return this.createUserFromBacken(response.data);
+            case 400:
+                throw new Error('Usuari no trobat');
+            case 500:
+                throw new Error('Error intern en el servidor');
         }
-        console.warn("Error de credenciales o respuesta no válida.");
-    };
+    }
 
+    /**
+     * Deletes a user from the backend
+     * @param {String} token used to indentify the user
+     */
     async deleteUser(token) {
+        // Send the delete request
         const response = await backendAPI.delete(`/users-delete/`, {
           headers: {
               'Authorization': `Bearer ${token}`,
           }
         });
-    
-        if(response.status === 200) {
-          return true;
+        // Manage errors
+        switch(response.status) {
+            case 400:
+                throw new Error('Usuari no trobat');
+            case 500:
+                throw new Error('Error intern en el servidor');
         }
-    
-        console.warn("La solicitud DELETE no fue exitosa.");
-        return false;
+
     };
 
+    /**
+     * Returns a tocken if the login is successful
+     * @param {String} username 
+     * @param {String} password
+     */
     async getLogin(username, password) {
+        // Create the form data
         const params = new URLSearchParams();
         params.append('username', username);
         params.append('password', password);
-        try {
-            const response = await backendAPI.post('/token', params, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-    
-            if (response.status === 200) {
-                return response.data.access_token;
+        // Send the login request
+        const response = await backendAPI.post('/token', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
-
-            alert("Credenciales inválidas");
-            return null;
-            
-        } catch (error) {
-            console.error("Error en la solicitud:", error);
-            alert("Ocurrió un error. Inténtalo de nuevo más tarde.");
+        });
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return response.data.access_token;
+            case 400:
+                alert('Credencials invàlides');
+                throw new Error('Usuari no trobat');
+            case 500:
+                throw new Error('Error intern en el servidor');
         }
     }
 
-    
+    /**
+     * Creates a new user
+     * @param {String} username 
+     * @param {String} email 
+     * @param {String} password 
+     */
     async signup(username, email, password) {
-        try {
-            await backendAPI.post('/users/', {username, email, password});
-        } catch (error) {
-            console.error("Error connecting to the backend:", error);
-            alert(`There was a problem connecting to the server: ${error.message}`);
-        }
+        // Send the signup request
+        await backendAPI.post('/users/', {username, email, password});
     };
 }
 

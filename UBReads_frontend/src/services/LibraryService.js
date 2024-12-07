@@ -18,9 +18,9 @@ class LibraryService {
         
         // If the book is not in the backend, add it
         if (!backendBook) {
-            await BookService.addBookToBackend(book);
+            const a = await BookService.addBookToBackend(book);
             backendBooks = await BookService.getAllBackendBooks();
-            backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
+            backendBook = backendBooks.find(_backendBook => _backendBook.id_book === book.id_book);
         }
 
         // Get the user data from the token
@@ -66,8 +66,6 @@ class LibraryService {
     async deleteBookFromUser(book, token) {
         // Retrieves backend books to catch the book backend id
         const backendBooks = await BookService.getAllBackendBooks();
-        console.log(backendBooks);
-        console.log(book);
         const backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
         // Get the user data from the token
         const user = await UserService.getUserData(token);

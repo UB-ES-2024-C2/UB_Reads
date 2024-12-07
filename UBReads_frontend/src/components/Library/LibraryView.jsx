@@ -90,7 +90,7 @@ export const LibraryView = () => {
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {library.map((book) => ( console.log(book),
+                {library.map((book) => (
                     /* Book */
                     <Grid2 container key={book.id} spacing={1} sx={{ paddingBlock: '1rem', paddingInline: '2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                         <Grid2 size={1}>
