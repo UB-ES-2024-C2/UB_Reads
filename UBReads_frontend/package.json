@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --mode default",                
+    "build:dev": "vite build --mode development", 
+    "build:prod": "vite build --mode production", 
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",

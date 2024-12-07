@@ -5,9 +5,11 @@ const apiURL = import.meta.env.VITE_BACKEND_API_URL;
 const backendAPI = axios.create({
   baseURL: apiURL,
   headers: {
-    'Access-Control-Allow-Origin': 'http://ubreads-dev-public-bucket.s3-website-eu-west-1.amazonaws.com',
     'Content-Type': 'application/json',
-  }
+  },
 });
+
+console.log("Entorno:", import.meta.env.MODE);
+console.log("URL de la API:", apiURL);
 
 export default backendAPI;

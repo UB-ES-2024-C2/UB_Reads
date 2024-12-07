@@ -4,35 +4,50 @@ from app.core.models import create_tables, reset_database
 from app.routers.user_router import router as user_router
 from app.routers.book_router import router as book_router
 from app.routers.book_user_router import router as book_user_router
+import os
 
 app = FastAPI()
 
-#reset_database()
+# Resetear o crear las tablas en la base de datos
+# reset_database()  # Solo si necesitas limpiar la base de datos
 create_tables()
 print("I WAS IN THE SERVER")
+
+# Incluir rutas
 app.include_router(book_router)
 app.include_router(user_router)
 app.include_router(book_user_router)
 
-# Configure CORS for development and production
-origins = [
-    "http://localhost",
-    "http://localhost:5173", # Development frontend URL
-    "http://localhost:80", # Development frontend URL
-    "https://ubreads-cjeqabfdg8e3fjgp.spaincentral-01.azurewebsites.net", # Production frontend URL
-    "http://frontend",
-    "http://frontend:5173",
-    "http://frontend:80",
-]
+# Leer el entorno actual (desarrollo, preproducción o producción)
+env_mode = os.getenv("ENV_MODE", "development")  # Por defecto, "development"
 
+# Configurar los orígenes permitidos según el entorno
+if env_mode == "development":  # Local
+    origins = [
+        "http://localhost:5173",  # URL del frontend local
+    ]
+elif env_mode == "preproduction":  # Preproducción
+    origins = [
+        "http://ubreads-dev-public-bucket.s3-website-eu-west-1.amazonaws.com",
+    ]
+elif env_mode == "production":  # Producción
+    origins = [
+        "http://ubreads-prod-public-bucket.s3-website-eu-west-1.amazonaws.com",
+    ]
+else:
+    origins = []  # Si el entorno no está definido, ningún origen es permitido
+
+print(f"Entorno actual: {env_mode}")
+print(f"Orígenes permitidos: {origins}")
+
+# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], #origins,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Middleware para desactivar la caché
 @app.middleware("http")
