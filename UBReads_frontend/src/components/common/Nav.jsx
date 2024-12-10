@@ -22,7 +22,6 @@ import TextField from '@mui/material/TextField';
 import { pink, blue } from "@mui/material/colors";
 
 // Style imports
-import "./nav.css";
 import Logo from "../../assets/logo.png";
 import SearchIcon from '@mui/icons-material/Search';
 

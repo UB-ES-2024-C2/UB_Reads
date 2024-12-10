@@ -12,7 +12,6 @@ export { BookView } from './Books/BookView';
 
 // Common components
 export { Nav } from './Common/Nav';
-export { Button } from './Common/Button';
 export { BookRating } from './Common/BookRating';
 
 // Followers components

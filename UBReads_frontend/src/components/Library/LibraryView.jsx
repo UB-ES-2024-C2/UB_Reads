@@ -29,40 +29,34 @@ import BookService from '../../services/BookService.js';
 
 export const LibraryView = () => {
 
-    const [books, setBooks] = useState([]);
+    // Component variables
+    const [library, setLibrary] = useState([]);
 
     const fetchUserBooks = async () => {
-        const token = localStorage.getItem('access_token');
-
         try {
-            const user = await getUserData.getUserData(token);
-            const response = await LibraryService.getBooksByUser(user.id);
-            const books = await Promise.all(response.data.map(async book => {
-                const apiBook = await BookService.getGoogleBookById(book.book.id_book);
-                return ({
-                    ...book.book,
-                    averageRating: apiBook.data.volumeInfo.averageRating,
-                    personalRating: 0
-                });
-            }));
-            setBooks(books);
+            const token = localStorage.getItem('access_token');
+            const books = await LibraryService.getBooksByUser(token);
+            await Promise.all(books.map(async (book) => book.averageRating = await BookService.getBookAverageRating(book.id_book)));
+            setLibrary(books);
         } catch (error) {
-            console.error(error);
+            alert(error);
         }
     }
 
     /**
      * Deletes a book from the user's library
-     * @param {string} bookId 
+     * @param {String} bookId 
      */
-    const handleDeleteBook = async (bookId) => {
-        // TODO: Llamar a la api para obtener el id del libro y eliminar el libro
-        confirm('Estás segur que vols eliminar aquest llibre?')
-
-        if (confirmed) {
+    const removeBook = async (book) => {
+        try {
+            const confirmation = confirm(`Are you sure you want to delete ${book.title} from your library?`);
+            if (!confirmation) return;
             const token = localStorage.getItem('access_token');
-            const user = await getUserData.getUserData(token);
-            const response = await LibraryService.deleteBookFromUser(user.id, bookId);
+            await LibraryService.deleteBookFromUser(book, token);
+            const new_library = library.filter(item => item.id !== book.id);
+            setLibrary(new_library);
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -96,12 +90,12 @@ export const LibraryView = () => {
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {books.map((book) => (
+                {library.map((book) => (
                     /* Book */
                     <Grid2 container key={book.id} spacing={1} sx={{ paddingBlock: '1rem', paddingInline: '2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                         <Grid2 size={1}>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-start' }} onClick={() => {
-                                handleDeleteBook(book.id);
+                                removeBook(book);
                             }} >
                                 <IconButton edge="end" aria-label="delete" disableRipple sx={{ margin: '0' }}>
                                     <CancelIcon sx={{ color: pink[600] }} />
@@ -121,7 +115,7 @@ export const LibraryView = () => {
                             <BookRating rating={book.averageRating} />
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRating rating={book.personalRating} />
+                            <BookRating rating={0} />
                         </Grid2>
                     </Grid2>
                 ))}

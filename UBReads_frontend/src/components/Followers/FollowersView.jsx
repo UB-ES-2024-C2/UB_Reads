@@ -6,189 +6,112 @@ import Box from "@mui/material/Box";
 import { UserList } from "./userList";
 import { UserCard } from "./userCard"; // Import UserCard
 import UserService from "../../services/UserService.js";
+import FollowerService from "../../services/FollowerService.js";
 
 export const FollowersView = () => {
-  const token = localStorage.getItem("access_token");
+    const [userFound, setUserFound] = useState(null);
+    const [username, setUsername] = useState([]);
+    const [followedUsers, setFollowedUsers] = useState([]);
 
-  const [followingUsers, setFollowingUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUser, setFilteredUser] = useState(null);
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            followUser(username);
+        }
+    };
 
-  const fetchFollowingUsers = async () => {
-    try {
-      const userData = await UserService.getUserData(token);
-      const users = await UserService.getFollowing(token, userData.id);
-      if (Array.isArray(users)) {
-        setFollowingUsers(users);
-      } else {
-        console.warn("El backend no devolvió un arreglo.");
-        setFollowingUsers([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener usuarios seguidos:", error);
-      setFollowingUsers([]);
-    }
-  };
+    const fetchUsersFollowed = async () => {
+        try {
+            const token = localStorage.getItem('access_token');
+            const usersFollowed = await FollowerService.getUsersFollowed(token);
+            setFollowedUsers(usersFollowed);
+        } catch (error) {
+            console.error("Error al obtener los usuarios seguidos:", error);
+        }
+    };
 
-  const fetchAllUsers = async () => {
-    try {
-      const userData = await UserService.getUserData(token);
-      const allUsersData = await UserService.getAllUsers(token, userData.id);
-      if (Array.isArray(allUsersData)) {
-        setAllUsers(allUsersData);
-      } else {
-        console.warn("El backend no devolvió un arreglo.");
-        setAllUsers([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener todos los usuarios:", error);
-      setAllUsers([]);
-    }
-  };
+    const followUser = async (username) => {
+        try {
+            const token = localStorage.getItem('access_token');
+            await FollowerService.followUserByUsername(token, username);
+            setFollowedUsers([...followedUsers, username]);
+        } catch (error) {
+            console.error("Error al seguir al usuario:", error);
+        }
+    };
 
-  const updateAllUsersFollowing = () => {
-    const followingIds = new Set(followingUsers.map((item) => item.id));
-    const updatedArray = allUsers.map((item) => ({
-      ...item,
-      following: followingIds.has(item.id),
-    }));
-    setAllUsers(updatedArray);
-  };
+    useEffect(() => {
+        fetchUsersFollowed();
+    }, []);
 
-  useEffect(() => {
-    if (followingUsers.length === 0) {
-      fetchFollowingUsers();
-    }
-  }, [followingUsers]);
-
-  useEffect(() => {
-    if (allUsers.length === 0) {
-      fetchAllUsers();
-    }
-  }, [allUsers]);
-
-  useEffect(() => {
-    if (followingUsers.length > 0 && allUsers.length > 0) {
-      updateAllUsersFollowing();
-    }
-  }, [followingUsers, allUsers]);
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    const user = allUsers.find((u) =>
-      u.username.toLowerCase().includes(term.toLowerCase())
-    );
-    setFilteredUser(user || null);
-  };
-
-  const handleFollowChange = async (userId, follow) => {
-    try {
-      const userData = await UserService.getUserData(token);
-      if (follow) {
-        await UserService.followUserWithId(token, userData.id, userId);
-      } else {
-        await UserService.unfollowUser(token, userData.id, userId);
-      }
-      fetchFollowingUsers();
-      fetchAllUsers();
-    } catch (error) {
-      console.error("Error al cambiar el estado de seguimiento:", error);
-    }
-  };
-
-  return (
-    <Container
-      disableGutters
-      className="home-container"
-      maxWidth="false"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          mt: 1,
-          display: "flex",
-          justifyContent: "flex-end",
-          paddingRight: "2rem",
-          position: "relative",
-        }}
-      >
-        <TextField
-          variant="outlined"
-          placeholder="Search following users..."
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          size="small"
-          sx={{
-            width: "20%",
-            marginRight: "1rem",
-          }}
-        />
-
-        {searchTerm && (
-          <Box
+    return (
+        <Container
+            disableGutters
+            className="home-container"
+            maxWidth="false"
             sx={{
-              position: "absolute",
-              marginRight: '1rem',
-              top: "50px",
-              width: "20%",
-              backgroundColor: "white",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-              borderRadius: "8px",
-              zIndex: 10,
+                height: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
             }}
-          >
-            <UserCard
-              user={filteredUser}
-              verticalLayout={true}
-              onFollowChange={handleFollowChange}
-            />
-          </Box>
-        )}
-      </Box>
-
-      <Box sx={{ mt: 4, flexShrink: 0 }}>
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{
-            fontWeight: "bold",
-            color: grey[800],
-          }}
         >
-          Users You Are Following:
-        </Typography>
-      </Box>
-
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          mt: 4,
-        }}
-      >
         <Box
-          sx={{
-            width: "90%",
-            maxWidth: "600px",
-            maxHeight: "70vh",
-            overflowY: "auto",
+            sx={{
+            mt: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight: "2rem",
+            position: "relative",
+            }}
+        >
+            <TextField
+            variant="outlined"
+            placeholder="Nom d'usuari..."
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={handleKeyDown}
+            sx={{
+                width: "20%",
+                marginRight: "1rem",
+            }}
+            />
+        </Box>
+
+        <Box sx={{ mt: 4, flexShrink: 0 }}>
+            <Typography
+            variant="h4"
+            align="center"
+            sx={{
+                fontWeight: "bold",
+                color: grey[800],
+            }}
+            >
+            Users You Are Following:
+            </Typography>
+        </Box>
+
+        <Box
+            sx={{
+            flex: 1,
             display: "flex",
             flexDirection: "column",
-            gap: 2,
-          }}
+            alignItems: "center",
+            justifyContent: "flex-start",
+            mt: 4,
+            }}
         >
-          <UserList users={followingUsers} onFollowChange={handleFollowChange} />
+            <Box
+            sx={{
+                width: "90%",
+                maxWidth: "600px",
+                maxHeight: "70vh",
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+            }}
+            >
+            </Box>
         </Box>
-      </Box>
-    </Container>
-  );
+        </Container>
+    );
 };

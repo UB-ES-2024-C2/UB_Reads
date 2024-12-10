@@ -10,4 +10,10 @@ const backendAPI = axios.create({
   }
 });
 
+// Interceptor de respuestas
+backendAPI.interceptors.response.use(
+  response => response,
+  error => error
+);
+
 export default backendAPI;
