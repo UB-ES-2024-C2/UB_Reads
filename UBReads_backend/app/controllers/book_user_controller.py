@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.core.models import book_users, User, Book
 from fastapi import HTTPException
-from sqlalchemy import update
+from sqlalchemy import update, select, and_
 
 
 class BookUserController:
@@ -11,7 +11,7 @@ class BookUserController:
     @staticmethod
     def insert_book_user(db: Session, user_id: int, book_id: int):
         stmt = book_users.insert().values(
-            user_id=user_id, book_id=book_id, is_read=False
+            user_id=user_id, book_id=book_id, is_read=False, rating=None, comment=None
         )  # Por defecto, no leído
         db.execute(stmt)
         db.commit()
@@ -65,3 +65,29 @@ class BookUserController:
             raise HTTPException(status_code=404, detail="Book not found")
 
         return {"book": updated_book, "is_read": is_read}
+
+    @staticmethod
+    def update_user_comment_and_rating( 
+        db: Session, user_id: int, book_id: int, rating: int, comment: str
+    ):
+        db.execute(
+            update(book_users)
+            .where(book_users.c.user_id == user_id, book_users.c.book_id == book_id)
+            .values(rating=rating, comment=comment)
+        )
+        db.commit()
+        
+    @staticmethod
+    def get_user_comment_and_rating_for_book(db: Session, user_id: int, book_id: int):
+        stmt = select(
+            book_users.c.rating, 
+            book_users.c.comment
+        ).where(
+            and_(
+                book_users.c.user_id == user_id,
+                book_users.c.book_id == book_id
+            )
+        )
+        result = db.execute(stmt
+        ).first()
+        return result
