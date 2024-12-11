@@ -35,11 +35,18 @@ class LibraryService {
      * @param {number} userId
      * @param {number} bookId
      * @param {number} rating
+     * @param {string} comment
      */
-    addRating(userId, bookId, rating) {
-        return backendAPI.post() //TODO
-          .then((response) => response);
+    addRating_Comment(userId, bookId, rating, comment = '') {
+        const requestBody = {
+            rating: rating,
+            comment: comment
+        };
+
+        return backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
+            .then((response) => response);
     }
+
 }
 
 export default new LibraryService();
