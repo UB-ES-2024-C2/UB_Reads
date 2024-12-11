@@ -1,0 +1,69 @@
+name: CI/CD for UBReads Backend
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set Environment Variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          echo "BACKEND_IP=3.255.70.190" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=preproduction" >> $GITHUB_ENV
+          echo "BACKEND_IP=34.246.34.123" >> $GITHUB_ENV
+        fi
+
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # Crear el archivo .pem basado en secretos para acceder a EC2
+    - name: Crear archivo .pem desde secret
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > prod-key.pem
+          chmod 400 prod-key.pem
+          echo "KEY_FILE=prod-key.pem" >> $GITHUB_ENV
+        else
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > dev-key.pem
+          chmod 400 dev-key.pem
+          echo "KEY_FILE=dev-key.pem" >> $GITHUB_ENV
+        fi
+
+    # Log in to Amazon ECR
+    - name: Log in to Amazon ECR
+      run: |
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 381492053763.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+    # Build, tag, and push Docker image
+    - name: Build Docker Image
+      run: docker build -t ubreads-backend .
+
+    - name: Tag Docker Image
+      run: docker tag ubreads-backend:latest 381492053763.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ubreads-repo:${{ env.ENVIRONMENT }}
+
+    - name: Push Docker Image to ECR
+      run: docker push 381492053763.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ubreads-repo:${{ env.ENVIRONMENT }}
+
+    # Deploy the backend to EC2
+    - name: Deploy Backend to EC2
+      run: |
+        ssh -i ${{ env.KEY_FILE }} ubuntu@${{ env.BACKEND_IP }} << 'EOF'
+        cd /home/ubuntu
+        docker-compose pull
+        docker-compose up -d
+        EOF
