@@ -101,7 +101,7 @@ export const Navbar = ({ onSearch }) => {
     >
 
       
-      <Stack direction="row" className="navbar-stack" spacing={30}>
+      <Stack direction="row" className="navbar-stack" spacing={'5%'}>
         <Link to="/home">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {/* Logo */}

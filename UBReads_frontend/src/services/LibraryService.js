@@ -29,6 +29,17 @@ class LibraryService {
         return backendAPI.delete(`/users/${userId}/books/${bookId}`)
             .then((response) => response);
     }
+
+    /**
+     * Adds a new book rating from a user library given the book ID and the user ID
+     * @param {number} userId
+     * @param {number} bookId
+     * @param {number} rating
+     */
+    addRating(userId, bookId, rating) {
+        return backendAPI.post() //TODO
+          .then((response) => response);
+    }
 }
 
 export default new LibraryService();
