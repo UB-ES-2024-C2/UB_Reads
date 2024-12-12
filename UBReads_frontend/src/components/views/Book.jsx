@@ -19,7 +19,8 @@ import { green, blue, pink } from '@mui/material/colors';
 import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../';
+import { BookRatingAvg } from '../';
+import {BookRatingUser} from "../common/BookRatingUser";
 
 /**
  * @returns Book view
@@ -94,22 +95,20 @@ export const Book = () => {
     };
 
     const handleRatingChange = async (newRating) => {
-        let bookId = null;
         const token = localStorage.getItem('access_token');
         const books = await BookService.getBackendBooks();
-        books.data.forEach((backendBook) => {
-            if (backendBook.id_book === book.id) {
-                bookId = backendBook.id;
+        const bookId = books.data.find((backendBook) => backendBook.id_book === book.id)?.id;
+
+        if (bookId) {
+            const user = await getUserData.getUserData(token);
+            const response = await LibraryService.addRating_Comment(user.id, bookId, newRating);
+
+            if (response.status === 200) {
+                setUserRating(newRating); // Update local state
+            } else {
+                console.warn('Error updating rating:', response);
             }
-        });
-
-        const user = await getUserData.getUserData(token);
-        const response = await LibraryService.addRating(user.id, bookId, newRating);
-
-        if (response.status !== 200) {
-            console.warn("Something went wrong ", response)
         }
-
     };
 
     const checkBookAdded = async () => {
@@ -161,11 +160,19 @@ export const Book = () => {
                     </Typography>
                 </Box>
                 {/* Rating */}
-                <BookRating
-                    averageRating={book.averageRating}
-                    userRating={userRating}
-                    onRatingChange={handleRatingChange}
-                />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+
+                    <BookRatingAvg
+                        averageRating={book.averageRating}
+
+                    />
+                    <BookRatingUser
+                        userRating={userRating}
+                        onRatingChange={handleRatingChange}
+                    />
+
+                </Box>
+
                 <Box>
                     <Button
                         id="add-button"
