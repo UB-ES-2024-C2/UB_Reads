@@ -67,16 +67,27 @@ class BookUserController:
         return {"book": updated_book, "is_read": is_read}
 
     @staticmethod
-    def update_user_comment_and_rating( 
-        db: Session, user_id: int, book_id: int, rating: int, comment: str
+    def update_user_rating( 
+        db: Session, user_id: int, book_id: int, rating: int,
     ):
         db.execute(
             update(book_users)
             .where(book_users.c.user_id == user_id, book_users.c.book_id == book_id)
-            .values(rating=rating, comment=comment)
+            .values(rating=rating)
         )
         db.commit()
-        
+    
+    @staticmethod
+    def update_user_comment(
+        db: Session, user_id: int, book_id: int, comment: str,
+    ):
+        db.execute(
+            update(book_users)
+            .where(book_users.c.user_id == user_id, book_users.c.book_id == book_id)
+            .values(comment=comment)
+        )
+        db.commit()
+
     @staticmethod
     def get_user_comment_and_rating_for_book(db: Session, user_id: int, book_id: int):
         stmt = select(
