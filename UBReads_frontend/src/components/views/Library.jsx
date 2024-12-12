@@ -122,19 +122,19 @@ export const Library = () => {
                                 <CancelIcon sx={{ color: pink[600] }} />
                             </IconButton>
                         </Grid2>
-                        <Grid2 xs={4}>
+                        <Grid2 size={4}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Avatar variant="rounded" src={book.cover_url} />
-                                <Box sx={{ marginLeft: '1rem' }}>
+                                <Box sx={{ marginInline: '1.5rem' }}>
                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
                                     <Typography>{book.author}</Typography>
                                 </Box>
                             </Box>
                         </Grid2>
-                        <Grid2 xs={3}>
+                        <Grid2 size={3}>
                             <BookRatingAvg averageRating={book.averageRating} />
                         </Grid2>
-                        <Grid2 xs={3}>
+                        <Grid2 size={3}>
                             <BookRatingUser
                                 userRating={book.personalRating}
                                 onRatingChange={(newRating) => handlePersonalRatingChange(book.id, newRating)}
