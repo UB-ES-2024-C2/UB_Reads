@@ -29,6 +29,24 @@ class LibraryService {
         return backendAPI.delete(`/users/${userId}/books/${bookId}`)
             .then((response) => response);
     }
+
+    /**
+     * Adds a new book rating from a user library given the book ID and the user ID
+     * @param {number} userId
+     * @param {number} bookId
+     * @param {number} rating
+     * @param {string} comment
+     */
+    addRating_Comment(userId, bookId, rating, comment = '') {
+        const requestBody = {
+            rating: rating,
+            comment: comment
+        };
+
+        return backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
+            .then((response) => response);
+    }
+
 }
 
 export default new LibraryService();

@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 
 
-
 class UserBookBase(BaseModel):
     user_id: int
     book_id: int
@@ -22,6 +21,7 @@ class UserBook(UserBookBase):
     class Config:
         from_attributes = True
 
+
 class RatingCommentSchema(BaseModel):
-    rating: int = Field(ge=1, le=5)
+    rating: float = Field(ge=1, le=5)
     comment: str

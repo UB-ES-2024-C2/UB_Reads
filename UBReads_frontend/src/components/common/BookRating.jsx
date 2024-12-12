@@ -28,7 +28,7 @@ export const BookRating = ({ averageRating = 0, userRating = 0, maxValue = 5, on
     const handleRatingChange = (event, newValue) => {
         setUserSelectedRating(newValue); // Update user rating locally.
         if (onRatingChange) {
-            onRatingChange(newValue); // Trigger callback for backend update.
+            onRatingChange(newValue);
         }
     };
 
@@ -57,7 +57,7 @@ export const BookRating = ({ averageRating = 0, userRating = 0, maxValue = 5, on
                     name="user-rating"
                     size="large"
                     value={userSelectedRating}
-                    precision={0.5} // Only allow integer ratings.
+                    precision={0.5}
                     onChange={handleRatingChange}
                     getLabelText={getLabelText}
                     sx={{ display: 'flex', alignContent: 'center' }}
