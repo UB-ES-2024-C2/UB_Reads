@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import Field
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.controllers.book_user_controller import BookUserController
@@ -54,23 +55,41 @@ def update_book_read_status(
         raise e
     
 @router.patch("/users/{user_id}/books/{book_id}/rating", response_model=dict)
-def add_or_update_user_rating_and_comment(
+def add_or_update_user_rating(
     user_id: int,
     book_id: int,
-    rating_comment: RatingCommentSchema,
+    rating: float = Field(..., ge=1, le=5),
     db: Session = Depends(get_db),
 ):
     try:
-        BookUserController.update_user_comment_and_rating(
+        BookUserController.update_user_rating(
             db=db,
             user_id=user_id,
             book_id=book_id,
-            rating=rating_comment.rating,
-            comment=rating_comment.comment,
+            rating=rating,
         )
-        return {"detail": "Rating and comment successfully added/updated"}
+        return {"detail": "Rating successfully added/updated"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.patch("/users/{user_id}/books/{book_id}/comment", response_model=dict)
+def add_or_update_user_comment(
+    user_id: int,
+    book_id: int,
+    comment: str,
+    db: Session = Depends(get_db),
+):
+    try:
+        BookUserController.update_user_comment(
+            db=db,
+            user_id=user_id,
+            book_id=book_id,
+            comment=comment,
+        )
+        return{"detail": "Comment added Succesfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/users/{user_id}/books/{book_id}/rating", response_model=dict)
 def get_user_comment_and_rating(
     user_id: int,
