@@ -19,7 +19,8 @@ import { green, blue, pink } from '@mui/material/colors';
 import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../';
+import { BookRatingAvg } from '../';
+import {BookRatingUser} from "../common/BookRatingUser";
 
 /**
  * @returns Book view
@@ -159,11 +160,19 @@ export const Book = () => {
                     </Typography>
                 </Box>
                 {/* Rating */}
-                <BookRating
-                    averageRating={book.averageRating}
-                    userRating={userRating}
-                    onRatingChange={handleRatingChange}
-                />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+
+                    <BookRatingAvg
+                        averageRating={book.averageRating}
+
+                    />
+                    <BookRatingUser
+                        userRating={userRating}
+                        onRatingChange={handleRatingChange}
+                    />
+
+                </Box>
+
                 <Box>
                     <Button
                         id="add-button"

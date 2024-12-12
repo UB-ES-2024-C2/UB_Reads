@@ -14,4 +14,4 @@ export { Library } from './views/Library';
 export { Navbar } from './layout/navbar';
 
 // Common components
-export { BookRating } from './common/BookRating';
+export { BookRatingAvg } from './common/BookRatingAvg';
