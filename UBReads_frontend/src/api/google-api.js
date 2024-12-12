@@ -3,7 +3,7 @@ import axios from 'axios';
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 const apiURL = import.meta.env.VITE_GOOGLE_BOOKS_API_URL;
 
-const booksAPI = axios.create({
+const googleAPI = axios.create({
     baseURL: apiURL,
     headers: {
         'Content-type': 'application/json'
@@ -13,4 +13,4 @@ const booksAPI = axios.create({
     }
 });
 
-export default booksAPI;
+export default googleAPI;

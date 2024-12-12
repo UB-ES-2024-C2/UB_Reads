@@ -9,7 +9,10 @@ const backendAPI = axios.create({
   },
 });
 
-console.log("Entorno:", import.meta.env.MODE);
-console.log("URL de la API:", apiURL);
+// Interceptor de respuestas
+backendAPI.interceptors.response.use(
+  response => response,
+  error => error
+);
 
 export default backendAPI;
