@@ -37,19 +37,35 @@ export const Library = () => {
         try {
             const user = await getUserData.getUserData(token);
             const response = await LibraryService.getBooksByUser(user.id);
-            const books = await Promise.all(response.data.map(async book => {
+            const books = await Promise.all(response.data.map(async (book) => {
                 const apiBook = await BookService.getGoogleBookById(book.book.id_book);
-                return ({
+                return {
                     ...book.book,
-                    averageRating: apiBook.data.volumeInfo.averageRating,
-                    personalRating: 0
-                });
+                    averageRating: apiBook.data.volumeInfo.averageRating || 0,
+                    personalRating: book.rating || 0,
+                };
             }));
             setBooks(books);
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+
+    const handlePersonalRatingChange = async (bookId, newRating) => {
+        const token = localStorage.getItem('access_token');
+        const user = await getUserData.getUserData(token);
+        const response = await LibraryService.addRating_Comment(user.id, bookId, newRating);
+
+        if (response.status === 200) {
+            setBooks((prevBooks) =>
+                prevBooks.map((book) =>
+                    book.id === bookId ? { ...book, personalRating: newRating } : book
+                )
+            );
+        } else {
+            console.error('Error updating rating:', response);
+        }
+    };
 
     /**
      * Deletes a book from the user's library
@@ -97,31 +113,29 @@ export const Library = () => {
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
                 {books.map((book) => (
-                    /* Book */
                     <Grid2 container key={book.id} spacing={1} sx={{ paddingBlock: '1rem', paddingInline: '2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                         <Grid2 size={1}>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }} onClick={() => {
-                                handleDeleteBook(book.id);
-                            }} >
-                                <IconButton edge="end" aria-label="delete" disableRipple sx={{ margin: '0' }}>
-                                    <CancelIcon sx={{ color: pink[600] }} />
-                                </IconButton>
-                            </Box>
+                            <IconButton onClick={() => handleDeleteBook(book.id)} disableRipple>
+                                <CancelIcon sx={{ color: pink[600] }} />
+                            </IconButton>
                         </Grid2>
                         <Grid2 size={4}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Avatar variant="rounded" src={book.cover_url} />
                                 <Box sx={{ marginInline: '1rem' }}>
-                                    <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
-                                    <Typography variant="h6" color="text.secondary">{book.author}</Typography>
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
+                                    <Typography>{book.author}</Typography>
                                 </Box>
                             </Box>
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRating rating={book.averageRating} />
+                            <BookRating averageRating={book.averageRating} />
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRating rating={book.personalRating} />
+                            <BookRating
+                                userRating={book.personalRating}
+                                onRatingChange={(newRating) => handlePersonalRatingChange(book.id, newRating)}
+                            />
                         </Grid2>
                     </Grid2>
                 ))}

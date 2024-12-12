@@ -94,23 +94,21 @@ export const Book = () => {
     };
 
     const handleRatingChange = async (newRating) => {
-        let bookId = null;
-        const token = localStorage.getItem('access_token');
-        const books = await BookService.getBackendBooks();
-        books.data.forEach((backendBook) => {
-            if (backendBook.id_book === book.id) {
-                bookId = backendBook.id;
-            }
-        });
+    const token = localStorage.getItem('access_token');
+    const books = await BookService.getBackendBooks();
+    const bookId = books.data.find((backendBook) => backendBook.id_book === book.id)?.id;
 
+    if (bookId) {
         const user = await getUserData.getUserData(token);
         const response = await LibraryService.addRating_Comment(user.id, bookId, newRating);
 
-        if (response.status !== 200) {
-            console.warn("Something went wrong ", response)
+        if (response.status === 200) {
+            setUserRating(newRating); // Update local state
+        } else {
+            console.warn('Error updating rating:', response);
         }
-
-    };
+    }
+};
 
     const checkBookAdded = async () => {
         const token = localStorage.getItem('access_token');
