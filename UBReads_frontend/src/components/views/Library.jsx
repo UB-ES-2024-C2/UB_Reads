@@ -57,7 +57,7 @@ export const Library = () => {
         const token = localStorage.getItem('access_token');
         try {
             const user = await getUserData.getUserData(token);
-            const response = await LibraryService.addRating_Comment(user.id, bookId, newRating);
+            const response = await LibraryService.addRating(user.id, bookId, newRating);
             if (response.status === 200) {
                 setBooks((prevBooks) =>
                     prevBooks.map((book) =>
