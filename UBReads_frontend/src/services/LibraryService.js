@@ -37,10 +37,9 @@ class LibraryService {
      * @param {number} rating
      * @param {string} comment
      */
-    addRating_Comment(userId, bookId, rating, comment = '') {
+    addRating(userId, bookId, rating) {
         const requestBody = {
             rating: rating,
-            comment: comment
         };
 
         return backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
