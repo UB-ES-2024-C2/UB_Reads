@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.controllers.book_user_controller import BookUserController
 from app.schemas.user import User
 from app.schemas.book import Book
-from app.schemas.user_book import UserBookUpdate, UserBook, RatingCommentSchema
+from app.schemas.user_book import UserBookUpdate, UserBook, RatingSchema
 from app.schemas.user_book_read import UserBookResponse
 
 router = APIRouter()
@@ -58,7 +58,7 @@ def update_book_read_status(
 def add_or_update_user_rating(
     user_id: int,
     book_id: int,
-    rating: float = Field(..., ge=1, le=5),
+    rating: RatingSchema,
     db: Session = Depends(get_db),
 ):
     try:
@@ -66,7 +66,7 @@ def add_or_update_user_rating(
             db=db,
             user_id=user_id,
             book_id=book_id,
-            rating=rating,
+            rating=rating.rating,
         )
         return {"detail": "Rating successfully added/updated"}
     except Exception as e:

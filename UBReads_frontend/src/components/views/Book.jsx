@@ -104,7 +104,7 @@ export const Book = () => {
         });
 
         const user = await getUserData.getUserData(token);
-        const response = await LibraryService.addRating_Comment(user.id, bookId, newRating);
+        const response = await LibraryService.addRating(user.id, bookId, newRating);
 
         if (response.status !== 200) {
             console.warn("Something went wrong ", response)

@@ -22,6 +22,8 @@ class UserBook(UserBookBase):
         from_attributes = True
 
 
-class RatingCommentSchema(BaseModel):
-    rating: float = Field(ge=1, le=5)
+class CommentSchema(BaseModel):
     comment: str
+
+class RatingSchema(BaseModel):
+    rating: float = Field(..., ge=1, le=5)
