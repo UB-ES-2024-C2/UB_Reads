@@ -11,8 +11,8 @@ export { HomePage } from './Home/HomePage';
 export { BookView } from './Books/BookView';
 
 // Common components
-export { Nav } from './Common/Nav';
-export { BookRating } from './Common/BookRating';
+export { Nav } from './common/Nav';
+export { BookRating } from './common/BookRating';
 
 // Followers components
 export { UserCard } from './Followers/userCard';
