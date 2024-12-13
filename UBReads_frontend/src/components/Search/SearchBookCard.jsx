@@ -8,7 +8,7 @@ import { Box } from '@mui/material';  // Layout
 import { blue, pink, green } from '@mui/material/colors';  // Colors
 
 // Own components
-import { BookRating } from '../Common/BookRating';
+import { BookRating } from '../common/BookRating';
 
 // Services
 import LibraryService from '../../services/LibraryService.js';
@@ -56,7 +56,7 @@ export const SearchBookCard = ({ book, onClick, library }) => {
      */
     const isBookAdded = () => {
         try {
-            const isAdded = library.find(_book => _book.id_book === book.id_book) ? true : false;
+            const isAdded = !!library.find(_book => _book.id_book === book.id_book);
             setBookAdded(isAdded);
         } catch (error) {
             console.error(error);
