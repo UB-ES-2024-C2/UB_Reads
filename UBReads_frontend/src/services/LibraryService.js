@@ -35,7 +35,6 @@ class LibraryService {
      * @param {number} userId
      * @param {number} bookId
      * @param {number} rating
-     * @param {string} comment
      */
     addRating(userId, bookId, rating) {
         const requestBody = {
@@ -44,6 +43,16 @@ class LibraryService {
 
         return backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
             .then((response) => response);
+    }
+
+    /**
+     * Returns the rating a user has given to a book
+     * @param {number} userId
+     * @param {number} bookId
+     */
+    getRating(userId, bookId) {
+        return backendAPI.get(`/users/${userId}/books/${bookId}/rating`)
+          .then((response) => response);
     }
 
 }

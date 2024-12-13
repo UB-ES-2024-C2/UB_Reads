@@ -32,26 +32,31 @@ import BookService from '../../services/BookService.js';
 export const Library = () => {
     const [books, setBooks] = useState([]);
 
+
     const fetchUserBooks = async () => {
-        const token = localStorage.getItem('access_token');
-        try {
-            const user = await getUserData.getUserData(token);
-            const response = await LibraryService.getBooksByUser(user.id);
-            const books = await Promise.all(
-                response.data.map(async (book) => {
-                    const apiBook = await BookService.getGoogleBookById(book.book.id_book);
-                    return {
-                        ...book.book,
-                        averageRating: apiBook.data.volumeInfo.averageRating || 0,
-                        personalRating: book.rating || 0,
-                    };
-                })
-            );
-            setBooks(books);
-        } catch (error) {
-            console.error("Error fetching books:", error);
-        }
-    };
+    const token = localStorage.getItem('access_token');
+    try {
+        const user = await getUserData.getUserData(token);
+        const response = await LibraryService.getBooksByUser(user.id);
+        const books = await Promise.all(
+            response.data.map(async (book) => {
+                const [apiBook, userRatingResponse] = await Promise.all([
+                    BookService.getGoogleBookById(book.book.id_book),
+                    LibraryService.getRating(user.id, book.book.id)
+                ]);
+                return {
+                    ...book.book,
+                    averageRating: apiBook.data.volumeInfo.averageRating || 0,
+                    personalRating: userRatingResponse.status === 200 ? userRatingResponse.data.rating : 0,
+                    ourId: book.book.id,
+                };
+            })
+        );
+        setBooks(books);
+    } catch (error) {
+        console.error("Error fetching books:", error);
+    }
+};
 
     const handlePersonalRatingChange = async (bookId, newRating) => {
         const token = localStorage.getItem('access_token');
@@ -85,6 +90,8 @@ export const Library = () => {
             }
         }
     };
+
+
 
     useEffect(() => {
         fetchUserBooks();
