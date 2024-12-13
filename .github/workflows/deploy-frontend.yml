@@ -1,0 +1,54 @@
+name: CI/CD for UBReads
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set Environment Variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "ENV_MODE=production" >> $GITHUB_ENV
+          echo "VITE_BACKEND_API_URL=http://3.255.70.190:8000" >> $GITHUB_ENV
+          echo "VITE_GOOGLE_BOOKS_API_URL=https://www.googleapis.com/books/v1" >> $GITHUB_ENV
+          echo "VITE_GOOGLE_API_KEY=AIzaSyCw78QPx6xzqcMAUTu5_30li3lGBtI3qaU" >> $GITHUB_ENV
+          echo "S3_BUCKET=ubreads-prod-public-bucket" >> $GITHUB_ENV
+        else
+          echo "ENV_MODE=preproduction" >> $GITHUB_ENV
+          echo "VITE_BACKEND_API_URL=http://34.246.34.123:8000" >> $GITHUB_ENV
+          echo "VITE_GOOGLE_BOOKS_API_URL=https://www.googleapis.com/books/v1" >> $GITHUB_ENV
+          echo "VITE_GOOGLE_API_KEY=AIzaSyCw78QPx6xzqcMAUTu5_30li3lGBtI3qaU" >> $GITHUB_ENV
+          echo "S3_BUCKET=ubreads-dev-public-bucket" >> $GITHUB_ENV
+        fi
+
+    - name: Build Frontend
+      run: |
+        # Crear archivo .env basado en las variables de entorno
+        echo "ENV_MODE=${{ env.ENV_MODE }}" > .env
+        echo "VITE_BACKEND_API_URL=${{ env.VITE_BACKEND_API_URL }}" >> .env
+        echo "VITE_GOOGLE_BOOKS_API_URL=${{ env.VITE_GOOGLE_BOOKS_API_URL }}" >> .env
+        echo "VITE_GOOGLE_API_KEY=${{ env.VITE_GOOGLE_API_KEY }}" >> .env
+
+        # Instalar dependencias y construir el frontend
+        npm install
+        npm run build
+
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy Frontend to S3
+      run: |
+        aws s3 sync ./dist s3://${{ env.S3_BUCKET }} --delete

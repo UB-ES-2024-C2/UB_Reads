@@ -23,14 +23,19 @@ import { Grid2, Container, Box } from '@mui/material';
 import { BookRatingAvg } from "../";
 import {BookRatingUser} from "../common/BookRatingUser";
 
+import { BookRating } from "../index.js";
 
 // Services
-import getUserData from '../../services/getData.js';
+import getUserData from '../../services/UserService.js';
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
 
 export const Library = () => {
     const [books, setBooks] = useState([]);
+export const LibraryView = () => {
+
+    // Component variables
+    const [library, setLibrary] = useState([]);
 
 
     const fetchUserBooks = async () => {
