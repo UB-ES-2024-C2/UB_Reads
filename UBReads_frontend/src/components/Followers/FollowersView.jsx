@@ -9,23 +9,12 @@ import { FollowersBookList } from "./FollowersBookList.jsx";
 import { Grid2 } from '@mui/material';
 
 export const FollowersView = () => {
-    const [userFound, setUserFound] = useState(null);
     const [username, setUsername] = useState([]);
     const [followedUsers, setFollowedUsers] = useState([]);
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             followUser(username);
-        }
-    };
-
-    const fetchUsersFollowed = async () => {
-        try {
-            const token = localStorage.getItem('access_token');
-            const usersFollowed = await FollowerService.getUsersFollowed(token);
-            setFollowedUsers(usersFollowed);
-        } catch (error) {
-            console.error("Error al obtener los usuarios seguidos:", error);
         }
     };
 
@@ -39,16 +28,26 @@ export const FollowersView = () => {
         }
     };
 
-    useEffect(() => {
+    const [users, setUsers] = React.useState([]);
+
+    const fetchUsersFollowed = async () => {
+        try {
+            const token = localStorage.getItem('access_token');
+            const usersFollowed = await FollowerService.getUsersFollowed(token);
+            setUsers(usersFollowed);
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    React.useEffect(() => {
         fetchUsersFollowed();
     }, []);
-
-    const elements = Array.from({ length: 10 }, (_, i) => i + 1); // Crea un array [1, 2, ..., 10]
 
     return (
         /* Main container */
         <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100dvh', overflow: 'auto', display: 'flex', flexDirection: 'column', paddingBottom: '5rem' }}>
-            {elements.map((element) => (
+            {users.map((element) => (
                 <Grid2 container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Grid2 size={1} sx={{ border: '1px solid #000000', height: '100%' }}>
                         <UserCard />
