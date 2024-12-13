@@ -20,7 +20,7 @@ import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
 import { BookRatingAvg } from '../';
-import {BookRatingUser} from "../common/BookRatingUser";
+import { BookRatingUser } from '../common/BookRatingUser';
 
 /**
  * @returns Book view
@@ -35,7 +35,7 @@ export const Book = () => {
     const [userRating, setUserRating] = useState(null);
 
     const handleAddBook = async () => {
-        const book2 = {
+        const bookData = {
             id_book: book.id,
             title: book.title,
             author: book.author,
@@ -61,7 +61,7 @@ export const Book = () => {
                 setBookAdded(true);
             }
         } else {
-            await BookService.addBookToBackend(book2);
+            await BookService.addBookToBackend(bookData);
             const books = await BookService.getBackendBooks();
             books.data.forEach((backendBook) => {
                 if (backendBook.id_book === book.id) {
@@ -104,9 +104,26 @@ export const Book = () => {
             const response = await LibraryService.addRating(user.id, bookId, newRating);
 
             if (response.status === 200) {
-                setUserRating(newRating); // Update local state
+                setUserRating(newRating);
             } else {
                 console.warn('Error updating rating:', response);
+            }
+        }
+    };
+
+    const getRating = async () => {
+        const token = localStorage.getItem('access_token');
+        const books = await BookService.getBackendBooks();
+        const bookId = books.data.find((backendBook) => backendBook.id_book === book.id)?.id;
+
+        if (bookId) {
+            const user = await getUserData.getUserData(token);
+            const response = await LibraryService.getRating(user.id, bookId);
+
+            if (response.status === 200) {
+                setUserRating(response.data.rating);
+            } else {
+                console.warn('Error retrieving rating:', response);
             }
         }
     };
@@ -119,14 +136,15 @@ export const Book = () => {
         response.data.forEach((_book) => {
             if (_book.book.id_book === book.id) {
                 setBookAdded(true);
-                setUserRating(_book.rating); // Set the user's existing rating if available
+                setUserRating(_book.rating);
             }
         });
     };
 
     useEffect(() => {
         checkBookAdded();
-    }, [bookAdded]);
+        getRating();
+    }, []);
 
     return (
         <Container
@@ -161,16 +179,11 @@ export const Book = () => {
                 </Box>
                 {/* Rating */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
-
-                    <BookRatingAvg
-                        averageRating={book.averageRating}
-
-                    />
+                    <BookRatingAvg averageRating={book.averageRating} />
                     <BookRatingUser
                         userRating={userRating}
                         onRatingChange={handleRatingChange}
                     />
-
                 </Box>
 
                 <Box>
@@ -191,14 +204,14 @@ export const Book = () => {
                 </Box>
                 {/* Description */}
                 <Box sx={{ overflow: 'auto', marginTop: '2rem' }}>
-                    {book.desciption !== undefined && (
+                    {book.description && (
                         <div id="content-container">
                             <Typography
                                 variant="h5"
                                 component="p"
                                 sx={{ maxHeight: readMorePressed ? 'none' : '2lh', overflow: 'hidden' }}
                             >
-                                {book.desciption}
+                                {book.description}
                             </Typography>
                             <Typography
                                 variant="h5"
