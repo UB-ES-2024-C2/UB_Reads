@@ -1,10 +1,10 @@
-name: CI/CD for UBReads
+name: CI/CD for UBReads Frontend
 
 on:
   push:
     branches:
       - main
-      - development
+      - preproduction
 
 jobs:
   deploy:
@@ -32,15 +32,18 @@ jobs:
 
     - name: Build Frontend
       run: |
-        # Crear archivo .env basado en las variables de entorno
+        cd UBReads_frontend # Cambia a la carpeta donde está package.json
         echo "ENV_MODE=${{ env.ENV_MODE }}" > .env
         echo "VITE_BACKEND_API_URL=${{ env.VITE_BACKEND_API_URL }}" >> .env
         echo "VITE_GOOGLE_BOOKS_API_URL=${{ env.VITE_GOOGLE_BOOKS_API_URL }}" >> .env
         echo "VITE_GOOGLE_API_KEY=${{ env.VITE_GOOGLE_API_KEY }}" >> .env
-
-        # Instalar dependencias y construir el frontend
+    
         npm install
-        npm run build
+        if [[ "${{ env.ENV_MODE }}" == "production" ]]; then
+          npm run build:production
+        else
+          npm run build:preproduction
+        fi
 
     - name: Configure AWS CLI
       uses: aws-actions/configure-aws-credentials@v3
@@ -51,4 +54,4 @@ jobs:
 
     - name: Deploy Frontend to S3
       run: |
-        aws s3 sync ./dist s3://${{ env.S3_BUCKET }} --delete
+        aws s3 sync ./UBReads_frontend/dist s3://${{ env.S3_BUCKET }} --delete
