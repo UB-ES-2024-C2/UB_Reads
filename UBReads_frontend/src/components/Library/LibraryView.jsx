@@ -35,7 +35,7 @@ export const LibraryView = () => {
     const fetchUserBooks = async () => {
         try {
             const token = localStorage.getItem('access_token');
-            const books = await LibraryService.getBooksByUser(token);
+            const books = await LibraryService.getCurrentUserBooks(token);
             await Promise.all(books.map(async (book) => book.averageRating = await BookService.getBookAverageRating(book.id_book)));
             setLibrary(books);
         } catch (error) {

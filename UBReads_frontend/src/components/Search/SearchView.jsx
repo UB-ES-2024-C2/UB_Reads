@@ -22,13 +22,10 @@ import LibraryService from '../../services/LibraryService.js';
  * Search view component
  * @returns React component with the search view
  */
-export const SearchView = () => {
+export const SearchView = ({ query }) => {
 
     // Hook used to navigate through routes
     const navigate = useNavigate();
-
-    // Get the query from the URL
-    const { query } = useParams();
 
     // React states used to store the results and the user library
     const [results, setResults] = React.useState([]);
@@ -50,7 +47,7 @@ export const SearchView = () => {
 
     const fetchLibrary = async () => {
         try {
-            const libraryBooks = await LibraryService.getBooksByUser(TOKEN);
+            const libraryBooks = await LibraryService.getCurrentUserBooks(TOKEN);
             setLibrary(libraryBooks);
         } catch (error) {
             console.error(error);
@@ -62,14 +59,14 @@ export const SearchView = () => {
      * @param {Object} book 
      */
     const showBook = (book) => {
-        navigate('/home/book', { state: { book: book } });
+        navigate(`/home/book/${book.id}`, { state: { book: book } });
     };
 
     // Fetch books and library when the component is mounted
     React.useEffect(() => {
         fetchBooks();
         fetchLibrary();
-    }, []);
+    }, [query]);
 
     return (
         // Image list with the search results cards
