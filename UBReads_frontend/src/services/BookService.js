@@ -71,6 +71,24 @@ class BookService {
         }
     }
 
+    async getBookById(id_book) {
+        // Get the book data from the Google Books API
+        const response = await googleAPI.get(`/volumes/${id_book}`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return this.createBookFromGoogleAPI(response.data)
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 404:
+                throw new Error('No s\'ha trobat cap llibre amb aquest ID');
+            case 400:
+                throw new Error('Format de l\'ID incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API de Google Books');
+        }
+    }
+
     /* BACKEND API FUNCTIONS */
 
     /**
