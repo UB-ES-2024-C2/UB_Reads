@@ -17,6 +17,7 @@ import { blue } from "@mui/material/colors"; // Colors
 import { Nav } from "..";
 import { FollowersView } from "..";
 import { BookView, SearchView, ProfileView, LibraryView } from '..';
+import { UserCard, FollowersBookList } from '..';
 
 
 /**
