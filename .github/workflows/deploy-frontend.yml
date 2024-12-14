@@ -54,4 +54,4 @@ jobs:
 
     - name: Deploy Frontend to S3
       run: |
-        aws s3 sync ./dist s3://${{ env.S3_BUCKET }} --delete
+        aws s3 sync ./UBReads_frontend/dist s3://${{ env.S3_BUCKET }} --delete
