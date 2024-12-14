@@ -1,10 +1,10 @@
-name: CI/CD for UBReads
+name: CI/CD for UBReads Frontend
 
 on:
   push:
     branches:
       - main
-      - development
+      - preproduction
 
 jobs:
   deploy:
