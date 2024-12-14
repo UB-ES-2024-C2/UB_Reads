@@ -133,7 +133,7 @@ export const BookView = () => {
             </Box>
             {/* Close view button */}
             <Box>
-                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate('/home')}>
+                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate(-1, { state: state })}>
                     <ClearIcon sx={{ color: pink[700], width: '3.5rem', height: '3.5rem' }} />
                 </IconButton>
             </Box>
