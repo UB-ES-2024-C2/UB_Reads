@@ -9,7 +9,7 @@ import React from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 // Material UI
-import { Container } from "@mui/system";  // Layout
+import { Container, width } from "@mui/system";  // Layout
 import { Typography, Box } from "@mui/material";  // Components
 import { blue } from "@mui/material/colors"; // Colors
 
@@ -18,6 +18,7 @@ import { Nav } from "..";
 import { FollowersView } from "..";
 import { BookView, SearchView, ProfileView, LibraryView } from '..';
 import UserService from "../../services/UserService";
+import { Sidebar } from '..';
 
 
 /**
@@ -92,7 +93,8 @@ export const HomePage = () => {
             {/* Navigation bar */}
             <Nav user={user} buttonText={navButtonText} placeholder={navPlaceholder} onSearch={handleSearch} />
             {/* Variable Content */}
-            <Box sx={{ height: '100%', overflow: 'hidden' }}>
+            <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex' }}>
+                <Sidebar />
                 <Routes>
                     {/* Home page */}
                     <Route path="/" element={

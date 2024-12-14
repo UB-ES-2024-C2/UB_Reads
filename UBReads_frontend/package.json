@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "vite --mode default",                
-    "build:dev": "vite build --mode development", 
+    "build:preproduction": "vite build --mode preproduction", 
     "build:prod": "vite build --mode production", 
     "lint": "eslint .",
     "preview": "vite preview",
