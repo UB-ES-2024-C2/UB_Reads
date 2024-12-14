@@ -16,6 +16,7 @@ import { Nav } from "..";
 import { FollowersView } from "..";
 import { HomeView } from "..";     // Home view
 import { BookView, SearchView, ProfileView, LibraryView } from '..';
+import { Sidebar } from '..';
 
 
 /**
@@ -45,7 +46,8 @@ export const HomePage = () => {
             {/* Navigation bar */}
             <Nav onSearch={ search } />
             {/* Variable Content */}
-            <Box sx={{ height: '100%', overflow: 'hidden' }}>
+            <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex' }}>
+                <Sidebar />
                 <Routes>
                     {/* Home page */}
                     <Route path="/" element={<HomeView />} />
