@@ -30,17 +30,20 @@ jobs:
           echo "S3_BUCKET=ubreads-dev-public-bucket" >> $GITHUB_ENV
         fi
 
-    - name: Build Frontend
-      run: |
-        # Crear archivo .env basado en las variables de entorno
-        echo "ENV_MODE=${{ env.ENV_MODE }}" > .env
-        echo "VITE_BACKEND_API_URL=${{ env.VITE_BACKEND_API_URL }}" >> .env
-        echo "VITE_GOOGLE_BOOKS_API_URL=${{ env.VITE_GOOGLE_BOOKS_API_URL }}" >> .env
-        echo "VITE_GOOGLE_API_KEY=${{ env.VITE_GOOGLE_API_KEY }}" >> .env
-
-        # Instalar dependencias y construir el frontend
-        npm install
-        npm run build
+        - name: Build Frontend
+        run: |
+          cd UBReads_frontend # Cambia a la carpeta donde está package.json
+          echo "ENV_MODE=${{ env.ENV_MODE }}" > .env
+          echo "VITE_BACKEND_API_URL=${{ env.VITE_BACKEND_API_URL }}" >> .env
+          echo "VITE_GOOGLE_BOOKS_API_URL=${{ env.VITE_GOOGLE_BOOKS_API_URL }}" >> .env
+          echo "VITE_GOOGLE_API_KEY=${{ env.VITE_GOOGLE_API_KEY }}" >> .env
+      
+          npm install
+          if [[ "${{ env.ENV_MODE }}" == "production" ]]; then
+            npm run build:production
+          else
+            npm run build:preproduction
+          fi
 
     - name: Configure AWS CLI
       uses: aws-actions/configure-aws-credentials@v3
