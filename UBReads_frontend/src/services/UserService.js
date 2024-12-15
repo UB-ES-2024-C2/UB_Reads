@@ -111,10 +111,11 @@ class UserService {
      * @param {String} username 
      * @param {String} email 
      * @param {String} password 
+     * @param {String} profile_pic
      */
-    async signup(username, email, password) {
+    async signup(username, email, password, profile_pic) {
         // Send the signup request
-        await backendAPI.post('/users/', {username, email, password});
+        await backendAPI.post('/users/', {username, email, password, profile_pic});
     };
 }
 
