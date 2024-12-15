@@ -34,7 +34,7 @@ class UserController:
             raise ValueError("El correo electrónico ya está registrado")
 
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
-        db_user = User(username=username, email=email, password=hashed_password)
+        db_user = User(username=username, email=email, password=hashed_password, profile_pic=profile_pic)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)

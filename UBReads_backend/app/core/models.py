@@ -25,6 +25,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
+    profile_pic = Column(String(255), nullable=True)  
     password = Column(String)
     refresh_token = Column(String(255))
 
