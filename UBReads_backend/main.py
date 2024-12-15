@@ -9,6 +9,7 @@ import os
 app = FastAPI()
 
 # Resetear o crear las tablas en la base de datos
+# RESET
 reset_database()  # Solo si necesitas limpiar la base de datos
 create_tables()
 print("I WAS IN THE SERVER AGAIN")
