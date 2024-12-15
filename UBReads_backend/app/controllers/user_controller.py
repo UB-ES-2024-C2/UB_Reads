@@ -23,7 +23,7 @@ class UserController:
         self.db = db
 
     @staticmethod
-    def insert_user(db: Session, username: str, email: str, password: str):
+    def insert_user(db: Session, username: str, email: str, password: str, profile_pic: str):
         existing_user = db.query(User).filter(User.username == username).first()
         if existing_user:
             raise ValueError("El usuario ya existe")  # Puedes personalizar el mensaje
