@@ -13,6 +13,7 @@ export { BookView } from './Books/BookView';
 // Common components
 export { Nav } from './common/Nav';
 export { BookRating } from './common/BookRating';
+export { Sidebar } from './common/Sidebar';
 
 // Followers components
 export { UserCard } from './Followers/userCard';
