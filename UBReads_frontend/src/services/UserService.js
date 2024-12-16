@@ -9,7 +9,7 @@ class UserService {
      */
     createUserFromBacken(user) {
         return {
-            image: user.image,
+            image: user.profile_pic ? user.profile_pic : "",
             id: user.id ? user.id : null,
             username: user.username ? user.username : "Username",
             email: user.email ? user.email : "username@example.com",
@@ -46,6 +46,8 @@ class UserService {
                 'Authorization': `Bearer ${token}`,
             }
         });
+
+        console.log(response);
         // Manage response
         switch (response.status) {
             case 200:

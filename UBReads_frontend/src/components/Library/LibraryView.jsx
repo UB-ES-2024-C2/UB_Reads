@@ -49,7 +49,7 @@ export const LibraryView = () => {
      */
     const removeBook = async (book) => {
         try {
-            const confirmation = confirm(`Are you sure you want to delete ${book.title} from your library?`);
+            const confirmation = confirm(`Segur que vols eliminar "${book.title}" de la biblioteca?`);
             if (!confirmation) return;
             const token = localStorage.getItem('access_token');
             await LibraryService.deleteBookFromUser(book, token);
