@@ -44,7 +44,8 @@ def test_add_book_to_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -73,7 +74,8 @@ def test_get_books_by_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -109,7 +111,8 @@ def test_get_users_by_book(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
 
@@ -147,7 +150,8 @@ def test_remove_book_from_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -179,7 +183,8 @@ def test_update_book_read_status(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200

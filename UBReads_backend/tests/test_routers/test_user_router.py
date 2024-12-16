@@ -55,6 +55,7 @@ async def test_get_current_user_valid_token(client):
             "username": "valid_user",
             "email": "valid_user@example.com",
             "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -92,6 +93,7 @@ async def test_get_current_user_invalid_token(client):
             "username": "valid_user",
             "email": "valid_user@example.com",
             "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -125,7 +127,8 @@ def test_create_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -139,7 +142,8 @@ def test_create_existing_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -151,7 +155,8 @@ def test_create_existing_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 400
@@ -164,7 +169,8 @@ def test_create_existingmail_user(client):
         json={
             "username": "testuser",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -176,7 +182,8 @@ def test_create_existingmail_user(client):
         json={
             "username": "testuser2",
             "email": "testuser@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 400
@@ -189,7 +196,8 @@ def test_read_user(client):
         json={
             "username": "testuser2",
             "email": "testuser2@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     user_id = response.json()["id"]
@@ -212,7 +220,8 @@ def test_delete_user(client):
         json={
             "username": "user_to_delete",
             "email": "delete@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     assert response.status_code == 200
@@ -263,7 +272,8 @@ def test_get_users(client):
         json={
             "username": "testuser1",
             "email": "testuser1@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     client.post(
@@ -297,7 +307,8 @@ def test_login(client):
         json={
             "username": "testuser3",
             "email": "testuser3@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
 
@@ -317,7 +328,8 @@ def test_read_users_me(client):
         json={
             "username": "testuser4",
             "email": "testuser4@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     login_response = client.post(
@@ -335,7 +347,7 @@ def test_read_users_me(client):
 @pytest.mark.asyncio
 async def test_refresh_token_valid(client):
     # Create test user
-    user_data = {"username": "valid_user", "email": "valid_user@example.com", "password": "password123"}
+    user_data = {"username": "valid_user", "email": "valid_user@example.com", "password": "password123","profile_pic": "prova"}
     user_response = client.post("/users/", json=user_data)
     assert user_response.status_code == 200
 
@@ -360,7 +372,7 @@ async def test_refresh_token_valid(client):
 @pytest.mark.asyncio
 async def test_refresh_token_invalid(client):
     # Create test user
-    user_data = {"username": "valid_user", "email": "valid_user@example.com", "password": "password123"}
+    user_data = {"username": "valid_user", "email": "valid_user@example.com", "password": "password123","profile_pic": "prova"}
     user_response = client.post("/users/", json=user_data)
     assert user_response.status_code == 200
     
@@ -381,12 +393,12 @@ async def test_refresh_token_invalid(client):
 
 def test_follow_user(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
@@ -412,12 +424,12 @@ def test_follow_user(client):
 
 def test_follow_user_id(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["id"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["id"]
 
@@ -442,7 +454,7 @@ def test_follow_user_id(client):
 
 
 def test_follow_non_existent_user(client):
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
     id2 = 22
@@ -464,7 +476,7 @@ def test_follow_non_existent_user(client):
 
 
 def test_follow_non_existent_user_id(client):
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["id"]
     id2 = "falseuser"
@@ -487,12 +499,12 @@ def test_follow_non_existent_user_id(client):
 
 def test_unfollow_user(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
@@ -524,12 +536,12 @@ def test_unfollow_user(client):
 
 def test_unfollow_nonfollowed_user(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
@@ -549,7 +561,7 @@ def test_unfollow_nonfollowed_user(client):
 
 
 def test_unfollow_nonexisting_user(client):
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
@@ -569,12 +581,12 @@ def test_unfollow_nonexisting_user(client):
 
 def test_get_followers(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
@@ -608,12 +620,12 @@ def test_get_followers(client):
 
 def test_get_following(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
