@@ -194,7 +194,7 @@ export const HomeView = () => {
 
     return (
         // Main container
-        <Container maxWidth="false" sx={{ height: '100%', p: '2rem' }}>
+        <Container maxWidth="false" sx={{ height: '100%', p: '2rem', width: '85%' }}>
             <Box sx={{ height: '33%' }}>
                 <Typography variant="h2" sx={{ color: blue[800], fontSize: '2.75rem', fontWeight: 500, height: '25%' }}>Recomanacions</Typography>
                 <Stack direction="row" sx={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '75%' }}>

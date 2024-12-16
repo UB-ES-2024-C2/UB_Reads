@@ -81,7 +81,8 @@ export const ProfileView = () => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      width: '85%'
     }}>
       <Container className="content-container" maxWidth="false" sx={{
         display: 'flex',

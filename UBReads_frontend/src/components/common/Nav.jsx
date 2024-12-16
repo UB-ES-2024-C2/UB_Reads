@@ -57,6 +57,7 @@ export const Nav = ({ onSearch }) => {
   const handleSearch = (e) => {
     e.preventDefault();
     onSearch(input.trim());
+    setInput('');
   };
 
   const handleOpenUserMenu = (event) => {
@@ -138,6 +139,7 @@ export const Nav = ({ onSearch }) => {
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
+                  value={input}
                 sx={{ marginLeft: '0.5dvw',
                 color: 'white',
                 height: '100%',
