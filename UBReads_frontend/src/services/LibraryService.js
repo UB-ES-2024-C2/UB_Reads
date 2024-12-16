@@ -18,7 +18,7 @@ class LibraryService {
         
         // If the book is not in the backend, add it
         if (!backendBook) {
-            const a = await BookService.addBookToBackend(book);
+            await BookService.addBookToBackend(book);
             backendBooks = await BookService.getAllBackendBooks();
             backendBook = backendBooks.find(_backendBook => _backendBook.id_book === book.id_book);
         }
@@ -84,7 +84,7 @@ class LibraryService {
     async isBookAdded(bookGoogleId, token) {
         // Retrieves user's library to check if the book is already in the library
         const library = await this.getBooksByUser(token);
-        return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
+        return !!library.find(backendBook => backendBook.id_book === bookGoogleId);
     }
 
     /**

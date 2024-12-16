@@ -68,7 +68,7 @@ export const BookView = () => {
                 }
             });
 
-            const user = await UserService.getUserData(token);
+            await UserService.getUserData(token);
             const response = await LibraryService.addBookToUser(bookId, token);
             if (response.status === 200) {
                 setBookAdded(true);
