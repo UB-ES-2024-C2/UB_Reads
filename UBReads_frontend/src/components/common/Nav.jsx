@@ -45,6 +45,7 @@ export const Nav = ({ user, buttonText, placeholder, onSearch }) => {
     const handleSearch = (e) => {
         e.preventDefault();
         onSearch(input.trim());
+        setInput('');
     };
 
     const handleKeyDown = (e) => {
@@ -77,7 +78,7 @@ export const Nav = ({ user, buttonText, placeholder, onSearch }) => {
 
                 {/* Searchbox */}
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30dvw', height: '100%' }} onKeyDown={handleKeyDown}>
-                    <TextField fullWidth sx={{ color: 'white', width: '100%', '& .MuiInputBase-input': {backgroundColor: 'white', height: '100%'} }} placeholder={placeholder} onChange={(e) => setInput(e.target.value)} />
+                    <TextField fullWidth sx={{ color: 'white', width: '100%', '& .MuiInputBase-input': {backgroundColor: 'white', height: '100%'} }} placeholder={placeholder} onChange={(e) => setInput(e.target.value)} value={input} />
                     <Button disableRipple variant="outlined" sx={{ color: '#ffffff', borderColor: '#ffffff', backgroundColor: blue[800], marginLeft: '0.5dvw' }} onClick={handleSearch}>{buttonText}</Button>
                 </Box>
             </Stack>
