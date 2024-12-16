@@ -33,6 +33,7 @@ export const SearchBookCard = ({ book, onClick, library }) => {
     const addBook = async () => {
         try {
             await LibraryService.addBookToUser(book, TOKEN);
+            await LibraryService.addRead(TOKEN, book, confirm('Has llegit aquest llibre?'))
             setBookAdded(true);
         } catch (error) {
             console.error(error);

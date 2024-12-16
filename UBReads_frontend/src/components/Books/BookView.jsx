@@ -35,62 +35,26 @@ export const BookView = () => {
     const [userRating, setUserRating] = useState(null);
 
     const handleAddBook = async () => {
-        const bookData = {
-            id_book: book.id,
-            title: book.title,
-            author: book.author,
-            category: book.category,
-            year: book.year !== 'Unknown' ? Number(book.year) : 0,
-            cover_url: book.cover_url,
-        };
-
-        const token = localStorage.getItem('access_token');
-        let bookId = null;
-
-        const bookExists = await BookService.getAllBackendBooks();
-        bookExists.forEach((backendBook) => {
-            if (backendBook.id_book === book.id) {
-                bookId = backendBook.id;
-            }
-        });
-
-        if (bookId !== null) {
-            const response = await LibraryService.addBookToUser(bookId, token);
-            if (response.status === 200) {
-                setBookAdded(true);
-            }
-        } else {
-            await BookService.addBookToBackend(bookData);
-            const books = await BookService.getAllBackendBooks();
-            books.forEach((backendBook) => {
-                if (backendBook.id_book === book.id) {
-                    bookId = backendBook.id;
-                }
-            });
-
-            await UserService.getUserData(token);
-            const response = await LibraryService.addBookToUser(bookId, token);
-            if (response.status === 200) {
-                setBookAdded(true);
-            }
+        try {
+            const token = localStorage.getItem('access_token');
+            await LibraryService.addBookToUser(book, token);
+            await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'))
+            setBookAdded(true);
+        } catch (error) {
+            console.error(error);
         }
+
     };
 
     const handleRemoveBook = async () => {
-        let book = null;
-        const token = localStorage.getItem('access_token');
-        const books = await BookService.getAllBackendBooks();
-        books.forEach((backendBook) => {
-            if (backendBook.id_book === book.id_book) {
-                book = backendBook;
-            }
-        });
-
-        const response = await LibraryService.deleteBookFromUser(book, token);
-        if (response.status === 200) {
+        try {
+            const token = localStorage.getItem('access_token');
+            await LibraryService.deleteBookFromUser(book, token);
             setBookAdded(false);
+        } catch (error) {
+            console.error(error);
         }
-    };
+    }
 
     const handleRatingChange = async (newRating) => {
         const token = localStorage.getItem('access_token');
