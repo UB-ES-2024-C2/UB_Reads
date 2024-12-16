@@ -60,7 +60,7 @@ def create_tables():
     Base.metadata.create_all(engine)
 
 
-def reset_database():
+def reset_database(engine = engine):
     # Elimina todas las tablas
     print("Eliminando todas las tablas...")
     Base.metadata.drop_all(bind=engine)
