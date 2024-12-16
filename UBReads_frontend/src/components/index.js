@@ -1,17 +1,31 @@
-// Page components
-export { Login } from './pages/login';
-export { Signup } from './pages/signup';
-export { Home } from './pages/home';
-export { FollowingList } from './views/followingList';
+// Login components
+export { LoginPage } from './Login/LoginPage';
 
-// View components
-export { Book } from './views/Book';
-export { Search } from './views/Search';
-export { Profile } from './views/Profile';
-export { Library } from './views/Library';
+// Signup components
+export { SignupPage } from './Signup/SignupPage';
 
-// Layout components
-export { Navbar } from './layout/navbar';
+// Home components
+export { HomePage } from './Home/HomePage';
+
+// Books components
+export { BookView } from './Books/BookView';
 
 // Common components
+export { Nav } from './common/Nav';
 export { BookRating } from './common/BookRating';
+export { Sidebar } from './common/Sidebar';
+
+// Followers components
+export { UserCard } from './Followers/userCard';
+export { UserList } from './Followers/userList';
+export { FollowersView } from './Followers/FollowersView';
+
+// Library components
+export { LibraryView } from './Library/LibraryView';
+
+// Profile components
+export { ProfileView } from './Profile/ProfileView';
+
+// Search components
+export { SearchView } from './Search/SearchView';
+export { SearchBookCard } from './Search/SearchBookCard';

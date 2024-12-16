@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - development
+      - preproduction
 
 jobs:
   deploy-backend:
@@ -35,23 +35,28 @@ jobs:
     - name: Crear archivo .pem desde secret
       run: |
         if [[ "${{ github.ref_name }}" == "main" ]]; then
-          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > prod-key.pem
-          chmod 400 prod-key.pem
-          echo "KEY_FILE=prod-key.pem" >> $GITHUB_ENV
+          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > key.pem
+          chmod 400 key.pem
         else
-          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > dev-key.pem
-          chmod 400 dev-key.pem
-          echo "KEY_FILE=dev-key.pem" >> $GITHUB_ENV
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > key.pem
+          chmod 400 key.pem          
         fi
 
     # Log in to Amazon ECR
     - name: Log in to Amazon ECR
       run: |
-        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 381492053763.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
+        echo "${{ secrets.AWS_REGION }}"
+        echo "docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+    
     # Build, tag, and push Docker image
     - name: Build Docker Image
-      run: docker build -t ubreads-backend .
+      run: docker build -t ubreads-backend ./UBReads_backend
 
     - name: Tag Docker Image
       run: docker tag ubreads-backend:latest 381492053763.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ubreads-repo:${{ env.ENVIRONMENT }}
@@ -62,8 +67,7 @@ jobs:
     # Deploy the backend to EC2
     - name: Deploy Backend to EC2
       run: |
-        ssh -i ${{ env.KEY_FILE }} ubuntu@${{ env.BACKEND_IP }} << 'EOF'
-        cd /home/ubuntu
+        ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.BACKEND_IP }} << 'EOF'
         docker-compose pull
         docker-compose up -d
         EOF

@@ -4,6 +4,7 @@ import { Rating, Box } from '@mui/material';
 
 // MUI Icons
 import StarIcon from '@mui/icons-material/Star';
+import { useEffect } from 'react';
 
 export const BookRating = ({ rating, maxValue = 5 }) => {
 
