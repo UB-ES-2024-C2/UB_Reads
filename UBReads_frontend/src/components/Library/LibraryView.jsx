@@ -73,17 +73,17 @@ export const LibraryView = () => {
                     <Grid2 size={1}></Grid2>
                     <Grid2 size={4}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Book
+                            Llibre
                         </Typography>
                     </Grid2>
                     <Grid2 size={3}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Average Rating
+                            Puntuació Mitjana
                         </Typography>
                     </Grid2>
                     <Grid2 size={3}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Personal Rating
+                            Puntuació Personal
                         </Typography>
                     </Grid2>
                 </Grid2>

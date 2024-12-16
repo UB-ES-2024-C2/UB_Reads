@@ -86,7 +86,7 @@ export const FollowersView = () => {
                 color: grey[800],
             }}
             >
-            Users You Are Following:
+            Usuaris que estàs seguint:
             </Typography>
         </Box>
 
