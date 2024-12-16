@@ -91,6 +91,7 @@ export const SignupPage = () => {
   };
 
   return (
+    
     <main className="main-container">
       <div className="central-container">
         <div className="welcome-container">
@@ -100,7 +101,7 @@ export const SignupPage = () => {
           </p>
         </div>
         <div className="signup-container">
-          <h2>Signup</h2>
+          <h2>Crear nou compte</h2>
           <form onSubmit={handleSubmit}>
             <label htmlFor="username">Nom d&#39;usuari:</label>
             <input
@@ -113,7 +114,7 @@ export const SignupPage = () => {
             />
             {uNameError && <small style={{ color: "red" }}>{uNameError}</small>}
 
-            <label htmlFor="email">Introdueix un Email</label>
+            <label htmlFor="email">Introdueix un correu electrònic</label>
             <input
               type="email"
               id="email"
@@ -165,7 +166,7 @@ export const SignupPage = () => {
             <button type="submit">Envia</button>
           </form>
           <p>
-            Ja tens un compte? <Link to="/">Logueja&#39;t aquí</Link>
+            Ja tens un compte? <Link to="/">Inicia sessió aquí</Link>
           </p>
         </div>
       </div>
