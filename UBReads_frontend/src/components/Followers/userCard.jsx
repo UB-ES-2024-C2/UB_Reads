@@ -63,7 +63,7 @@ export const UserCard = ({ user, verticalLayout = false }) => {
             fontSize: "1.2rem",
           }}
         >
-          User not found
+          No s'ha trobat l'usuari
         </Typography>
       </ListItem>
     );
