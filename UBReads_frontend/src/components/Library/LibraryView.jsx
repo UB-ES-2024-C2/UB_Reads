@@ -1,7 +1,7 @@
 /**
  * 27-11-2024
  * @description: Library view
- * @author: @neorefraction
+ * @author: @neorefraction && @subiranet
  */
 
 // React
@@ -20,45 +20,64 @@ import { pink, blue } from '@mui/material/colors';
 import { Grid2, Container, Box } from '@mui/material';
 
 // Components
-import { BookRating } from "../index.js";
+import { BookRatingAvg } from "../";
+import { BookRatingUser } from "../common/BookRatingUser";
+
 
 // Services
-import getUserData from '../../services/UserService.js';
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
+import UserService from "../../services/UserService";
 
 export const LibraryView = () => {
 
     // Component variables
     const [library, setLibrary] = useState([]);
+    const TOKEN = localStorage.getItem('access_token');
 
-    const fetchUserBooks = async () => {
+     const fetchUserBooks = async () => {
         try {
+            const user = await UserService.getUserData(TOKEN);
             const token = localStorage.getItem('access_token');
             const books = await LibraryService.getBooksByUser(token);
             await Promise.all(books.map(async (book) => book.averageRating = await BookService.getBookAverageRating(book.id_book)));
+            await Promise.all(books.map(async (book) => {
+                const data = await LibraryService.getRating(user.id, book.id)
+                book.personalRating = data.rating;
+            }));
             setLibrary(books);
         } catch (error) {
             alert(error);
         }
-    }
+    };
 
-    /**
-     * Deletes a book from the user's library
-     * @param {String} bookId 
-     */
+    const handlePersonalRatingChange = async (bookId, newRating) => {
+        try {
+            const user = await UserService.getUserData(TOKEN);
+            const response = await LibraryService.addRating(user.id, bookId, newRating);
+            if (response.status === 200) {
+                setLibrary((prevBooks) =>
+                    prevBooks.map((book) =>
+                        book.id === bookId ? { ...book, personalRating: newRating } : book
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error updating personal rating:", error);
+        }
+    };
+
     const removeBook = async (book) => {
         try {
-            const confirmation = confirm(`Segur que vols eliminar "${book.title}" de la biblioteca?`);
+            const confirmation = confirm(`Are you sure you want to delete ${book.title} from your library?`);
             if (!confirmation) return;
-            const token = localStorage.getItem('access_token');
-            await LibraryService.deleteBookFromUser(book, token);
+            await LibraryService.deleteBookFromUser(book, TOKEN);
             const new_library = library.filter(item => item.id !== book.id);
             setLibrary(new_library);
         } catch (error) {
-            console.error(error);
+                console.error("Error deleting book:", error);
         }
-    }
+    };
 
     useEffect(() => {
         fetchUserBooks();
@@ -73,17 +92,17 @@ export const LibraryView = () => {
                     <Grid2 size={1}></Grid2>
                     <Grid2 size={4}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Llibre
+                            Book
                         </Typography>
                     </Grid2>
                     <Grid2 size={3}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Puntuació Mitjana
+                            Average Rating
                         </Typography>
                     </Grid2>
                     <Grid2 size={3}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Puntuació Personal
+                            Personal Rating
                         </Typography>
                     </Grid2>
                 </Grid2>
@@ -106,20 +125,33 @@ export const LibraryView = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Avatar variant="rounded" src={book.cover_url} />
                                 <Box sx={{ marginInline: '1rem' }}>
-                                    <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
+                                    <Typography variant="h6" color="text.secondary" sx={{
+                                        fontWeight: 'bold',
+                                        marginBottom: 0,
+                                        marginTop: '1rem',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'normal',
+                                        }}>{book.title}</Typography>
                                     <Typography variant="h6" color="text.secondary">{book.author}</Typography>
                                 </Box>
                             </Box>
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRating rating={book.averageRating} />
+                            <BookRatingAvg averageRating={book.averageRating} />
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRating rating={0} />
+                            <BookRatingUser
+                                userRating={book.personalRating}
+                                onRatingChange={(newRating) => handlePersonalRatingChange(book.id, newRating)}
+                            />
                         </Grid2>
                     </Grid2>
                 ))}
             </Box>
         </Container>
     );
-}
+};

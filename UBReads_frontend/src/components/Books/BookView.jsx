@@ -1,28 +1,29 @@
-/**
- * ??-??-2024
- * @description: Book view
- * @author: @neorefraction
- */
-
-// React
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Services
+import UserService from "../../services/UserService";
 import LibraryService from '../../services/LibraryService.js';
+import BookService from '../../services/BookService.js';
 
-// Material UI
-import { Container, Box } from '@mui/material';  // Layout
-import ClearIcon from '@mui/icons-material/Clear';  // Icon
-import { green, blue, pink } from '@mui/material/colors';  // Colors
-import { Typography, Button, IconButton } from '@mui/material';  // Components
+// MUI Layouts
+import { Container, Box } from '@mui/material';
+
+// MUI Icons
+import ClearIcon from '@mui/icons-material/Clear';
+
+// MUI Colors
+import { green, blue, pink } from '@mui/material/colors';
+
+// MUI Components
+import { Typography, Button, IconButton } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../index.js';
+import { BookRatingAvg } from '../';
+import { BookRatingUser } from '../common/BookRatingUser';
 
 /**
- * Book view component
- * @returns Book view component
+ * @returns Book view
  */
 export const BookView = () => {
 
@@ -37,13 +38,17 @@ export const BookView = () => {
     const [bookAdded, setBookAdded] = React.useState(false);
     const [readMorePressed, setReadMorePressed] = React.useState(false);
 
+    // Component states used to manage the user rating
+    const [userRating, setUserRating] = useState(null);
+
+    const TOKEN = localStorage.getItem('access_token');
+
     /**
      * Adds a book to the user library
      */
     const addBook = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            await LibraryService.addBookToUser(book, token);
+            await LibraryService.addBookToUser(book, TOKEN);
             setBookAdded(true);
         } catch (error) {
             console.error(error);
@@ -55,30 +60,58 @@ export const BookView = () => {
      */
     const removeBook = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            await LibraryService.deleteBookFromUser(book, token);
+            await LibraryService.deleteBookFromUser(book, TOKEN);
             setBookAdded(false);
         } catch (error) {
             console.error(error);
         }
     }
 
+    const handleRatingChange = async (newRating) => {
+        const books = await BookService.getAllBackendBooks();
+
+        const bookId = books.find((backendBook) => backendBook.id_book === book.id_book)?.id;
+
+
+        if (bookId) {
+            const user = await UserService.getUserData(TOKEN);
+            const response = await LibraryService.addRating(user.id, bookId, newRating);
+
+
+            if (response.status === 200) {
+                setUserRating(newRating);
+            } else {
+                console.warn('Error updating rating:', response);
+            }
+        } else {
+            throw new Error('No pots valorar un llibre que no tens a la biblioteca');
+        }
+    };
+
     /**
      * Checks if a book is already added to the user library
      */
     const isBookAdded = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            const isAdded = await LibraryService.isBookAdded(book.id_book, token);
+            const isAdded = await LibraryService.isBookAdded(book.id_book, TOKEN);
             setBookAdded(isAdded);
         } catch (error) {
             console.error(error);
         }
     }
 
-    // Check if a book is already added to the user library when the component is mounted
-    React.useEffect(() => {
+    const fetchRating = async () => {
+        const user = await UserService.getUserData(TOKEN);
+        book.averageRating = await BookService.getBookAverageRating(book.id_book)
+        const data = await LibraryService.getRating(user.id, book.id)
+        book.personalRating = data.rating;
+        console.log(book);
+        setUserRating(data.rating);
+    };
+
+    useEffect(() => {
         isBookAdded();
+        fetchRating();
     }, []);
 
     return (
@@ -103,7 +136,10 @@ export const BookView = () => {
                     <Typography variant="h6" component="h2" sx={{ color: blue[800], fontSize: '1.5rem' }}>{ book.author }</Typography>
                 </Box>
                 {/* Rating */}
-                <BookRating rating={book.averageRating} />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+                    <BookRatingAvg averageRating={book.averageRating} />
+                    <BookRatingUser userRating={userRating} onRatingChange={handleRatingChange} />
+                </Box>
                 <Box>
                     <Button
                         variant="contained"

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserBookBase(BaseModel):
@@ -20,3 +20,11 @@ class UserBook(UserBookBase):
 
     class Config:
         from_attributes = True
+
+
+class CommentSchema(BaseModel):
+    comment: str
+
+
+class RatingSchema(BaseModel):
+    rating: float = Field(..., ge=0, le=5)

@@ -46,8 +46,6 @@ class UserService {
                 'Authorization': `Bearer ${token}`,
             }
         });
-
-        console.log(response);
         // Manage response
         switch (response.status) {
             case 200:

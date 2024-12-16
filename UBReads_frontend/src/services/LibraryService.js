@@ -18,7 +18,7 @@ class LibraryService {
         
         // If the book is not in the backend, add it
         if (!backendBook) {
-            const a = await BookService.addBookToBackend(book);
+            await BookService.addBookToBackend(book);
             backendBooks = await BookService.getAllBackendBooks();
             backendBook = backendBooks.find(_backendBook => _backendBook.id_book === book.id_book);
         }
@@ -68,12 +68,13 @@ class LibraryService {
     /**
      * Deletes a book from a user library given the user and book ids
      * @param {Object} book
-     * @param {String} token 
+     * @param {String} token
      */
     async deleteBookFromUser(book, token) {
         // Retrieves backend books to catch the book backend id
         const backendBooks = await BookService.getAllBackendBooks();
         const backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
+
         // Get the user data from the token
         const user = await UserService.getUserData(token);
         // Add a book to a user's library
@@ -92,6 +93,41 @@ class LibraryService {
         const library = await this.getBooksByUser(token);
         return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
     }
+
+    /**
+     * Adds a new book rating from a user library given the book ID and the user ID
+     * @param {number} userId
+     * @param {number} bookId
+     * @param {number} rating
+     */
+    async addRating(userId, bookId, rating) {
+        if (!rating) rating = 0;
+        const requestBody = {
+            rating: rating,
+        };
+
+        return await backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
+    }
+
+    /**
+     * Returns the rating a user has given to a book
+     * @param {number} userId
+     * @param {number} bookId
+     */
+    async getRating(userId, bookId) {
+        const response = await backendAPI.get(`/users/${userId}/books/${bookId}/rating`)
+        switch (response.status) {
+            case 200:
+                return response.data;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 400:
+                throw new Error('Format de l\'ID incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API del backend');
+        }
+    }
+
 }
 
 export default new LibraryService();
