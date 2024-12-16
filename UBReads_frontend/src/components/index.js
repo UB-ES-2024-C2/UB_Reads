@@ -14,7 +14,7 @@ export { BookView } from './Books/BookView';
 export { Nav } from './common/Nav';
 export { BookRatingUser } from './common/BookRatingUser';
 export { BookRatingAvg } from './common/BookRatingAvg';
-
+export { Sidebar } from './common/Sidebar';
 
 // Followers components
 export { UserCard } from './Followers/userCard';
