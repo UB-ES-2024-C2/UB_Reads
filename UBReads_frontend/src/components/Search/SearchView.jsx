@@ -62,7 +62,7 @@ export const SearchView = () => {
      * @param {Object} book 
      */
     const showBook = (book) => {
-        navigate('/home/book', { state: { book: book } });
+        navigate(`/home/book/${book.id_book}`, { state: { book: book } });
     };
 
     // Fetch books and library when the component is mounted
@@ -73,7 +73,7 @@ export const SearchView = () => {
 
     return (
         // Image list with the search results cards
-        <ImageList sx={{ width: '100%', height: '100%', padding: '1rem', margin: 0 }} cols={3} gap={20}>
+        <ImageList sx={{ width: '85%', height: '100%', padding: '1rem', margin: 0 }} cols={3} gap={20}>
         {/* If results found show them */}
         {results.map((item) => (
             <ImageListItem>

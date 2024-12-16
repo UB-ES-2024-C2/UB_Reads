@@ -84,7 +84,7 @@ export const BookView = () => {
     return (
         /* Main container */
         <Container maxWidth="false" sx={{
-            width: '100%',
+            width: '85%',
             height: '100%',
             display: 'flex',
             paddingInline: '5rem !important',

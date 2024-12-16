@@ -9,10 +9,10 @@ class UserService {
      */
     createUserFromBacken(user) {
         return {
-            profImage: user.image,
+            image: user.image,
             id: user.id ? user.id : null,
-            usernameSTR: user.username ? user.username : "Username",
-            emailSTR: user.email ? user.email : "username@example.com",
+            username: user.username ? user.username : "Username",
+            email: user.email ? user.email : "username@example.com",
         };
     }
 

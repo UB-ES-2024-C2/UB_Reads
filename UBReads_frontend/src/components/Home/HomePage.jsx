@@ -52,7 +52,7 @@ export const HomePage = () => {
                     {/* Home page */}
                     <Route path="/" element={<HomeView />} />
                     {/* Main content */}
-                    <Route path="book" element={<BookView />} />
+                    <Route path="book/:id" element={<BookView />} />
                     <Route path="search/:query" element={<SearchView onSearch={ search } />} />
                     <Route path="library" element={<LibraryView />} />
                     <Route path="profile" element={<ProfileView />} />
