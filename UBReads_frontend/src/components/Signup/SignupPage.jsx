@@ -97,7 +97,7 @@ export const SignupPage = () => {
         <div className="welcome-container">
           <h2>Benvingut a UBReads!</h2>
           <p>
-            Ens alegrem de tenir-te aqu&iacute. Siusplau, crea un nou compte per poder accedir a <b>UB Reads</b>.
+            Ens alegrem de tenir-te aquí. Siusplau, crea un nou compte per poder accedir a <b>UB Reads</b>.
           </p>
         </div>
         <div className="signup-container">
@@ -114,7 +114,7 @@ export const SignupPage = () => {
             />
             {uNameError && <small style={{ color: "red" }}>{uNameError}</small>}
 
-            <label htmlFor="email">Introdueix un correu electr&ogravenic</label>
+            <label htmlFor="email">Introdueix un correu electrònic</label>
             <input
               type="email"
               id="email"
