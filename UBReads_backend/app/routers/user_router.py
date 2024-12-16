@@ -183,7 +183,7 @@ def get_following(user_id: int, db: Session = Depends(get_db)):
         following = UserController.get_following(db, user_id)
         return {
             "following": [
-                {"id": user.id, "username": user.username, "email": user.email, "profile_pic": following.profile_pic}
+                {"id": user.id, "username": user.username, "email": user.email, "profile_pic": user.profile_pic}
                 for user in following
             ]
         }
