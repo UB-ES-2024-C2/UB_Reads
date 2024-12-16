@@ -12,7 +12,9 @@ export { BookView } from './Books/BookView';
 
 // Common components
 export { Nav } from './common/Nav';
-export { BookRating } from './common/BookRating';
+export { BookRatingUser } from './common/BookRatingUser';
+export { BookRatingAvg } from './common/BookRatingAvg';
+
 
 // Followers components
 export { UserCard } from './Followers/userCard';
@@ -28,4 +30,3 @@ export { ProfileView } from './Profile/ProfileView';
 // Search components
 export { SearchView } from './Search/SearchView';
 export { SearchBookCard } from './Search/SearchBookCard';
-export { BookRatingAvg } from './common/BookRatingAvg';

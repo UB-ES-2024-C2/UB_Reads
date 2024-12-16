@@ -61,12 +61,13 @@ class LibraryService {
     /**
      * Deletes a book from a user library given the user and book ids
      * @param {Object} book
-     * @param {String} token 
+     * @param {String} token
      */
     async deleteBookFromUser(book, token) {
         // Retrieves backend books to catch the book backend id
         const backendBooks = await BookService.getAllBackendBooks();
         const backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
+
         // Get the user data from the token
         const user = await UserService.getUserData(token);
         // Add a book to a user's library
@@ -93,6 +94,7 @@ class LibraryService {
      * @param {number} rating
      */
     addRating(userId, bookId, rating) {
+        if (!rating) rating = 0;
         const requestBody = {
             rating: rating,
         };
@@ -106,9 +108,18 @@ class LibraryService {
      * @param {number} userId
      * @param {number} bookId
      */
-    getRating(userId, bookId) {
-        return backendAPI.get(`/users/${userId}/books/${bookId}/rating`)
-          .then((response) => response);
+    async getRating(userId, bookId) {
+        const response = await backendAPI.get(`/users/${userId}/books/${bookId}/rating`)
+        switch (response.status) {
+            case 200:
+                return response.data;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 400:
+                throw new Error('Format de l\'ID incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API del backend');
+        }
     }
 
 }

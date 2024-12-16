@@ -104,6 +104,29 @@ class BookService {
                 throw new Error('Error intern en el servidor');
         }
     }
+
+    /**
+     * Returns the book given a single id
+     * @param {String} id
+     * @returns
+     */
+    async getGoogleBookById(id) {
+        // Get the books from the Google Books API
+        const response = await googleAPI.get(`/volumes/${id}`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return response;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 404:
+                throw new Error('No s\'ha trobat cap llibre');
+            case 400:
+                throw new Error('Format de la query incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API de Google Books');
+        }
+    }
 }
 
 export default new BookService();

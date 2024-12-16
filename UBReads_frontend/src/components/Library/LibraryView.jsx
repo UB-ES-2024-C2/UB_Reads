@@ -23,50 +23,45 @@ import { Grid2, Container, Box } from '@mui/material';
 import { BookRatingAvg } from "../";
 import {BookRatingUser} from "../common/BookRatingUser";
 
-import { BookRating } from "../index.js";
 
 // Services
-import getUserData from '../../services/UserService.js';
 import LibraryService from '../../services/LibraryService.js';
 import BookService from '../../services/BookService.js';
+import UserService from "../../services/UserService";
 
-export const Library = () => {
-    const [books, setBooks] = useState([]);
 export const LibraryView = () => {
-
-    // Component variables
-    const [library, setLibrary] = useState([]);
+    const [books, setBooks] = useState([]);
 
 
     const fetchUserBooks = async () => {
-    const token = localStorage.getItem('access_token');
-    try {
-        const user = await getUserData.getUserData(token);
-        const response = await LibraryService.getBooksByUser(user.id);
-        const books = await Promise.all(
-            response.data.map(async (book) => {
-                const [apiBook, userRatingResponse] = await Promise.all([
-                    BookService.getGoogleBookById(book.book.id_book),
-                    LibraryService.getRating(user.id, book.book.id)
-                ]);
-                return {
-                    ...book.book,
-                    averageRating: apiBook.data.volumeInfo.averageRating || 0,
-                    personalRating: userRatingResponse.status === 200 ? userRatingResponse.data.rating : 0,
-                    ourId: book.book.id,
-                };
-            })
-        );
-        setBooks(books);
-    } catch (error) {
-        console.error("Error fetching books:", error);
-    }
-};
+        const token = localStorage.getItem('access_token');
+        try {
+            const user = await UserService.getUserData(token);
+            const response = await LibraryService.getBooksByUser(token);
+            const books = await Promise.all(
+                response.map(async (book) => {
+                    const [apiBook, userRatingResponse] = await Promise.all([
+                        BookService.getGoogleBookById(book.id_book),
+                        LibraryService.getRating(user.id, book.id)
+                    ]);
+                    return {
+                        ...book,
+                        averageRating: apiBook.data.volumeInfo.averageRating || 0,
+                        personalRating: userRatingResponse ? userRatingResponse.rating : 0,
+                        ourId: book.id,
+                    };
+                })
+            );
+            setBooks(books);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+        }
+    };
 
     const handlePersonalRatingChange = async (bookId, newRating) => {
         const token = localStorage.getItem('access_token');
         try {
-            const user = await getUserData.getUserData(token);
+            const user = await UserService.getUserData(token);
             const response = await LibraryService.addRating(user.id, bookId, newRating);
             if (response.status === 200) {
                 setBooks((prevBooks) =>
@@ -80,16 +75,13 @@ export const LibraryView = () => {
         }
     };
 
-    const handleDeleteBook = async (bookId) => {
+    const handleDeleteBook = async (book) => {
         const confirmed = window.confirm("Estàs segur que vols eliminar aquest llibre?");
         if (confirmed) {
             const token = localStorage.getItem('access_token');
             try {
-                const user = await getUserData.getUserData(token);
-                const response = await LibraryService.deleteBookFromUser(user.id, bookId);
-                if (response.status === 200) {
-                    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
-                }
+                await LibraryService.deleteBookFromUser(book, token);
+                setBooks((prevBooks) => prevBooks.filter((book) => book.id !== book.id));
             } catch (error) {
                 console.error("Error deleting book:", error);
             }
@@ -128,9 +120,9 @@ export const LibraryView = () => {
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
                 {books.map((book) => (
-                    <Grid2 container key={book.id} spacing={1} sx={{ padding: '1rem 2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
+                    <Grid2 container key={book.ourId} spacing={1} sx={{ padding: '1rem 2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                         <Grid2 xs={1}>
-                            <IconButton onClick={() => handleDeleteBook(book.id)} disableRipple>
+                            <IconButton onClick={() => handleDeleteBook(book)} disableRipple>
                                 <CancelIcon sx={{ color: pink[600] }} />
                             </IconButton>
                         </Grid2>
@@ -149,7 +141,7 @@ export const LibraryView = () => {
                         <Grid2 size={3}>
                             <BookRatingUser
                                 userRating={book.personalRating}
-                                onRatingChange={(newRating) => handlePersonalRatingChange(book.id, newRating)}
+                                onRatingChange={(newRating) => handlePersonalRatingChange(book.ourId, newRating)}
                             />
                         </Grid2>
                     </Grid2>

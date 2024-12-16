@@ -1,5 +1,5 @@
 import React from 'react';
-import { Book } from '../components/views/Book';
+import { Book } from '../omponents/views/Book';
 import { render, screen } from '@testing-library/react';
 
 /**
