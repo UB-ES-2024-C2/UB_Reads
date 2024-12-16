@@ -281,7 +281,8 @@ def test_get_users(client):
         json={
             "username": "testuser2",
             "email": "testuser2@example.com",
-            "password": "password123"
+            "password": "password123",
+            "profile_pic": "prova"
         },
     )
     
@@ -620,12 +621,12 @@ def test_get_followers(client):
 
 def test_get_following(client):
     # Create User1
-    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123","profile_pic": "prova"})
+    response_user1 = client.post("/users/", json={"username": "user1", "email": "user1@example.com", "password": "password123", "profile_pic": "prova"})
     assert response_user1.status_code == 200
     id1 = response_user1.json()["username"]
 
     # Create User2
-    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123","profile_pic": "prova"})
+    response_user2 = client.post("/users/", json={"username": "user2", "email": "user2@example.com", "password": "password123", "profile_pic": "prova"})
     assert response_user2.status_code == 200
     id2 = response_user2.json()["username"]
 
