@@ -63,7 +63,7 @@ async def get_current_user(
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return UserController.insert_user(
-            db=db, username=user.username, email=user.email, password=user.password
+            db=db, username=user.username, email=user.email, password=user.password, profile_pic=user.profile_pic
         )
 
     except ValueError as e:
@@ -170,7 +170,7 @@ def get_followers(user_id: int, db: Session = Depends(get_db)):
         followers = UserController.get_followers(db, user_id)
         return {
             "followers": [
-                {"id": follower.id, "username": follower.username, "email": follower.email}
+                {"id": follower.id, "username": follower.username, "email": follower.email, "profile_pic": follower.profile_pic}
                 for follower in followers
             ]
         }
