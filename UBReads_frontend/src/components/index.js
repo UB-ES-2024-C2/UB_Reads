@@ -6,6 +6,7 @@ export { SignupPage } from './Signup/SignupPage';
 
 // Home components
 export { HomePage } from './Home/HomePage';
+export { HomeView } from './Home/HomeView';
 
 // Books components
 export { BookView } from './Books/BookView';

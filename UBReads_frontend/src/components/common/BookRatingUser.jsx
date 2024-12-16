@@ -9,9 +9,14 @@ export const BookRatingUser = ({userRating = 0, maxValue = 5, onRatingChange}) =
       setUserSelectedRating(userRating); // Ensure state sync when `userRating` changes externally
   }, [userRating]);
 
-  const handleRatingChange = (event, newValue) => {
-      setUserSelectedRating(newValue);
-      if (onRatingChange) onRatingChange(newValue);
+  const handleRatingChange = async (event, newValue) => {
+      try {
+          if (onRatingChange)
+            await onRatingChange(newValue);
+          setUserSelectedRating(newValue);
+      } catch (error) {
+        alert(error.message);
+      }
   };
 
   const createRatingLabels = (max = 5) => {
@@ -38,7 +43,7 @@ export const BookRatingUser = ({userRating = 0, maxValue = 5, onRatingChange}) =
             getLabelText={getLabelText}
             emptyIcon={<StarIcon fontSize="inherit" />}
         />
-        <Box sx={{ ml: '1rem' }}>{userSelectedRating || 'N/A'}</Box>
+        <Box sx={{ ml: '1rem' }}>{userSelectedRating !== null ? userSelectedRating : 'N/A'}</Box>
     </Box>
   );
 }

@@ -27,7 +27,7 @@ export const BookRatingAvg = ({ averageRating = 0, maxValue = 5 }) => {
                 getLabelText={getLabelText}
                 emptyIcon={<StarIcon fontSize="inherit" />}
             />
-            <Box sx={{ ml: '1rem' }}>{averageRating || 'N/A'}</Box>
+            <Box sx={{ ml: '1rem' }}>{averageRating !== null ? averageRating : 'N/A'}</Box>
         </Box>
     );
 };

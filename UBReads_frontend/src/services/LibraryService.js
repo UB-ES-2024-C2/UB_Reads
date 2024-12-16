@@ -58,6 +58,13 @@ class LibraryService {
         }
     }
 
+    async getLastBooksAdded(token) {
+        // Get the book data from the backend API
+        const library = await this.getBooksByUser(token);
+        return library.slice(-15);
+
+    }
+
     /**
      * Deletes a book from a user library given the user and book ids
      * @param {Object} book
@@ -84,7 +91,7 @@ class LibraryService {
     async isBookAdded(bookGoogleId, token) {
         // Retrieves user's library to check if the book is already in the library
         const library = await this.getBooksByUser(token);
-        return !!library.find(backendBook => backendBook.id_book === bookGoogleId);
+        return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
     }
 
     /**
@@ -93,14 +100,13 @@ class LibraryService {
      * @param {number} bookId
      * @param {number} rating
      */
-    addRating(userId, bookId, rating) {
+    async addRating(userId, bookId, rating) {
         if (!rating) rating = 0;
         const requestBody = {
             rating: rating,
         };
 
-        return backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
-            .then((response) => response);
+        return await backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
     }
 
     /**

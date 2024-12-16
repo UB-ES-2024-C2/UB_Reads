@@ -53,6 +53,7 @@ export const FollowersView = () => {
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden",
+                width: '85%'
             }}
         >
         <Box
