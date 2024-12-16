@@ -74,6 +74,8 @@ export const BookView = () => {
                 setBookAdded(true);
             }
         }
+        await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'))
+
     };
 
     const handleRemoveBook = async () => {

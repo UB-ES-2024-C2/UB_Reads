@@ -104,6 +104,32 @@ class LibraryService {
     }
 
     /**
+     * Update the read status
+     * @param {string} token
+     * @param {Object} book
+     * @param {boolean} read
+     */
+    async addRead(token, book, read) {
+        const user = await UserService.getUserData(token);
+        let backendBooks = await BookService.getAllBackendBooks();
+        let backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
+
+        // If the book is not in the backend, add it
+        if (!backendBook) {
+            await BookService.addBookToBackend(book);
+            backendBooks = await BookService.getAllBackendBooks();
+            backendBook = backendBooks.find(_backendBook => _backendBook.id_book === book.id_book);
+        }
+
+        const requestBody = {
+            is_read: read,
+        };
+
+        return backendAPI.patch(`/users/1/books/1/read-status`, requestBody)
+          .then((response) => response);
+    }
+
+    /**
      * Returns the rating a user has given to a book
      * @param {number} userId
      * @param {number} bookId

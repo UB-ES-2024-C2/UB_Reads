@@ -120,8 +120,8 @@ export const Nav = ({ onSearch }) => {
         {/* Navigation Options */}
         <Box>
           <Stack direction="row" spacing={2}>
-            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Home</Button>
-            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Library</Button>
+            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Inici</Button>
+            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Biblioteca</Button>
           </Stack>
         </Box>
 
