@@ -62,7 +62,7 @@ export const SearchView = () => {
      * @param {Object} book 
      */
     const showBook = (book) => {
-        navigate('/home/book', { state: { book: book } });
+        navigate(`/home/book/${book.id_book}`, { state: { book: book } });
     };
 
     // Fetch books and library when the component is mounted

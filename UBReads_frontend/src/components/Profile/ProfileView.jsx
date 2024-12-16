@@ -19,9 +19,9 @@ export const ProfileView = () => {
   const navigate = useNavigate();
   const [hover, setHover] = useState(false);
   const [userData, setUserData] = useState({
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: "",
+    username: "Username",
+    email: "username@example.com",
+    image: "",
   });
 
   function generateRandomString() {
@@ -117,7 +117,7 @@ export const ProfileView = () => {
               }}
             >
               <div>
-                <img src={userData['profImage']} alt="User avatar"/>
+                <img src={userData['image']} alt="User avatar"/>
               </div>
             </AspectRatio>
           </CardOverflow>
@@ -127,7 +127,7 @@ export const ProfileView = () => {
                 Nom d&#39;usuari
               </Typography>
               <Typography level="body-lg">
-                {userData['usernameSTR']}
+                {userData['username']}
               </Typography>
             </div>
             <div>
@@ -135,7 +135,7 @@ export const ProfileView = () => {
                 Correu electrònic
               </Typography>
               <Typography level="body-lg">
-                {userData['emailSTR']}
+                {userData['email']}
               </Typography>
             </div>
           </CardContent>

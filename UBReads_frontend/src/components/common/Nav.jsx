@@ -33,9 +33,9 @@ export const Nav = ({ onSearch }) => {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userData, setUserData] = useState({
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: "",
+    username: "Username",
+    email: "username@example.com",
+    image: "",
   });
 
   const [input, setInput] = useState("");
@@ -162,13 +162,13 @@ export const Nav = ({ onSearch }) => {
           {/* Avatar */}
           <Tooltip title="User menu">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} disableRipple>
-              <Avatar src={userData.profImage} />
+              <Avatar src={userData.image} />
               <Box sx={{ paddingInline: '1dvw'}}>
                 <Typography sx={{ textAlign: 'left', color: 'white'}}>
-                  {userData.usernameSTR}
+                  {userData.username}
                 </Typography>
                 <Typography sx={{ textAlign: 'left', color: 'white'}}>
-                  {userData.emailSTR}
+                  {userData.email}
                 </Typography>
               </Box>
             </IconButton>

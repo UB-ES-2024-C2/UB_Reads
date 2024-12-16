@@ -58,6 +58,13 @@ class LibraryService {
         }
     }
 
+    async getLastBooksAdded(token) {
+        // Get the book data from the backend API
+        const library = await this.getBooksByUser(token);
+        return library.slice(-15);
+
+    }
+
     /**
      * Deletes a book from a user library given the user and book ids
      * @param {Object} book
