@@ -189,13 +189,13 @@ export const Nav = ({ onSearch }) => {
 
             <MenuItem onClick={followingList}>
               <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
-                Following
+                Seguint
               </Typography>
             </MenuItem>
 
             <MenuItem onClick={logOut}>
               <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
-                Log Out
+                Tanca la sessió
               </Typography>
             </MenuItem>
           </Menu>
