@@ -71,6 +71,55 @@ class BookService {
         }
     }
 
+    async getBookById(id_book) {
+        // Get the book data from the Google Books API
+        const response = await googleAPI.get(`/volumes/${id_book}`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return this.createBookFromGoogleAPI(response.data)
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 404:
+                throw new Error('No s\'ha trobat cap llibre amb aquest ID');
+            case 400:
+                throw new Error('Format de l\'ID incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API de Google Books');
+        }
+    }
+
+    randomString(length) {
+        // Characters valid for query
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        // Generate a random string of 3 characters
+        for (let i = 0; i < length; i++)
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+
+        return result;
+    }
+
+    async getGoogleRecomendations() {
+        const query = this.randomString(4);
+        // Get the books from the Google Books API
+        const response = await googleAPI.get(`/volumes?q=${query}&maxResults=15`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                const books = response.data.items
+                return books.map(book => this.createBookFromGoogleAPI(book));
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 404:
+                throw new Error('No s\'ha trobat cap llibre');
+            case 400:
+                throw new Error('Format de la query incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API de Google Books');
+        }
+    }
+
     /* BACKEND API FUNCTIONS */
 
     /**
@@ -102,6 +151,29 @@ class BookService {
         switch (response.status) {
             case 500:
                 throw new Error('Error intern en el servidor');
+        }
+    }
+
+    /**
+     * Returns the book given a single id
+     * @param {String} id
+     * @returns
+     */
+    async getGoogleBookById(id) {
+        // Get the books from the Google Books API
+        const response = await googleAPI.get(`/volumes/${id}`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return response;
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 404:
+                throw new Error('No s\'ha trobat cap llibre');
+            case 400:
+                throw new Error('Format de la query incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API de Google Books');
         }
     }
 }

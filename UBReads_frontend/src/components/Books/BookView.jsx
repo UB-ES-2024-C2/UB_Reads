@@ -1,28 +1,28 @@
-/**
- * ??-??-2024
- * @description: Book view
- * @author: @neorefraction
- */
-
-// React
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Services
+import UserService from "../../services/UserService";
 import LibraryService from '../../services/LibraryService.js';
 
-// Material UI
-import { Container, Box } from '@mui/material';  // Layout
-import ClearIcon from '@mui/icons-material/Clear';  // Icon
-import { green, blue, pink } from '@mui/material/colors';  // Colors
-import { Typography, Button, IconButton } from '@mui/material';  // Components
+// MUI Layouts
+import { Container, Box } from '@mui/material';
+
+// MUI Icons
+import ClearIcon from '@mui/icons-material/Clear';
+
+// MUI Colors
+import { green, blue, pink } from '@mui/material/colors';
+
+// MUI Components
+import { Typography, Button, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 
 // Own Components
-import { BookRating } from '../index.js';
+import { BookRatingAvg } from '../';
+import { BookRatingUser } from '../common/BookRatingUser';
 
 /**
- * Book view component
- * @returns Book view component
+ * @returns Book view
  */
 export const BookView = () => {
 
@@ -37,13 +37,19 @@ export const BookView = () => {
     const [bookAdded, setBookAdded] = React.useState(false);
     const [readMorePressed, setReadMorePressed] = React.useState(false);
 
+    // Component states used to manage the user rating
+    const [userRating, setUserRating] = useState(null);
+    const [isRead, setIsRead] = useState(false);
+
+    const TOKEN = localStorage.getItem('access_token');
+
     /**
      * Adds a book to the user library
      */
     const addBook = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            await LibraryService.addBookToUser(book, token);
+            await LibraryService.addBookToUser(book, TOKEN);
+            await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'));
             setBookAdded(true);
         } catch (error) {
             console.error(error);
@@ -55,36 +61,66 @@ export const BookView = () => {
      */
     const removeBook = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            await LibraryService.deleteBookFromUser(book, token);
+            await LibraryService.deleteBookFromUser(book, TOKEN);
             setBookAdded(false);
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+
+    const handleRatingChange = async (newRating) => {
+        const library = await LibraryService.getCurrentUserBooks(TOKEN);
+
+        const backendBook = library.find((libraryBook) => libraryBook.id_book === book.id_book);
+
+        if (backendBook) {
+            const user = await UserService.getUserData(TOKEN);
+            const response = await LibraryService.addRating(user.id, backendBook.id, newRating);
+
+            if (response.status === 200) {
+                setUserRating(newRating);
+            } else {
+                console.warn('Error updating rating:', response);
+            }
+        } else {
+            throw new Error('No pots valorar un llibre que no tens a la biblioteca');
+        }
+    };
+
+    const handleCheckboxChange = async (event) => {
+        setIsRead(event.target.checked);
+        const token = localStorage.getItem('access_token');
+        await LibraryService.addRead(token, book, event.target.checked);
+    };
+
 
     /**
      * Checks if a book is already added to the user library
      */
     const isBookAdded = async () => {
-        try {
-            const token = localStorage.getItem('access_token');
-            const isAdded = await LibraryService.isBookAdded(book.id_book, token);
-            setBookAdded(isAdded);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+        const token = localStorage.getItem('access_token');
+        const user = await UserService.getUserData(token);
+        const response = await LibraryService.getBooksByUserId(user.id);
 
-    // Check if a book is already added to the user library when the component is mounted
-    React.useEffect(() => {
+        for (const _book of response) {
+            if (_book.id_book === book.id_book) {
+                setBookAdded(true);
+                setIsRead(_book.is_read);
+
+                const rate = await LibraryService.getRating(user.id, _book.id);
+                setUserRating(rate.rating);
+            }
+        }
+    };
+
+    useEffect(() => {
         isBookAdded();
     }, []);
 
     return (
         /* Main container */
         <Container maxWidth="false" sx={{
-            width: '100%',
+            width: '85%',
             height: '100%',
             display: 'flex',
             paddingInline: '5rem !important',
@@ -103,7 +139,11 @@ export const BookView = () => {
                     <Typography variant="h6" component="h2" sx={{ color: blue[800], fontSize: '1.5rem' }}>{ book.author }</Typography>
                 </Box>
                 {/* Rating */}
-                <BookRating rating={book.averageRating} />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+                    <BookRatingAvg averageRating={book.averageRating} userRating={userRating}/>
+                    <BookRatingUser userRating={userRating} onRatingChange={handleRatingChange} />
+                </Box>
+
                 <Box>
                     <Button
                         variant="contained"
@@ -118,6 +158,16 @@ export const BookView = () => {
                         >
                             {bookAdded ? 'Eliminar' : 'Afegir'}
                     </Button>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isRead}
+                                onChange={handleCheckboxChange}
+                                color="primary"
+                            />
+                        }
+                        label="Llegit"
+                    />
                 </Box>
                 {/* Description */}
                 <Box sx={{ overflow: 'auto', marginTop: '2rem' }}>
@@ -133,7 +183,7 @@ export const BookView = () => {
             </Box>
             {/* Close view button */}
             <Box>
-                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate('/home')}>
+                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate(-1, { state: state })}>
                     <ClearIcon sx={{ color: pink[700], width: '3.5rem', height: '3.5rem' }} />
                 </IconButton>
             </Box>

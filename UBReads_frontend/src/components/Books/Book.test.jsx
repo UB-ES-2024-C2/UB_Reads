@@ -1,5 +1,5 @@
 import React from 'react';
-import { Book } from '../components/views/Book';
+import { BookView } from '/BookView';
 import { render, screen } from '@testing-library/react';
 
 /**
@@ -8,7 +8,7 @@ import { render, screen } from '@testing-library/react';
 test('Book basic requirements', () => {
   
   // Render the component to test it
-  render(<Book bookId={1}></Book>);
+  render(<BookView bookId={1}></BookView>);
 
   // Looks for elements in the component
   const rating = screen.queryByText('0');
