@@ -74,7 +74,7 @@ jobs:
         export DB_PORT=${{ secrets.DB_PORT }}
         export SECRET_KEY=${{ secrets.SECRET_KEY }}
         export ALGORITHM=HS256  
-        
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
         docker-compose pull
         docker-compose up -d
         EOF
