@@ -47,3 +47,4 @@ jobs:
       run: |
         coverage report
 
+    if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/preproduction'
