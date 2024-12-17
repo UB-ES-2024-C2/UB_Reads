@@ -41,13 +41,6 @@ jobs:
           echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > key.pem
           chmod 400 key.pem          
         fi
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-        echo "ALGORITHM=HS256" >> .env
     # Log in to Amazon ECR
     - name: Log in to Amazon ECR
       run: |
@@ -74,6 +67,14 @@ jobs:
     - name: Deploy Backend to EC2
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.BACKEND_IP }} << 'EOF'
+        export DB_USER=${{ secrets.DB_USER }}
+        export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        export DB_HOST=${{ secrets.DB_HOST }}
+        export DB_NAME=${{ secrets.DB_NAME }}
+        export DB_PORT=${{ secrets.DB_PORT }}
+        export SECRET_KEY=${{ secrets.SECRET_KEY }}
+        export ALGORITHM=HS256  
+        
         docker-compose pull
         docker-compose up -d
         EOF
