@@ -52,6 +52,21 @@ describe('Signup Flow', () => {
       // Assert that the error message for password mismatch is visible
       cy.contains('Les contrasenyes no coincideixen.').should('be.visible');
     });
+
+    it('should show an error if the email format is invalid', () => {
+      // Fill in the form with an invalid email
+      cy.get('input[id="username"]').type('testuser');
+      cy.get('input[id="email"]').type('invalid@email');
+      cy.get('input[id="password"]').type('Password123!');
+      cy.get('input[id="password2"]').type('Password123!');
+      cy.get('.profile-pic-box').first().click();
+      // Submit the form
+      cy.get('button[type="submit"]').click();
+  
+      // Assert that the email error message is visible
+      cy.contains('El format del correu electrònic no és vàlid.').should('be.visible');
+    });
+  
   
     it('should show an error if no profile picture is selected', () => {
       // Fill in the form without selecting a profile picture
