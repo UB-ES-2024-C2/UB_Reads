@@ -48,7 +48,11 @@ class LibraryService {
         // Manage response
         switch (response.status) {
             case 200:
-                return response.data.map(item => item.book);
+                return response.data.map(item => ({
+                      ...item.book,
+                      is_read: item.is_read,
+                    }));
+
             case 500:
                 throw new Error('Error intern en el servidor');
             case 400:
