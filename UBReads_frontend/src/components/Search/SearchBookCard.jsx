@@ -96,7 +96,7 @@ export const SearchBookCard = ({ book, onClick, library }) => {
                         {book.author}
                     </Typography>
                     {/* Book rating */}
-                    <BookRatingAvg averageRating={book.averageRating} />
+                    <BookRatingAvg averageRating={book.averageRating}/>
                     {/* Add/Remove button */}
                     <Button
                         size="large"

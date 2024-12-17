@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import CancelIcon from '@mui/icons-material/Cancel';
 
 // MUI Components
-import { IconButton, Avatar, Typography } from "@mui/material";
+import {IconButton, Avatar, Typography, Button} from "@mui/material";
 
 // MUI Colors
 import { pink, blue } from '@mui/material/colors';
@@ -30,8 +30,9 @@ import BookService from '../../services/BookService.js';
 import UserService from "../../services/UserService";
 
 export const LibraryView = () => {
-    const [books, setBooks] = useState([]);
-
+    const [allBooks, setAllBooks] = useState([]);
+    const [readBooks, setReadBooks] = useState([]);
+    const [showOnlyRead, setShowOnlyRead] = useState(false);
 
     const fetchUserBooks = async () => {
         const token = localStorage.getItem('access_token');
@@ -39,24 +40,38 @@ export const LibraryView = () => {
             const user = await UserService.getUserData(token);
             const response = await LibraryService.getBooksByUser(token);
             const books = await Promise.all(
-                response.map(async (book) => {
-                    const [apiBook, userRatingResponse] = await Promise.all([
-                        BookService.getGoogleBookById(book.id_book),
-                        LibraryService.getRating(user.id, book.id)
-                    ]);
-                    return {
-                        ...book,
-                        averageRating: apiBook.data.volumeInfo.averageRating || 0,
-                        personalRating: userRatingResponse ? userRatingResponse.rating : 0,
-                        ourId: book.id,
-                    };
-                })
+              response.map(async (book) => {
+                  const [apiBook, userRatingResponse] = await Promise.all([
+                      BookService.getGoogleBookById(book.id_book),
+                      LibraryService.getRating(user.id, book.id),
+                  ]);
+                  return {
+                      ...book,
+                      averageRating: apiBook.data.volumeInfo.averageRating || 0,
+                      personalRating: userRatingResponse ? userRatingResponse.rating : 0,
+                      ourId: book.id,
+                      is_read: book.is_read,
+                  };
+              })
             );
-            setBooks(books);
+
+            const readBooks = books.filter(book => book.is_read);
+
+            setAllBooks(books);
+            setReadBooks(readBooks); // Save the read books
         } catch (error) {
             console.error("Error fetching books:", error);
         }
     };
+
+    const toggleShowOnlyRead = () => {
+        setShowOnlyRead((prevState) => !prevState);
+    };
+
+    function getBookList() {
+        return showOnlyRead ? readBooks : allBooks
+    }
+
 
     const handlePersonalRatingChange = async (bookId, newRating) => {
         const token = localStorage.getItem('access_token');
@@ -64,11 +79,13 @@ export const LibraryView = () => {
             const user = await UserService.getUserData(token);
             const response = await LibraryService.addRating(user.id, bookId, newRating);
             if (response.status === 200) {
-                setBooks((prevBooks) =>
-                    prevBooks.map((book) =>
-                        book.id === bookId ? { ...book, personalRating: newRating } : book
-                    )
-                );
+                setAllBooks((prevBooks) => {
+                    const updatedBooks = prevBooks.map((book) =>
+                        book.ourId === bookId ? { ...book, personalRating: newRating } : book
+                    );
+                    syncReadBooks(updatedBooks); // Sync readBooks with the updated list
+                    return updatedBooks;
+                });
             }
         } catch (error) {
             console.error("Error updating personal rating:", error);
@@ -81,18 +98,26 @@ export const LibraryView = () => {
             const token = localStorage.getItem('access_token');
             try {
                 await LibraryService.deleteBookFromUser(book, token);
-                setBooks((prevBooks) => prevBooks.filter((book) => book.id !== book.id));
+                setAllBooks((prevBooks) => {
+                    const updatedBooks = prevBooks.filter((b) => b.ourId !== book.ourId);
+                    syncReadBooks(updatedBooks); // Sync readBooks with the updated list
+                    return updatedBooks;
+                });
             } catch (error) {
                 console.error("Error deleting book:", error);
             }
         }
     };
 
+    const syncReadBooks = (updatedBooks) => {
+        setReadBooks(updatedBooks.filter((book) => book.is_read));
+    };
 
 
     useEffect(() => {
         fetchUserBooks();
     }, []);
+
 
     return (
        <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', }}>
@@ -110,16 +135,38 @@ export const LibraryView = () => {
                             Puntuació Mitjana
                         </Typography>
                     </Grid2>
-                    <Grid2 size={3}>
+                    <Grid2 size={2}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
                             Puntuació Personal
                         </Typography>
+                    </Grid2>
+                    <Grid2 size={1}>
+                        <Button
+                            onClick={toggleShowOnlyRead}
+                            variant="contained"
+                            sx={{
+                                bgcolor: showOnlyRead ? pink[600] : blue[700],
+                                color: "white",
+                                fontWeight: "bold",
+                                textTransform: "none",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                '&:hover': {
+                                    bgcolor: showOnlyRead ? pink[800] : blue[900],
+                                },
+                                borderRadius: "0.5rem",
+                                padding: "0.5rem 1rem",
+                            }}
+                        >
+                            {showOnlyRead ? "Mostra tots" : "Només llegits"}
+                        </Button>
                     </Grid2>
                 </Grid2>
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {books.map((book) => (
+                {getBookList().map((book) => (
                     <Grid2 container key={book.ourId} spacing={1} sx={{ padding: '1rem 2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                         <Grid2 xs={1}>
                             <IconButton onClick={() => handleDeleteBook(book)} disableRipple>
@@ -136,7 +183,7 @@ export const LibraryView = () => {
                             </Box>
                         </Grid2>
                         <Grid2 size={3}>
-                            <BookRatingAvg averageRating={book.averageRating} />
+                            <BookRatingAvg averageRating={book.averageRating} userRating={book.personalRating}/>
                         </Grid2>
                         <Grid2 size={3}>
                             <BookRatingUser

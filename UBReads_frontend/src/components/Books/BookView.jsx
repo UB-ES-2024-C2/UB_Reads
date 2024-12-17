@@ -76,7 +76,6 @@ export const BookView = () => {
 
     const handleCheckboxChange = async (event) => {
         setIsRead(event.target.checked);
-        console.log(event.target.checked)
         const token = localStorage.getItem('access_token');
         await LibraryService.addRead(token, book, event.target.checked);
     };
@@ -89,6 +88,7 @@ export const BookView = () => {
         for (const _book of response) {
             if (_book.id_book === book.id_book) {
                 setBookAdded(true);
+                setIsRead(_book.is_read);
 
                 const rate = await LibraryService.getRating(user.id, _book.id);
                 setUserRating(rate.rating);
@@ -133,7 +133,7 @@ export const BookView = () => {
                 </Box>
                 {/* Rating */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
-                    <BookRatingAvg averageRating={book.averageRating} />
+                    <BookRatingAvg averageRating={book.averageRating} userRating={userRating}/>
                     <BookRatingUser userRating={userRating} onRatingChange={handleRatingChange} />
                 </Box>
 
