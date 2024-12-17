@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = os.environ.get("ALGORITHM")
+SECRET_KEY = os.environ.get("SECRET_KEY","my_secret")
+ALGORITHM = os.environ.get("ALGORITHM","HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", 7))
 
@@ -23,7 +23,7 @@ class UserController:
         self.db = db
 
     @staticmethod
-    def insert_user(db: Session, username: str, email: str, password: str):
+    def insert_user(db: Session, username: str, email: str, password: str, profile_pic: str):
         existing_user = db.query(User).filter(User.username == username).first()
         if existing_user:
             raise ValueError("El usuario ya existe")  # Puedes personalizar el mensaje
@@ -34,7 +34,7 @@ class UserController:
             raise ValueError("El correo electrónico ya está registrado")
 
         hashed_password = pwd_context.hash(password)  # Hashear la contraseña
-        db_user = User(username=username, email=email, password=hashed_password)
+        db_user = User(username=username, email=email, password=hashed_password, profile_pic=profile_pic)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
