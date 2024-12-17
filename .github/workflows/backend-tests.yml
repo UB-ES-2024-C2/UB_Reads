@@ -2,12 +2,7 @@ name: Run Tests and Coverage
 
 on:
   pull_request:
-    branches:
-      - development
-
   push:
-    branches:
-      - development
 
 jobs:
   test-and-coverage:
