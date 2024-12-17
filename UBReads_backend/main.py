@@ -12,7 +12,7 @@ app = FastAPI()
 # RESET
 reset_database()  # Solo si necesitas limpiar la base de datos
 create_tables()
-print("I WAS IN THE SERVER 3")
+print("I WAS IN THE SERVER 4")
 
 # Incluir rutas
 app.include_router(book_router)
