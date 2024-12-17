@@ -49,7 +49,7 @@ jobs:
           npx wait-on http://localhost:5173
           cd ..
           cd UBReads_backend
-          python -m uvicorn main:app --reload 
+          python -m uvicorn main:app --reload &
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
