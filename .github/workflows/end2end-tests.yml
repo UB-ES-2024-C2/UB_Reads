@@ -47,7 +47,7 @@ jobs:
           cd UBReads_frontend
           npm run dev & 
           npx wait-on http://localhost:5173
-          cd..
+          cd ..
           cd UBReads_backend
           python -m uvicorn main:app --reload 
 
