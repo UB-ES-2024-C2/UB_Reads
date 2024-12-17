@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "@mui/system";
 import FollowerService from "../../services/FollowerService.js";
-import { UserCard } from "./UserCard.jsx";
+import { UserCard } from "./userCard.jsx";
 import { FollowersBookList } from "./FollowersBookList.jsx";
 import { Grid2 } from '@mui/material';
 import LibraryService from "../../services/LibraryService.js";

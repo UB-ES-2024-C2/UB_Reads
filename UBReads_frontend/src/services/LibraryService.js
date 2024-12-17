@@ -95,7 +95,7 @@ class LibraryService {
     async isBookAdded(bookGoogleId, token) {
         // Retrieves user's library to check if the book is already in the library
         const library = await this.getCurrentUserBooks(token);
-        return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
+        return !!library.find(backendBook => backendBook.id_book === bookGoogleId);
     }
 
     async getBooksByUserId(id) {
@@ -104,7 +104,10 @@ class LibraryService {
         // Manage response
         switch (response.status) {
             case 200:
-                return response.data.map(item => item.book);
+                return response.data.map(item => ({
+                  ...item.book,
+                  is_read: item.is_read,
+                }));
             case 500:
                 throw new Error('Error intern en el servidor');
             case 400:

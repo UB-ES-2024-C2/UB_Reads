@@ -18,7 +18,7 @@ export { BookRatingAvg } from './common/BookRatingAvg';
 export { Sidebar } from './common/Sidebar';
 
 // Followers components
-export { UserCard } from './Followers/UserCard';
+export { UserCard } from './Followers/userCard';
 export { FollowersBookList } from './Followers/FollowersBookList';
 export { FollowersView } from './Followers/FollowersView';
 

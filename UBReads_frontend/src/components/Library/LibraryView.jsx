@@ -35,11 +35,15 @@ export const LibraryView = () => {
     const [showOnlyRead, setShowOnlyRead] = useState(false);
     const TOKEN = localStorage.getItem('access_token');
 
+    const syncReadBooks = (updatedBooks) => {
+        setReadBooks(updatedBooks.filter((book) => book.is_read));
+    };
+
 
      const fetchUserBooks = async () => {
         try {
-              const user = await UserService.getUserData(TOKEN);
-            const response = await LibraryService.getBooksByUser(TOKEN);
+            const user = await UserService.getUserData(TOKEN);
+            const response = await LibraryService.getBooksByUserId(user.id);
             const books = await Promise.all(
               response.map(async (book) => {
                   const [apiBook, userRatingResponse] = await Promise.all([
@@ -104,12 +108,9 @@ export const LibraryView = () => {
                 });
             } catch (error) {
                 console.error("Error deleting book:", error);
+            }
         }
-    };
-
-    const syncReadBooks = (updatedBooks) => {
-        setReadBooks(updatedBooks.filter((book) => book.is_read));
-    };
+    }
 
 
     useEffect(() => {
@@ -164,7 +165,7 @@ export const LibraryView = () => {
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {library.length === 0 ? (
+                {getBookList().length === 0 ? (
                     <Typography variant="h6" sx={{ textAlign: 'center', marginTop: '2rem'  }}>Cap llibre afegit a la biblioteca</Typography>
                     ) : (
                         getBookList().map((book) => (

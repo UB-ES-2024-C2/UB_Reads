@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // Services
 import UserService from "../../services/UserService";
 import LibraryService from '../../services/LibraryService.js';
-import BookService from '../../services/BookService.js';
 
 // MUI Layouts
 import { Container, Box } from '@mui/material';
@@ -100,8 +99,8 @@ export const BookView = () => {
      */
     const isBookAdded = async () => {
         const token = localStorage.getItem('access_token');
-        const response = await LibraryService.getBooksByUser(token);
         const user = await UserService.getUserData(token);
+        const response = await LibraryService.getBooksByUserId(user.id);
 
         for (const _book of response) {
             if (_book.id_book === book.id_book) {
