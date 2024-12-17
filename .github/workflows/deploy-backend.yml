@@ -32,17 +32,6 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     # Crear el archivo .pem basado en secretos para acceder a EC2
-    - name: Crear archivo .pem desde secret
-      run: |
-        chmod +w .
-        if [[ "${{ github.ref_name }}" == "main" ]]; then
-          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > key.pem
-          chmod 400 key.pem
-        else
-          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > key.pem
-          chmod 400 key.pem          
-        fi
-    # Crear el archivo .pem basado en secretos para acceder a EC2
     - name: Crear archivo .pem y .env desde secret
       run: |
         if [[ "${{ github.ref_name }}" == "main" ]]; then
