@@ -20,43 +20,38 @@ jobs:
       DB_PASSWORD: admin
       DB_HOST: localhost
       DB_PORT: 5432
-
       DB_NAME: db
-
       DB_NAME_TEST: db_test
-
       ALGORITHM: HS256
       SECRET_KEY: your_secret_key
-
       ENVIRONMENT: test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r UBReads_backend/requirements.txt
-        npm install -r UBReads_frontend
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r UBReads_backend/requirements.txt
+          npm install -r UBReads_frontend
 
-    - name: Start application server
+      - name: Start application server
         run: |
           npm run dev & 
           npx wait-on http://localhost:5173
 
-    - name: Run Cypress tests
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           start: npm run start # Starts the server for tests
           wait-on: http://localhost:5173 # Waits for server to respond
 
-      # Step 6: Upload Cypress screenshots and videos (on test failures)
       - name: Upload Cypress Screenshots & Videos
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,4 +60,3 @@ jobs:
           path: |
             cypress/screenshots
             cypress/videos
-
