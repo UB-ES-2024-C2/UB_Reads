@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import CancelIcon from '@mui/icons-material/Cancel';
 
 // MUI Components
-import { IconButton, Avatar, Typography } from "@mui/material";
+import {IconButton, Avatar, Typography, Button} from "@mui/material";
 
 // MUI Colors
 import { pink, blue } from '@mui/material/colors';
@@ -30,54 +30,88 @@ import BookService from '../../services/BookService.js';
 import UserService from "../../services/UserService";
 
 export const LibraryView = () => {
-
-    // Component variables
-    const [library, setLibrary] = useState([]);
+    const [allBooks, setAllBooks] = useState([]);
+    const [readBooks, setReadBooks] = useState([]);
+    const [showOnlyRead, setShowOnlyRead] = useState(false);
     const TOKEN = localStorage.getItem('access_token');
+
+    const syncReadBooks = (updatedBooks) => {
+        setReadBooks(updatedBooks.filter((book) => book.is_read));
+    };
+
 
      const fetchUserBooks = async () => {
         try {
             const user = await UserService.getUserData(TOKEN);
-            const token = localStorage.getItem('access_token');
-            const books = await LibraryService.getCurrentUserBooks(token);
-            await Promise.all(books.map(async (book) => book.averageRating = await BookService.getBookAverageRating(book.id_book)));
-            await Promise.all(books.map(async (book) => {
-                const data = await LibraryService.getRating(user.id, book.id)
-                book.personalRating = data.rating;
-            }));
-            setLibrary(books);
+            const response = await LibraryService.getBooksByUserId(user.id);
+            const books = await Promise.all(
+              response.map(async (book) => {
+                  const [apiBook, userRatingResponse] = await Promise.all([
+                      BookService.getGoogleBookById(book.id_book),
+                      LibraryService.getRating(user.id, book.id),
+                  ]);
+                  return {
+                      ...book,
+                      averageRating: apiBook.data.volumeInfo.averageRating || 0,
+                      personalRating: userRatingResponse ? userRatingResponse.rating : 0,
+                      ourId: book.id,
+                      is_read: book.is_read,
+                  };
+              })
+            );
+
+            const readBooks = books.filter(book => book.is_read);
+
+            setAllBooks(books);
+            setReadBooks(readBooks); // Save the read books
         } catch (error) {
-            alert(error);
+            console.error("Error fetching books:", error);
         }
     };
+
+    const toggleShowOnlyRead = () => {
+        setShowOnlyRead((prevState) => !prevState);
+    };
+
+    function getBookList() {
+        return showOnlyRead ? readBooks : allBooks
+    }
+
 
     const handlePersonalRatingChange = async (bookId, newRating) => {
         try {
             const user = await UserService.getUserData(TOKEN);
             const response = await LibraryService.addRating(user.id, bookId, newRating);
             if (response.status === 200) {
-                setLibrary((prevBooks) =>
-                    prevBooks.map((book) =>
-                        book.id === bookId ? { ...book, personalRating: newRating } : book
-                    )
-                );
+                setAllBooks((prevBooks) => {
+                    const updatedBooks = prevBooks.map((book) =>
+                        book.ourId === bookId ? { ...book, personalRating: newRating } : book
+                    );
+                    syncReadBooks(updatedBooks); // Sync readBooks with the updated list
+                    return updatedBooks;
+                });
             }
         } catch (error) {
             console.error("Error updating personal rating:", error);
         }
     };
 
-    const removeBook = async (book) => {
-        try {
-            const confirmation = confirm(`Are you sure you want to delete ${book.title} from your library?`);
-            if (!confirmation) return;
-            await LibraryService.deleteBookFromUser(book, TOKEN);
-            const new_library = library.filter(item => item.id !== book.id);
-            setLibrary(new_library);
-        } catch (error) {
+     const handleDeleteBook = async (book) => {
+        const confirmed = window.confirm("Estàs segur que vols eliminar aquest llibre?");
+        if (confirmed) {
+            try {
+                await LibraryService.deleteBookFromUser(book, TOKEN);
+                setAllBooks((prevBooks) => {
+                    const updatedBooks = prevBooks.filter((b) => b.ourId !== book.ourId);
+                    syncReadBooks(updatedBooks); // Sync readBooks with the updated list
+                    return updatedBooks;
+                });
+            } catch (error) {
                 console.error("Error deleting book:", error);
+            }
         }
-    };
+    }
+
 
     useEffect(() => {
         fetchUserBooks();
@@ -92,32 +126,54 @@ export const LibraryView = () => {
                     <Grid2 size={1}></Grid2>
                     <Grid2 size={4}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Book
+                            Llibre
                         </Typography>
                     </Grid2>
                     <Grid2 size={3}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Average Rating
+                            Puntuació Mitjana
                         </Typography>
                     </Grid2>
-                    <Grid2 size={3}>
+                    <Grid2 size={2}>
                         <Typography variant="h6" color="text" sx={{ fontWeight: 'bold' }}>
-                            Personal Rating
+                            Puntuació Personal
                         </Typography>
+                    </Grid2>
+                    <Grid2 size={1}>
+                        <Button
+                            onClick={toggleShowOnlyRead}
+                            variant="contained"
+                            sx={{
+                                bgcolor: showOnlyRead ? pink[600] : blue[700],
+                                color: "white",
+                                fontWeight: "bold",
+                                textTransform: "none",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                '&:hover': {
+                                    bgcolor: showOnlyRead ? pink[800] : blue[900],
+                                },
+                                borderRadius: "0.5rem",
+                                padding: "0.5rem 1rem",
+                            }}
+                        >
+                            {showOnlyRead ? "Mostra tots" : "Només llegits"}
+                        </Button>
                     </Grid2>
                 </Grid2>
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {library.length === 0 ? (
+                {getBookList().length === 0 ? (
                     <Typography variant="h6" sx={{ textAlign: 'center', marginTop: '2rem'  }}>Cap llibre afegit a la biblioteca</Typography>
                     ) : (
-                        library.map((book) => (
+                        getBookList().map((book) => (
                             /* Book */
                             <Grid2 container key={book.id} spacing={1} sx={{ paddingBlock: '1rem', paddingInline: '2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
                                 <Grid2 size={1}>
                                     <Box sx={{ display: 'flex', justifyContent: 'flex-start' }} onClick={() => {
-                                        removeBook(book);
+                                        handleDeleteBook(book);
                                     }} >
                                         <IconButton edge="end" aria-label="delete" disableRipple sx={{ margin: '0' }}>
                                             <CancelIcon sx={{ color: pink[600] }} />
@@ -151,7 +207,7 @@ export const LibraryView = () => {
                                     </Box>
                                 </Grid2>
                                 <Grid2 size={3}>
-                                    <BookRatingAvg averageRating={book.averageRating} />
+                                   <BookRatingAvg averageRating={book.averageRating} userRating={book.personalRating}/>
                                 </Grid2>
                                 <Grid2 size={3}>
                                     <BookRatingUser

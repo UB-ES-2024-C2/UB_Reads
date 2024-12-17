@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // Services
 import UserService from "../../services/UserService";
 import LibraryService from '../../services/LibraryService.js';
-import BookService from '../../services/BookService.js';
 
 // MUI Layouts
 import { Container, Box } from '@mui/material';
@@ -16,7 +15,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { green, blue, pink } from '@mui/material/colors';
 
 // MUI Components
-import { Typography, Button, IconButton } from '@mui/material';
+import { Typography, Button, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 
 // Own Components
 import { BookRatingAvg } from '../';
@@ -40,6 +39,7 @@ export const BookView = () => {
 
     // Component states used to manage the user rating
     const [userRating, setUserRating] = useState(null);
+    const [isRead, setIsRead] = useState(false);
 
     const TOKEN = localStorage.getItem('access_token');
 
@@ -49,6 +49,7 @@ export const BookView = () => {
     const addBook = async () => {
         try {
             await LibraryService.addBookToUser(book, TOKEN);
+            await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'));
             setBookAdded(true);
         } catch (error) {
             console.error(error);
@@ -65,7 +66,7 @@ export const BookView = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     const handleRatingChange = async (newRating) => {
         const library = await LibraryService.getCurrentUserBooks(TOKEN);
@@ -86,37 +87,34 @@ export const BookView = () => {
         }
     };
 
+    const handleCheckboxChange = async (event) => {
+        setIsRead(event.target.checked);
+        const token = localStorage.getItem('access_token');
+        await LibraryService.addRead(token, book, event.target.checked);
+    };
+
+
     /**
      * Checks if a book is already added to the user library
      */
     const isBookAdded = async () => {
-        try {
-            const isAdded = await LibraryService.isBookAdded(book.id_book, TOKEN);
-            setBookAdded(isAdded);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+        const token = localStorage.getItem('access_token');
+        const user = await UserService.getUserData(token);
+        const response = await LibraryService.getBooksByUserId(user.id);
 
-    const fetchRating = async () => {
-        try {
-            const user = await UserService.getUserData(TOKEN);
-            book.averageRating = await BookService.getBookAverageRating(book.id_book);
-            const books = await BookService.getAllBackendBooks();
-            const backendBook = books.find((backendBook) => backendBook.id_book === book.id_book);
-            if(backendBook) {
-                const data = await LibraryService.getRating(user.id, backendBook.id);
-                book.personalRating = data.rating;
-                setUserRating(data.rating);
+        for (const _book of response) {
+            if (_book.id_book === book.id_book) {
+                setBookAdded(true);
+                setIsRead(_book.is_read);
+
+                const rate = await LibraryService.getRating(user.id, _book.id);
+                setUserRating(rate.rating);
             }
-        } catch (error) {
-            console.error(error);
         }
     };
 
     useEffect(() => {
         isBookAdded();
-        fetchRating();
     }, []);
 
     return (
@@ -142,9 +140,10 @@ export const BookView = () => {
                 </Box>
                 {/* Rating */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
-                    <BookRatingAvg averageRating={book.averageRating} />
+                    <BookRatingAvg averageRating={book.averageRating} userRating={userRating}/>
                     <BookRatingUser userRating={userRating} onRatingChange={handleRatingChange} />
                 </Box>
+
                 <Box>
                     <Button
                         variant="contained"
@@ -159,6 +158,16 @@ export const BookView = () => {
                         >
                             {bookAdded ? 'Eliminar' : 'Afegir'}
                     </Button>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isRead}
+                                onChange={handleCheckboxChange}
+                                color="primary"
+                            />
+                        }
+                        label="Llegit"
+                    />
                 </Box>
                 {/* Description */}
                 <Box sx={{ overflow: 'auto', marginTop: '2rem' }}>

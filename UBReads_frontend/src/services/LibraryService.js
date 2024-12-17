@@ -48,7 +48,11 @@ class LibraryService {
         // Manage response
         switch (response.status) {
             case 200:
-                return response.data.map(item => item.book);
+                return response.data.map(item => ({
+                      ...item.book,
+                      is_read: item.is_read,
+                    }));
+
             case 500:
                 throw new Error('Error intern en el servidor');
             case 400:
@@ -91,7 +95,7 @@ class LibraryService {
     async isBookAdded(bookGoogleId, token) {
         // Retrieves user's library to check if the book is already in the library
         const library = await this.getCurrentUserBooks(token);
-        return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
+        return !!library.find(backendBook => backendBook.id_book === bookGoogleId);
     }
 
     async getBooksByUserId(id) {
@@ -100,7 +104,10 @@ class LibraryService {
         // Manage response
         switch (response.status) {
             case 200:
-                return response.data.map(item => item.book);
+                return response.data.map(item => ({
+                  ...item.book,
+                  is_read: item.is_read,
+                }));
             case 500:
                 throw new Error('Error intern en el servidor');
             case 400:
@@ -123,6 +130,32 @@ class LibraryService {
         };
 
         return await backendAPI.patch(`/users/${userId}/books/${bookId}/rating`, requestBody)
+    }
+
+    /**
+     * Update the read status
+     * @param {string} token
+     * @param {Object} book
+     * @param {boolean} read
+     */
+    async addRead(token, book, read) {
+        const user = await UserService.getUserData(token);
+        let backendBooks = await BookService.getAllBackendBooks();
+        let backendBook = backendBooks.find(backendBook => backendBook.id_book === book.id_book);
+
+        // If the book is not in the backend, add it
+        if (!backendBook) {
+            await BookService.addBookToBackend(book);
+            backendBooks = await BookService.getAllBackendBooks();
+            backendBook = backendBooks.find(_backendBook => _backendBook.id_book === book.id_book);
+        }
+
+        const requestBody = {
+            is_read: read,
+        };
+
+        return backendAPI.patch(`/users/${user.id}/books/${backendBook.id}/read-status`, requestBody)
+          .then((response) => response);
     }
 
     /**
