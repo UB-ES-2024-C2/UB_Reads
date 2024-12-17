@@ -1,117 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Container } from "@mui/system";
-import { grey } from "@mui/material/colors";
-import { Typography, TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import { UserList } from "./userList";
-import { UserCard } from "./userCard"; // Import UserCard
-import UserService from "../../services/UserService.js";
 import FollowerService from "../../services/FollowerService.js";
+import { UserCard } from "./UserCard.jsx";
+import { FollowersBookList } from "./FollowersBookList.jsx";
+import { Grid2 } from '@mui/material';
+import LibraryService from "../../services/LibraryService.js";
+import BookService from "../../services/BookService.js";
 
-export const FollowersView = () => {
-    const [userFound, setUserFound] = useState(null);
-    const [username, setUsername] = useState([]);
-    const [followedUsers, setFollowedUsers] = useState([]);
+export const FollowersView = ({ query }) => {
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            followUser(username);
+    const [users, setUsers] = React.useState([]);
+    const [usersBooks, setUsersBooks] = React.useState([]);
+    const isFirstRender = React.useRef(true);
+
+
+    React.useEffect(() => {
+        // Avoid to call the function on the first render
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        } else if (query && query.trim() !== '') {
+            followUser(query);
         }
-    };
+    }, [query]);
+
+    React.useEffect(() => {
+        fetchUsersBooks();
+    }, [users]);
 
     const fetchUsersFollowed = async () => {
         try {
             const token = localStorage.getItem('access_token');
             const usersFollowed = await FollowerService.getUsersFollowed(token);
-            setFollowedUsers(usersFollowed);
+            setUsers(usersFollowed);
         } catch (error) {
-            console.error("Error al obtener los usuarios seguidos:", error);
+            console.error(error);
         }
     };
+
+    const fetchUsersBooks = async () => {
+        try {
+            const libraries = await Promise.all(users.map(async user => await LibraryService.getBooksByUserId(user.id)));
+            console.log(libraries);
+            const books = await Promise.all(libraries.map(async library => await Promise.all(await library.map(async book => await BookService.getBookById(book.id_book)))));
+            setUsersBooks(books);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    React.useEffect(() => {
+        fetchUsersFollowed();
+    }, []);
 
     const followUser = async (username) => {
         try {
             const token = localStorage.getItem('access_token');
             await FollowerService.followUserByUsername(token, username);
-            setFollowedUsers([...followedUsers, username]);
+            const users = await FollowerService.getUsersFollowed(token);
+            setUsers(users);
         } catch (error) {
-            console.error("Error al seguir al usuario:", error);
+            alert(`Error al seguir al usuario: ${error.message}`);
         }
     };
 
-    useEffect(() => {
-        fetchUsersFollowed();
-    }, []);
+    const unfollowUser = async (username) => {
+        try {
+            const token = localStorage.getItem('access_token');
+            await FollowerService.unfollowUserByUsername(token, username);
+            setUsers(users.filter(user => user.username !== username));
+        } catch (error) {
+            alert(`Error al dejar de seguir al usuario: ${error.message}`);
+        }
+    };
 
     return (
-        <Container
-            disableGutters
-            className="home-container"
-            maxWidth="false"
-            sx={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-            }}
-        >
-        <Box
-            sx={{
-            mt: 1,
-            display: "flex",
-            justifyContent: "flex-end",
-            paddingRight: "2rem",
-            position: "relative",
-            }}
-        >
-            <TextField
-            variant="outlined"
-            placeholder="Nom d'usuari..."
-            onChange={(e) => setUsername(e.target.value)}
-            onKeyDown={handleKeyDown}
-            sx={{
-                width: "20%",
-                marginRight: "1rem",
-            }}
-            />
-        </Box>
-
-        <Box sx={{ mt: 4, flexShrink: 0 }}>
-            <Typography
-            variant="h4"
-            align="center"
-            sx={{
-                fontWeight: "bold",
-                color: grey[800],
-            }}
-            >
-            Usuaris que estàs seguint:
-            </Typography>
-        </Box>
-
-        <Box
-            sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            mt: 4,
-            }}
-        >
-            <Box
-            sx={{
-                width: "90%",
-                maxWidth: "600px",
-                maxHeight: "70vh",
-                overflowY: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            >
-            </Box>
-        </Box>
+        /* Main container */
+        <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100dvh', overflow: 'auto', display: 'flex', flexDirection: 'column', paddingBottom: '5rem' }}>
+            {users.map((user, index) => (
+                <Grid2 key={index} container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Grid2 size={1} sx={{ border: '1px solid #000000', height: '100%' }}>
+                        <UserCard user={user} unfollow={unfollowUser} />
+                    </Grid2>
+                    <Grid2 size={11} sx={{ border: '1px solid #000000', height: '100%' }}>
+                        <FollowersBookList books={usersBooks[index]} />
+                    </Grid2>
+                </Grid2>
+            ))}
         </Container>
     );
 };

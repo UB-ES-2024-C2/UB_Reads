@@ -1,7 +1,7 @@
 /**
  * 27-11-2024
  * @description: Library view
- * @author: @neorefraction
+ * @author: @neorefraction && @subiranet
  */
 
 // React
@@ -21,7 +21,7 @@ import { Grid2, Container, Box } from '@mui/material';
 
 // Components
 import { BookRatingAvg } from "../";
-import {BookRatingUser} from "../common/BookRatingUser";
+import { BookRatingUser } from "../common/BookRatingUser";
 
 
 // Services
@@ -33,12 +33,13 @@ export const LibraryView = () => {
     const [allBooks, setAllBooks] = useState([]);
     const [readBooks, setReadBooks] = useState([]);
     const [showOnlyRead, setShowOnlyRead] = useState(false);
+    const TOKEN = localStorage.getItem('access_token');
 
-    const fetchUserBooks = async () => {
-        const token = localStorage.getItem('access_token');
+
+     const fetchUserBooks = async () => {
         try {
-            const user = await UserService.getUserData(token);
-            const response = await LibraryService.getBooksByUser(token);
+              const user = await UserService.getUserData(TOKEN);
+            const response = await LibraryService.getBooksByUser(TOKEN);
             const books = await Promise.all(
               response.map(async (book) => {
                   const [apiBook, userRatingResponse] = await Promise.all([
@@ -74,9 +75,8 @@ export const LibraryView = () => {
 
 
     const handlePersonalRatingChange = async (bookId, newRating) => {
-        const token = localStorage.getItem('access_token');
         try {
-            const user = await UserService.getUserData(token);
+            const user = await UserService.getUserData(TOKEN);
             const response = await LibraryService.addRating(user.id, bookId, newRating);
             if (response.status === 200) {
                 setAllBooks((prevBooks) => {
@@ -92,12 +92,11 @@ export const LibraryView = () => {
         }
     };
 
-    const handleDeleteBook = async (book) => {
+     const handleDeleteBook = async (book) => {
         const confirmed = window.confirm("Estàs segur que vols eliminar aquest llibre?");
         if (confirmed) {
-            const token = localStorage.getItem('access_token');
             try {
-                await LibraryService.deleteBookFromUser(book, token);
+                await LibraryService.deleteBookFromUser(book, TOKEN);
                 setAllBooks((prevBooks) => {
                     const updatedBooks = prevBooks.filter((b) => b.ourId !== book.ourId);
                     syncReadBooks(updatedBooks); // Sync readBooks with the updated list
@@ -105,7 +104,6 @@ export const LibraryView = () => {
                 });
             } catch (error) {
                 console.error("Error deleting book:", error);
-            }
         }
     };
 
@@ -118,9 +116,9 @@ export const LibraryView = () => {
         fetchUserBooks();
     }, []);
 
-
     return (
-       <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', }}>
+        /* Main container */
+        <Container maxWidth="false" sx={{ paddingInline: '0 !important', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '85%' }}>
             {/* Header */}
             <Box>
                 <Grid2 container spacing={1} sx={{ borderBlock: '1px solid #505050', paddingBlock: '1rem', paddingInline: '2rem', bgcolor: blue[900], color: 'white' }}>
@@ -166,32 +164,58 @@ export const LibraryView = () => {
             </Box>
             {/* Books */}
             <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-                {getBookList().map((book) => (
-                    <Grid2 container key={book.ourId} spacing={1} sx={{ padding: '1rem 2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
-                        <Grid2 xs={1}>
-                            <IconButton onClick={() => handleDeleteBook(book)} disableRipple>
-                                <CancelIcon sx={{ color: pink[600] }} />
-                            </IconButton>
-                        </Grid2>
-                        <Grid2 size={4}>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar variant="rounded" src={book.cover_url} />
-                                <Box sx={{ marginInline: '1.5rem' }}>
-                                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
-                                    <Typography>{book.author}</Typography>
-                                </Box>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={3}>
-                            <BookRatingAvg averageRating={book.averageRating} userRating={book.personalRating}/>
-                        </Grid2>
-                        <Grid2 size={3}>
-                            <BookRatingUser
-                                userRating={book.personalRating}
-                                onRatingChange={(newRating) => handlePersonalRatingChange(book.ourId, newRating)}
-                            />
-                        </Grid2>
-                    </Grid2>
+                {library.length === 0 ? (
+                    <Typography variant="h6" sx={{ textAlign: 'center', marginTop: '2rem'  }}>Cap llibre afegit a la biblioteca</Typography>
+                    ) : (
+                        getBookList().map((book) => (
+                            /* Book */
+                            <Grid2 container key={book.id} spacing={1} sx={{ paddingBlock: '1rem', paddingInline: '2rem', borderBottom: '1px solid #303030', alignItems: 'center' }}>
+                                <Grid2 size={1}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'flex-start' }} onClick={() => {
+                                        handleDeleteBook(book);
+                                    }} >
+                                        <IconButton edge="end" aria-label="delete" disableRipple sx={{ margin: '0' }}>
+                                            <CancelIcon sx={{ color: pink[600] }} />
+                                        </IconButton>
+                                    </Box>
+                                </Grid2>
+                                <Grid2 size={4}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Avatar variant="rounded" src={book.cover_url} />
+                                        <Box sx={{ marginInline: '1rem' }}>
+                                            <Typography variant="h6" color="text.secondary" sx={{
+                                                fontWeight: 'bold',
+                                                marginBottom: 0,
+                                                marginTop: '1rem',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'normal',
+                                                }}>{book.title}</Typography>
+                                            <Typography variant="h6" color="text.secondary" sx={{
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'normal',
+                                            }}>{book.author}</Typography>
+                                        </Box>
+                                    </Box>
+                                </Grid2>
+                                <Grid2 size={3}>
+                                   <BookRatingAvg averageRating={book.averageRating} userRating={book.personalRating}/>
+                                </Grid2>
+                                <Grid2 size={3}>
+                                    <BookRatingUser
+                                        userRating={book.personalRating}
+                                        onRatingChange={(newRating) => handlePersonalRatingChange(book.id, newRating)}
+                                    />
+                                </Grid2>
+                            </Grid2>
+                        )
                 ))}
             </Box>
         </Container>
