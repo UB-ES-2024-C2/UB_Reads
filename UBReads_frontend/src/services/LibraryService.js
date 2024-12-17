@@ -125,7 +125,7 @@ class LibraryService {
             is_read: read,
         };
 
-        return backendAPI.patch(`/users/1/books/1/read-status`, requestBody)
+        return backendAPI.patch(`/users/${user.id}/books/${backendBook.id}/read-status`, requestBody)
           .then((response) => response);
     }
 
