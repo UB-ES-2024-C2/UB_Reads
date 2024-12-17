@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = os.environ.get("ALGORITHM")
+SECRET_KEY = os.environ.get("SECRET_KEY","my_secret")
+ALGORITHM = os.environ.get("ALGORITHM","HS256")
 
 router = APIRouter()
 
