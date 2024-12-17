@@ -14,6 +14,7 @@ import { pink, blue } from "@mui/material/colors";
 
 import UserService from "../../services/UserService.js";
 import { useNavigate } from "react-router-dom";
+import { Avatar } from '@mui/material';
 
 export const ProfileView = () => {
   const navigate = useNavigate();
@@ -117,7 +118,7 @@ export const ProfileView = () => {
               }}
             >
               <div>
-                <img src={userData['image']} alt="User avatar"/>
+                <Avatar src={userData.image} sx={{width: '100%', height: '100%'}} />
               </div>
             </AspectRatio>
           </CardOverflow>

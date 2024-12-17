@@ -90,28 +90,32 @@ export const HomeView = () => {
                 <Typography variant="h2" sx={{ color: blue[800], fontSize: '2.75rem', fontWeight: 500, height: '25%' }}>Books afegits recentment</Typography>
                 <Stack direction="row" sx={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '75%' }}>
                     {/* Added books */}
-                    {lastBooksAdded.map((book) => (
-                        <Box key={book.id} sx={{ height: '14rem', textAlign: 'center', maxWidth: '14rem', minWidth: '14rem', padding: '1rem' }}>
-                            <img src={book.cover_url} alt={book.title} style={{ borderRadius: '1rem', width: 'auto', height: '65%', objectFit: 'cover' }} />
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '35%' }}>
-                                <Typography
-                                    variant="h6"
-                                    onClick={() => navigate(`/home/book/${book.id}`, { state: { book: book } })}
-                                    sx={{
-                                        marginBottom: 0,
-                                        marginTop: '1rem',
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'normal',
-                                        '&:hover': { cursor: 'pointer', color: blue[800]} 
-                                    }}>
-                                        {book.title}
-                                    </Typography>
+                    {lastBooksAdded.length === 0 ? (
+                            <Typography variant="h6" sx={{ color: grey[500], fontSize: '1.5rem', fontWeight: 500, height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>Cap llibre afegit a la biblioteca</Typography>
+                        ) : (
+                        lastBooksAdded.map((book) => (
+                            <Box key={book.id} sx={{ height: '14rem', textAlign: 'center', maxWidth: '14rem', minWidth: '14rem', padding: '1rem' }}>
+                                <img src={book.cover_url} alt={book.title} style={{ borderRadius: '1rem', width: 'auto', height: '65%', objectFit: 'cover' }} />
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '35%' }}>
+                                    <Typography
+                                        variant="h6"
+                                        onClick={() => navigate(`/home/book/${book.id}`, { state: { book: book } })}
+                                        sx={{
+                                            marginBottom: 0,
+                                            marginTop: '1rem',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'normal',
+                                            '&:hover': { cursor: 'pointer', color: blue[800]} 
+                                        }}>
+                                            {book.title}
+                                        </Typography>
+                                </Box>
                             </Box>
-                        </Box>
+                        )
                     ))}
                 </Stack>
             </Box>
@@ -119,12 +123,16 @@ export const HomeView = () => {
                 <Typography variant="h2" sx={{ color: blue[800], fontSize: '2.75rem', fontWeight: 500, height: '25%' }}>Ultims seguits</Typography>
                 <Stack direction="row" sx={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '75%' }}>
                     {/* Last followed users */}
-                    {lastFollowedUsers.map((user) => (
-                        <Box sx={{ height: '14rem', maxWidth: '14rem', minWidth: '14rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                            <Avatar src={user.profileImage} sx={{ height: '50%', width: '50%' }} />
-                            <Typography sx={{ mt: '1rem', fontSize: '1.25rem', padding: 0 }}>{user.username}</Typography>
-                            <Typography sx={{ fontSize: '1.25rem', padding: 0 }}>{user.email}</Typography>
-                        </Box>
+                    {lastFollowedUsers.length === 0 ? (
+                            <Typography variant="h6" sx={{ color: grey[500], fontSize: '1.5rem', fontWeight: 500, height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>Cap usuari afegit</Typography>
+                        ) : (
+                        lastFollowedUsers.map((user) => (
+                            <Box sx={{ height: '14rem', maxWidth: '14rem', minWidth: '14rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                                <Avatar src={user.profile_pic} sx={{ height: '50%', width: '50%' }} />
+                                <Typography sx={{ mt: '1rem', fontSize: '1.25rem', padding: 0 }}>{user.username}</Typography>
+                                <Typography sx={{ fontSize: '1.25rem', padding: 0 }}>{user.email}</Typography>
+                            </Box>
+                        )
                     ))}
                 </Stack>
             </Box>

@@ -12,12 +12,13 @@ class FollowerService {
      */
     async followUserByUsername(token, toFollowUsername) {
         // Get the user data from the token
+        console.log(toFollowUsername)
         const user = await UserService.getUserData(token);
         const response = await backendAPI.post(`users/${user.username}/follow/${toFollowUsername}`);
         // Manage errors
         switch (response.status) {
             case 400:
-                return alert('Usuari no trobat');
+                throw new Error('Usuari no trobat');
             case 500:
                 throw new Error('Error intern en el servidor');
             case 422:
@@ -37,7 +38,7 @@ class FollowerService {
         // Get the user data from the token
         const user = await UserService.getUserData(token);
         // Send the request to the backend
-        const response = await backendAPI.delete(`users/${user.id}/follow/${userToUnfollow.id}`);
+        const response = await backendAPI.delete(`/${user.id}/unfollow/${userToUnfollow.id}`);
         // Manage errors
         switch (response.status) {
             case 400:

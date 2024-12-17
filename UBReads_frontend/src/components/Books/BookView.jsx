@@ -68,15 +68,13 @@ export const BookView = () => {
     }
 
     const handleRatingChange = async (newRating) => {
-        const books = await BookService.getAllBackendBooks();
+        const library = await LibraryService.getCurrentUserBooks(TOKEN);
 
-        const bookId = books.find((backendBook) => backendBook.id_book === book.id_book)?.id;
+        const backendBook = library.find((libraryBook) => libraryBook.id_book === book.id_book);
 
-
-        if (bookId) {
+        if (backendBook) {
             const user = await UserService.getUserData(TOKEN);
-            const response = await LibraryService.addRating(user.id, bookId, newRating);
-
+            const response = await LibraryService.addRating(user.id, backendBook.id, newRating);
 
             if (response.status === 200) {
                 setUserRating(newRating);
@@ -101,12 +99,19 @@ export const BookView = () => {
     }
 
     const fetchRating = async () => {
-        const user = await UserService.getUserData(TOKEN);
-        book.averageRating = await BookService.getBookAverageRating(book.id_book)
-        const data = await LibraryService.getRating(user.id, book.id)
-        book.personalRating = data.rating;
-        console.log(book);
-        setUserRating(data.rating);
+        try {
+            const user = await UserService.getUserData(TOKEN);
+            book.averageRating = await BookService.getBookAverageRating(book.id_book);
+            const books = await BookService.getAllBackendBooks();
+            const backendBook = books.find((backendBook) => backendBook.id_book === book.id_book);
+            if(backendBook) {
+                const data = await LibraryService.getRating(user.id, backendBook.id);
+                book.personalRating = data.rating;
+                setUserRating(data.rating);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
@@ -169,7 +174,7 @@ export const BookView = () => {
             </Box>
             {/* Close view button */}
             <Box>
-                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate('/home')}>
+                <IconButton disableRipple sx={{ width: 'wrap-content', height: 'wrap-content' }} onClick={() => navigate(-1, { state: state })}>
                     <ClearIcon sx={{ color: pink[700], width: '3.5rem', height: '3.5rem' }} />
                 </IconButton>
             </Box>

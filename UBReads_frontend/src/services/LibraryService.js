@@ -40,7 +40,7 @@ class LibraryService {
      * Gets all the books saved by a user from the backend given its user id
      * @param {String} token 
      */
-    async getBooksByUser(token) {
+    async getCurrentUserBooks(token) {
         // Get the user data from the token
         const user = await UserService.getUserData(token);
         // Get the books from the backend API
@@ -60,7 +60,7 @@ class LibraryService {
 
     async getLastBooksAdded(token) {
         // Get the book data from the backend API
-        const library = await this.getBooksByUser(token);
+        const library = await this.getCurrentUserBooks(token);
         return library.slice(-15);
 
     }
@@ -90,8 +90,24 @@ class LibraryService {
 
     async isBookAdded(bookGoogleId, token) {
         // Retrieves user's library to check if the book is already in the library
-        const library = await this.getBooksByUser(token);
+        const library = await this.getCurrentUserBooks(token);
         return library.find(backendBook => backendBook.id_book === bookGoogleId) ? true : false;
+    }
+
+    async getBooksByUserId(id) {
+        // Get the books from the backend API
+        const response  = await backendAPI.get(`/users/${id}/books/`);
+        // Manage response
+        switch (response.status) {
+            case 200:
+                return response.data.map(item => item.book);
+            case 500:
+                throw new Error('Error intern en el servidor');
+            case 400:
+                throw new Error('Format de l\'ID incorrecte');
+            default:
+                throw new Error('Error desconegut en l\'API del backend');
+        }
     }
 
     /**
@@ -127,7 +143,6 @@ class LibraryService {
                 throw new Error('Error desconegut en l\'API del backend');
         }
     }
-
 }
 
 export default new LibraryService();
