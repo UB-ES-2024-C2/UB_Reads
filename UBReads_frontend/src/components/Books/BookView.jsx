@@ -16,7 +16,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { green, blue, pink } from '@mui/material/colors';
 
 // MUI Components
-import { Typography, Button, IconButton } from '@mui/material';
+import { Typography, Button, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 
 // Own Components
 import { BookRatingAvg } from '../';
@@ -33,17 +33,17 @@ export const BookView = () => {
     const [bookAdded, setBookAdded] = useState(false);
     const [readMorePressed, setReadMorePressed] = useState(false);
     const [userRating, setUserRating] = useState(null);
+    const [isRead, setIsRead] = useState(false);
 
     const handleAddBook = async () => {
         try {
             const token = localStorage.getItem('access_token');
             await LibraryService.addBookToUser(book, token);
-            await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'))
+            await LibraryService.addRead(token, book, confirm('Has llegit aquest llibre?'));
             setBookAdded(true);
         } catch (error) {
             console.error(error);
         }
-
     };
 
     const handleRemoveBook = async () => {
@@ -54,7 +54,7 @@ export const BookView = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     const handleRatingChange = async (newRating) => {
         const token = localStorage.getItem('access_token');
@@ -62,11 +62,9 @@ export const BookView = () => {
 
         const bookId = books.find((backendBook) => backendBook.id_book === book.id_book)?.id;
 
-
         if (bookId) {
             const user = await UserService.getUserData(token);
             const response = await LibraryService.addRating(user.id, bookId, newRating);
-
 
             if (response.status === 200) {
                 setUserRating(newRating);
@@ -74,6 +72,13 @@ export const BookView = () => {
                 console.warn('Error updating rating:', response);
             }
         }
+    };
+
+    const handleCheckboxChange = async (event) => {
+        setIsRead(event.target.checked);
+        console.log(event.target.checked)
+        const token = localStorage.getItem('access_token');
+        await LibraryService.addRead(token, book, event.target.checked);
     };
 
     const checkBookAdded = async () => {
@@ -85,7 +90,7 @@ export const BookView = () => {
             if (_book.id_book === book.id_book) {
                 setBookAdded(true);
 
-                const rate = await LibraryService.getRating(user.id, _book.id)
+                const rate = await LibraryService.getRating(user.id, _book.id);
                 setUserRating(rate.rating);
             }
         }
@@ -129,20 +134,17 @@ export const BookView = () => {
                 {/* Rating */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
                     <BookRatingAvg averageRating={book.averageRating} />
-                    <BookRatingUser
-                        userRating={userRating}
-                        onRatingChange={handleRatingChange}
-                    />
+                    <BookRatingUser userRating={userRating} onRatingChange={handleRatingChange} />
                 </Box>
 
-                <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Button
                         id="add-button"
                         variant="contained"
-                        onClick={(e) =>{
-                                e.stopPropagation();
-                                bookAdded ? handleRemoveBook() : handleAddBook()
-                            }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            bookAdded ? handleRemoveBook() : handleAddBook();
+                        }}
                         sx={{
                             bgcolor: bookAdded ? pink[700] : green['A700'],
                             paddingInline: '3rem',
@@ -153,6 +155,16 @@ export const BookView = () => {
                     >
                         {bookAdded ? 'Eliminar' : 'Afegir'}
                     </Button>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isRead}
+                                onChange={handleCheckboxChange}
+                                color="primary"
+                            />
+                        }
+                        label="Llegit"
+                    />
                 </Box>
                 {/* Description */}
                 <Box sx={{ overflow: 'auto', marginTop: '2rem' }}>
