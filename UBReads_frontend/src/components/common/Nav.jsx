@@ -68,14 +68,6 @@ export const Nav = ({ user, buttonText, placeholder, onSearch }) => {
             <Stack direction="row" sx={{ height: '100%', marginInline: '2.5rem', display: 'flex', alignItems: 'center', width: '65%', justifyContent: 'space-between' }}>
                 {/* Logo */}
                 <Avatar variant="square" src={Logo} alt="Logo" onClick={() => navigate('/home')} />
-
-                {/* Navigation Options */}
-                <Box>
-                    <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Home</Button>
-                    <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Library</Button>
-                    <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/followed')}>Followed</Button>
-                </Box>
-
                 {/* Searchbox */}
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30dvw', height: '100%' }} onKeyDown={handleKeyDown}>
                     <TextField fullWidth sx={{ color: 'white', width: '100%', '& .MuiInputBase-input': {backgroundColor: 'white', height: '100%'} }} placeholder={placeholder} onChange={(e) => setInput(e.target.value)} value={input} />
@@ -87,10 +79,10 @@ export const Nav = ({ user, buttonText, placeholder, onSearch }) => {
                 <Box></Box>
                 <Tooltip title="User Menu" arrow onClick={handleClick}>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', height: '100%', alignItems: 'center', '&:hover': { cursor: 'pointer' } }}>
-                        <Avatar src={user.profImage} />
+                        <Avatar src={user.image} />
                         <Box sx={{ m: '1rem' }}>
-                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.usernameSTR}</Typography>
-                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.emailSTR}</Typography>
+                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.username}</Typography>
+                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.email}</Typography>
                         </Box>
                     </Box>
                 </Tooltip>

@@ -8,7 +8,7 @@ import { Box } from '@mui/material';  // Layout
 import { blue, pink, green } from '@mui/material/colors';  // Colors
 
 // Own components
-import { BookRating } from '../common/BookRating';
+import { BookRatingAvg } from "../common/BookRatingAvg";
 
 // Services
 import LibraryService from '../../services/LibraryService.js';
@@ -95,7 +95,7 @@ export const SearchBookCard = ({ book, onClick, library }) => {
                         {book.author}
                     </Typography>
                     {/* Book rating */}
-                    <BookRating rating={book.averageRating} />
+                    <BookRatingAvg averageRating={book.averageRating} />
                     {/* Add/Remove button */}
                     <Button
                         size="large"

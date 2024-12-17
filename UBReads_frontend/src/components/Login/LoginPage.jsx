@@ -39,7 +39,7 @@ export const LoginPage = () => {
         </div>
         <div className="login-container">
           {/* Contenedor para el formulario */}
-          <h2>Login</h2>
+          <h2>Iniciar sessió</h2>
           <form onSubmit={handleSubmit}>
             {" "}
             {/* Vincular la función al evento onSubmit */}

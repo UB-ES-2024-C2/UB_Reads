@@ -14,7 +14,7 @@ class FollowerService {
         // Get the user data from the token
         console.log(toFollowUsername)
         const user = await UserService.getUserData(token);
-        const response = await backendAPI.post(`users/${user.usernameSTR}/follow/${toFollowUsername}`);
+        const response = await backendAPI.post(`users/${user.username}/follow/${toFollowUsername}`);
         // Manage errors
         switch (response.status) {
             case 400:
@@ -48,6 +48,11 @@ class FollowerService {
             case 422:
                 throw new Error('Format del user username o follow username incorrecte');
         }
+    }
+
+    async getLastFollowedUsers(token) {
+        const users_followed = await this.getUsersFollowed(token);
+        return users_followed.slice(-15);
     }
 
     /**

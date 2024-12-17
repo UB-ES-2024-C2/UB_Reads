@@ -24,6 +24,10 @@ export const FollowersView = ({ query }) => {
         }
     }, [query]);
 
+    React.useEffect(() => {
+        fetchUsersBooks();
+    }, [users]);
+
     const fetchUsersFollowed = async () => {
         try {
             const token = localStorage.getItem('access_token');
@@ -37,6 +41,7 @@ export const FollowersView = ({ query }) => {
     const fetchUsersBooks = async () => {
         try {
             const libraries = await Promise.all(users.map(async user => await LibraryService.getBooksByUserId(user.id)));
+            console.log(libraries);
             const books = await Promise.all(libraries.map(async library => await Promise.all(await library.map(async book => await BookService.getBookById(book.id_book)))));
             setUsersBooks(books);
         } catch (error) {
@@ -48,17 +53,12 @@ export const FollowersView = ({ query }) => {
         fetchUsersFollowed();
     }, []);
 
-    React.useEffect(() => {
-        if (users.length > 0) {
-            fetchUsersBooks();
-        }
-    }, [users]);
-
     const followUser = async (username) => {
         try {
             const token = localStorage.getItem('access_token');
             await FollowerService.followUserByUsername(token, username);
-            setUsers([...users, username]);
+            const users = await FollowerService.getUsersFollowed(token);
+            setUsers(users);
         } catch (error) {
             alert(`Error al seguir al usuario: ${error.message}`);
         }

@@ -20,9 +20,9 @@ export const ProfileView = () => {
   const navigate = useNavigate();
   const [hover, setHover] = useState(false);
   const [userData, setUserData] = useState({
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: "",
+    username: "Username",
+    email: "username@example.com",
+    image: "",
   });
 
   function generateRandomString() {
@@ -82,7 +82,8 @@ export const ProfileView = () => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      width: '85%'
     }}>
       <Container className="content-container" maxWidth="false" sx={{
         display: 'flex',
@@ -117,7 +118,7 @@ export const ProfileView = () => {
               }}
             >
               <div>
-                <Avatar src={userData.profImage} sx={{width: '100%', height: '100%'}} />
+                <Avatar src={userData.image} sx={{width: '100%', height: '100%'}} />
               </div>
             </AspectRatio>
           </CardOverflow>
@@ -127,7 +128,7 @@ export const ProfileView = () => {
                 Nom d&#39;usuari
               </Typography>
               <Typography level="body-lg">
-                {userData['usernameSTR']}
+                {userData['username']}
               </Typography>
             </div>
             <div>
@@ -135,7 +136,7 @@ export const ProfileView = () => {
                 Correu electrònic
               </Typography>
               <Typography level="body-lg">
-                {userData['emailSTR']}
+                {userData['email']}
               </Typography>
             </div>
           </CardContent>

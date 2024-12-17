@@ -6,13 +6,15 @@ export { SignupPage } from './Signup/SignupPage';
 
 // Home components
 export { HomePage } from './Home/HomePage';
+export { HomeView } from './Home/HomeView';
 
 // Books components
 export { BookView } from './Books/BookView';
 
 // Common components
 export { Nav } from './common/Nav';
-export { BookRating } from './common/BookRating';
+export { BookRatingUser } from './common/BookRatingUser';
+export { BookRatingAvg } from './common/BookRatingAvg';
 export { Sidebar } from './common/Sidebar';
 
 // Followers components
