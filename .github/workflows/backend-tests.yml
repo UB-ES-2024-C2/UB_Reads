@@ -2,12 +2,7 @@ name: Run Tests and Coverage
 
 on:
   pull_request:
-    branches:
-      - development
-
   push:
-    branches:
-      - development
 
 jobs:
   test-and-coverage:
@@ -52,3 +47,4 @@ jobs:
       run: |
         coverage report
 
+    if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/preproduction'

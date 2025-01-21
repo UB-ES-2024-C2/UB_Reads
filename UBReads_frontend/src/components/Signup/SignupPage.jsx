@@ -3,6 +3,16 @@ import "./signup.css";
 import React, { useState } from "react";
 import UserService from "../../services/UserService.js";
 import { Link, useNavigate } from "react-router-dom";
+import foto1 from "../../assets/fotos_escritores/foto_1.webp";
+import foto2 from "../../assets/fotos_escritores/foto_2.webp";
+import foto3 from "../../assets/fotos_escritores/foto_3.webp";
+import foto4 from "../../assets/fotos_escritores/foto_4.webp";
+import foto5 from "../../assets/fotos_escritores/foto_5.webp";
+import foto6 from "../../assets/fotos_escritores/foto_6.webp";
+import foto7 from "../../assets/fotos_escritores/foto_7.webp";
+import foto8 from "../../assets/fotos_escritores/foto_8.webp";
+import foto9 from "../../assets/fotos_escritores/foto_9.webp";
+import foto10 from "../../assets/fotos_escritores/foto_10.webp";
 
 export const SignupPage = () => {
   const navigate = useNavigate();
@@ -11,18 +21,22 @@ export const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [selectedProfilePic, setSelectedProfilePic] = useState(null);
 
   const [uNameError, setUnameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [profilePicError, setProfilePicError] = useState("");
+
+  const profilePics = [foto1,foto2, foto3, foto4, foto5, foto6, foto7, foto8, foto9, foto10];
 
   const validateUname = (username) => {
     if (username.length > 250) {
-      return "El username no pot superar els 250 caràcters."
+      return "El username no pot superar els 250 caràcters.";
     }
     return "";
-  }
+  };
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -51,16 +65,19 @@ export const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Final validation before submitting
     const uNameErorrMsg = validateUname(username);
     const emailErrorMsg = validateEmail(email);
     const passwordErrorMsg = validatePassword(password);
     const confirmPasswordErrorMsg = validateConfirmPassword(password, confirmPassword);
 
+    if (!selectedProfilePic) {
+      setProfilePicError("Has de seleccionar una foto de perfil.");
+      return;
+    }
+
     if (!emailErrorMsg && !passwordErrorMsg && !confirmPasswordErrorMsg) {
-      // Submit form logic (e.g., send data to server)
       try {
-        UserService.signup(username, email, password)
+        await UserService.signup(username, email, password, selectedProfilePic);
         navigate("/");
       } catch (error) {
         alert(error.message || "Error during registration. Please try again.");
@@ -73,31 +90,8 @@ export const SignupPage = () => {
     }
   };
 
-  const handleUnameChange = (e) => {
-    const value = e.target.value;
-    setUsername(value);
-    setUnameError(validateUname(value));
-  }
-
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    setEmailError(validateEmail(value));
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    setPasswordError(validatePassword(value));
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
-    setConfirmPasswordError(validateConfirmPassword(password, value));
-  };
-
   return (
+    
     <main className="main-container">
       <div className="central-container">
         <div className="welcome-container">
@@ -107,7 +101,7 @@ export const SignupPage = () => {
           </p>
         </div>
         <div className="signup-container">
-          <h2>Signup</h2>
+          <h2>Crear nou compte</h2>
           <form onSubmit={handleSubmit}>
             <label htmlFor="username">Nom d&#39;usuari:</label>
             <input
@@ -116,18 +110,18 @@ export const SignupPage = () => {
               placeholder="Username"
               required
               value={username}
-              onChange={handleUnameChange}
+              onChange={(e) => setUsername(e.target.value)}
             />
             {uNameError && <small style={{ color: "red" }}>{uNameError}</small>}
 
-            <label htmlFor="email">Introdueix un Email</label>
+            <label htmlFor="email">Introdueix un correu electrònic</label>
             <input
               type="email"
               id="email"
               placeholder="example@example.com"
               required
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
             />
             {emailError && <small style={{ color: "red" }}>{emailError}</small>}
 
@@ -138,7 +132,7 @@ export const SignupPage = () => {
               placeholder="Password"
               required
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
             {passwordError && <small style={{ color: "red" }}>{passwordError}</small>}
 
@@ -149,14 +143,30 @@ export const SignupPage = () => {
               placeholder="Repeat password"
               required
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {confirmPasswordError && <small style={{ color: "red" }}>{confirmPasswordError}</small>}
+
+            <h3>Selecciona una foto de perfil:</h3>
+            <div className="profile-pic-container">
+              {profilePics.map((pic, index) => (
+                <div
+                  key={index}
+                  className={`profile-pic-box ${
+                    selectedProfilePic === pic ? "selected" : ""
+                  }`}
+                  onClick={() => setSelectedProfilePic(pic)}
+                >
+                  <img src={pic} alt={`Foto ${index + 1}`} className="profile-pic" />
+                </div>
+              ))}
+            </div>
+            {profilePicError && <small style={{ color: "red" }}>{profilePicError}</small>}
 
             <button type="submit">Envia</button>
           </form>
           <p>
-            Ja tens un compte? <Link to="/">Logueja&#39;t aquí</Link>
+            Ja tens un compte? <Link to="/">Inicia sessió aquí</Link>
           </p>
         </div>
       </div>

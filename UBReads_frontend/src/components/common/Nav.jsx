@@ -1,6 +1,5 @@
 // React imports
-// eslint-disable-next-line no-unused-vars
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Router Link
 
 // Material UI imports
@@ -23,184 +22,80 @@ import { pink, blue } from "@mui/material/colors";
 
 // Style imports
 import Logo from "../../assets/logo.png";
-import SearchIcon from '@mui/icons-material/Search';
 
-// Javascript calls
+export const Nav = ({ user, buttonText, placeholder, onSearch }) => {
+    const navigate = useNavigate();
 
-import UserService from "../../services/UserService.js";
+    // User menu states
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
 
-export const Nav = ({ onSearch }) => {
-  const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [userData, setUserData] = useState({
-    usernameSTR: "Username",
-    emailSTR: "username@example.com",
-    profImage: "",
-  });
+    // Searchbox states
+    const [input, setInput] = React.useState('');
 
-  const [input, setInput] = useState("");
-
-  const fetchUserData = async () => {
-    const token = localStorage.getItem("access_token");
-    try {
-      const data = await UserService.getUserData(token);
-      setUserData(data);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    onSearch(input.trim());
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const logOut = () => {
-    if (confirm('N\'estas segur que vols sortir de l\'aplicació?')) {
-      localStorage.removeItem("access_token");
-      navigate("/");
-    }
-  };
-
-  const profilePage = () => {
-    navigate("profile");
-  };
-
-  const followingList = () => {
-    navigate("/home/following");
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch(e);
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (anchorElUser && !anchorElUser.contains(event.target)) {
-        handleCloseUserMenu();
-      }
+    // User menu functions
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const handleClose = () => {
+        setAnchorEl(null);
     };
-  }, [anchorElUser]);
 
-  return (
-    <Container
-      disableGutters
-      maxWidth="false"
-      className="navbar-container"
-      sx={{ bgcolor: blue[800], width: '100%', height: '5rem', position: 'sticky', top: 0 }}
-    >
+    // Searchbox functions
+    const handleSearch = (e) => {
+        e.preventDefault();
+        onSearch(input.trim());
+        setInput('');
+    };
 
-      
-      <Stack direction="row" spacing={30} sx={{ height: '100%', marginInline: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-        <Link to="/home">
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            {/* Logo */}
-            <Avatar sx={{ height: 'auto' }} variant="square" src={Logo} alt="Logo" />
-          </Box>
-        </Link>
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch(e);
+        }
+    };
 
-        {/* Navigation Options */}
-        <Box>
-          <Stack direction="row" spacing={2}>
-            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home')}>Home</Button>
-            <Button variant="text" sx={{ color: 'white' }} disableRipple onClick={() => navigate('/home/library')}>Library</Button>
-          </Stack>
-        </Box>
+    const logOut = () => {
+        if (confirm('N\'estas segur que vols sortir de l\'aplicació?')) {
+            localStorage.removeItem("access_token");
+            navigate("/");
+        }
+    };
 
-        {/* Searchbox */}
-        <Box sx={{ minHeight: '4.5dvh', minWidth: '30vw' }} onKeyDown={handleKeyDown}>
-          <Stack direction="row" spacing={2}>
-            <Box sx={{ display: 'flex', padding: 0, borderRadius: '5px', minWidth: '25vw', alignItems: 'center' }}>
-                <SearchIcon sx={{ 
-                  color: 'white',
-                  marginLeft: '0.5dvw',
-                  fontSize: '3rem',
-                }}/>
-                <TextField fullWidth 
-                  onChange={(event) => {
-                    setInput(event.target.value);
-                  }}
-                sx={{ marginLeft: '0.5dvw',
-                color: 'white',
-                height: '100%',
-                width: '100%',
-                justifyContent:'center',
-                alignContent: 'center',
-                '& .MuiInputBase-input': {
-                    backgroundColor: 'white',
-                    height: '3.5rem',
-                  }
-                }} />
+    return (
+        // Main container
+        <Container disableGutters maxWidth="false" sx={{ bgcolor: blue[800], width: '100%', height: '5rem', position: 'sticky', top: 0, display: 'flex' }}>
+            {/* Navigation features */}
+            <Stack direction="row" sx={{ height: '100%', marginInline: '2.5rem', display: 'flex', alignItems: 'center', width: '65%', justifyContent: 'space-between' }}>
+                {/* Logo */}
+                <Avatar variant="square" src={Logo} alt="Logo" onClick={() => navigate('/home')} />
+                {/* Searchbox */}
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30dvw', height: '100%' }} onKeyDown={handleKeyDown}>
+                    <TextField fullWidth sx={{ color: 'white', width: '100%', '& .MuiInputBase-input': {backgroundColor: 'white', height: '100%'} }} placeholder={placeholder} onChange={(e) => setInput(e.target.value)} value={input} />
+                    <Button disableRipple variant="outlined" sx={{ color: '#ffffff', borderColor: '#ffffff', backgroundColor: blue[800], marginLeft: '0.5dvw' }} onClick={handleSearch}>{buttonText}</Button>
+                </Box>
+            </Stack>
+            {/* User menu */}
+            <Box sx={{ width: '35%', mr: '2.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                <Box></Box>
+                <Tooltip title="User Menu" arrow onClick={handleClick}>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', height: '100%', alignItems: 'center', '&:hover': { cursor: 'pointer' } }}>
+                        <Avatar src={user.image} />
+                        <Box sx={{ m: '1rem' }}>
+                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.username}</Typography>
+                            <Typography sx={{ textAlign: 'left', color: 'white'}}>{user.email}</Typography>
+                        </Box>
+                    </Box>
+                </Tooltip>
+                {/* Menu */}
+                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                    <MenuItem onClick={() => navigate('/home/profile')}>
+                        <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>Perfil</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={logOut}>
+                        <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>Log Out</Typography>
+                    </MenuItem>
+                </Menu>
             </Box>
-            <Button variant="outlined" sx={{ color: '#ffffff', borderColor: '#ffffff', backgroundColor: blue[800], marginLeft: '0.5dvw' }} onClick={handleSearch}>
-              Cerca
-            </Button>
-          </Stack>
-        </Box>
-
-        <Box sx={{ minWidth: '5dvw'}}>
-          {/* Avatar */}
-          <Tooltip title="User menu">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} disableRipple>
-              <Avatar src={userData.profImage} />
-              <Box sx={{ paddingInline: '1dvw'}}>
-                <Typography sx={{ textAlign: 'left', color: 'white'}}>
-                  {userData.usernameSTR}
-                </Typography>
-                <Typography sx={{ textAlign: 'left', color: 'white'}}>
-                  {userData.emailSTR}
-                </Typography>
-              </Box>
-            </IconButton>
-          </Tooltip>
-          {/* User menu */}
-          <Menu
-            anchorEl={anchorElUser}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            keepMounted
-            transformOrigin={{ vertical: "top", horizontal: "center" }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-            sx={{ mt: "0.5rem", minWidth: "13vw" }}
-          >
-            <MenuItem onClick={profilePage}>
-              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
-                Perfil
-              </Typography>
-            </MenuItem>
-
-            <MenuItem onClick={followingList}>
-              <Typography sx={{ textAlign: "center", color: blue, minWidth: "13vw" }}>
-                Following
-              </Typography>
-            </MenuItem>
-
-            <MenuItem onClick={logOut}>
-              <Typography sx={{ textAlign: "center", color: pink[500], minWidth: "13vw" }}>
-                Log Out
-              </Typography>
-            </MenuItem>
-          </Menu>
-        </Box>
-      </Stack>
-    </Container>
-  );
+        </Container>
+    );
 };

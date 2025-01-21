@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import Field
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.controllers.book_user_controller import BookUserController
 from app.schemas.user import User
 from app.schemas.book import Book
-from app.schemas.user_book import UserBookUpdate, UserBook
+from app.schemas.user_book import UserBookUpdate, UserBook, RatingSchema
 from app.schemas.user_book_read import UserBookResponse
 
 router = APIRouter()
@@ -52,3 +53,58 @@ def update_book_read_status(
         return {"detail": "Read status updated", "data": result}
     except HTTPException as e:
         raise e
+    
+@router.patch("/users/{user_id}/books/{book_id}/rating", response_model=dict)
+def add_or_update_user_rating(
+    user_id: int,
+    book_id: int,
+    rating: RatingSchema,
+    db: Session = Depends(get_db),
+):
+    try:
+        BookUserController.update_user_rating(
+            db=db,
+            user_id=user_id,
+            book_id=book_id,
+            rating=rating.rating,
+        )
+        return {"detail": "Rating successfully added/updated"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.patch("/users/{user_id}/books/{book_id}/comment", response_model=dict)
+def add_or_update_user_comment(
+    user_id: int,
+    book_id: int,
+    comment: str,
+    db: Session = Depends(get_db),
+):
+    try:
+        BookUserController.update_user_comment(
+            db=db,
+            user_id=user_id,
+            book_id=book_id,
+            comment=comment,
+        )
+        return{"detail": "Comment added Succesfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/users/{user_id}/books/{book_id}/rating", response_model=dict)
+def get_user_comment_and_rating(
+    user_id: int,
+    book_id: int,
+    db: Session = Depends(get_db)
+):
+    try:
+        result = BookUserController.get_user_comment_and_rating_for_book(
+            db=db, user_id=user_id, book_id=book_id
+        )
+        if not result:
+            raise HTTPException(status_code=404, detail="No rating or comment found for this book")
+        return {
+            "rating": result.rating,
+            "comment": result.comment
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

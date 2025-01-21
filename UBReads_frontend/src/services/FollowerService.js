@@ -12,12 +12,13 @@ class FollowerService {
      */
     async followUserByUsername(token, toFollowUsername) {
         // Get the user data from the token
+        console.log(toFollowUsername)
         const user = await UserService.getUserData(token);
-        const response = await backendAPI.post(`users/${user.usernameSTR}/follow/${toFollowUsername}`);
+        const response = await backendAPI.post(`users/${user.username}/follow/${toFollowUsername}`);
         // Manage errors
         switch (response.status) {
             case 400:
-                return alert('Usuari no trobat');
+                throw new Error('Usuari no trobat');
             case 500:
                 throw new Error('Error intern en el servidor');
             case 422:
@@ -33,11 +34,11 @@ class FollowerService {
     async unfollowUserByUsername(token, toUnfollowUsername) {
         // Finds the user to unfollow id
         const users = await UserService.getAllUsers(token);
-        const userToUnfollow = users.find(user => user.usernameSTR === toUnfollowUsername);
+        const userToUnfollow = users.find(user => user.username === toUnfollowUsername);
         // Get the user data from the token
         const user = await UserService.getUserData(token);
         // Send the request to the backend
-        const response = await backendAPI.delete(`users/${user.id}/follow/${userToUnfollow.id}`);
+        const response = await backendAPI.delete(`/${user.id}/unfollow/${userToUnfollow.id}`);
         // Manage errors
         switch (response.status) {
             case 400:
@@ -47,6 +48,11 @@ class FollowerService {
             case 422:
                 throw new Error('Format del user username o follow username incorrecte');
         }
+    }
+
+    async getLastFollowedUsers(token) {
+        const users_followed = await this.getUsersFollowed(token);
+        return users_followed.slice(-15);
     }
 
     /**

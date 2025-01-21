@@ -30,7 +30,8 @@ def user_and_book(db_session: Session):
     user_create = UserCreate(
         username="test_user", 
         email="test_user@example.com", 
-        password="test_password"  
+        password="test_password", 
+        profile_pic="profile_pic"
     )
     user = User(**user_create.dict())
     db_session.add(user)

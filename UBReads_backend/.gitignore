@@ -29,3 +29,16 @@ TEST*.xml
 
 #enviroment variables
 .env
+
+# Ignore node_modules
+node_modules/
+
+# Ignorar las carpetas generadas por Cypress (screenshots, videos, etc.)
+cypress/videos/
+cypress/screenshots/
+
+# Ignorar la carpeta de caché de Cypress
+.cypress/
+
+# Ignorar el archivo de lock de dependencias (opcional)
+package-lock.json

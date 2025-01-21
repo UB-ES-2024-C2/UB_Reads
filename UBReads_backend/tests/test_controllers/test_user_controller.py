@@ -23,23 +23,23 @@ def user_controller(db_session):
     return UserController(db=db_session)
 
 def test_insert_user(user_controller, db_session):
-    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword")
+    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword", "profile_pic")
     assert user.username == "testuser"
     assert user.email == "test@example.com"
     assert user_controller.verify_password("securepassword", user.password)
 
 def test_insert_user_duplicate_username(user_controller, db_session):
-    user_controller.insert_user(db_session, "testuser", "test1@example.com", "securepassword")
+    user_controller.insert_user(db_session, "testuser", "test1@example.com", "securepassword", "profile_pic")
     with pytest.raises(ValueError, match="El usuario ya existe"):
-        user_controller.insert_user(db_session, "testuser", "test2@example.com", "securepassword")
+        user_controller.insert_user(db_session, "testuser", "test2@example.com", "securepassword", "profile_pic")
 
 def test_insert_user_duplicate_email(user_controller, db_session):
-    user_controller.insert_user(db_session, "testuser1", "test@example.com", "securepassword")
+    user_controller.insert_user(db_session, "testuser1", "test@example.com", "securepassword", "profile_pic")
     with pytest.raises(ValueError, match="El correo electrónico ya está registrado"):
-        user_controller.insert_user(db_session, "testuser2", "test@example.com", "securepassword")
+        user_controller.insert_user(db_session, "testuser2", "test@example.com", "securepassword", "profile_pic")
 
 def test_get_user(user_controller, db_session):
-    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword")
+    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword", "profile_pic")
     fetched_user = user_controller.get_user(db_session, user.id)
     assert fetched_user.id == user.id
     assert fetched_user.username == "testuser"
@@ -50,7 +50,7 @@ def test_get_user_not_found(user_controller, db_session):
     assert fetched_user is None
 
 def test_get_user_by_username(user_controller, db_session):
-    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword")
+    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword", "profile_pic")
     
     fetched_user = user_controller.get_user_by_username(db_session, "testuser")
     assert fetched_user is not None
@@ -63,14 +63,14 @@ def test_get_user_by_username_not_found(user_controller, db_session):
     assert fetched_user is None
 
 def test_delete_user(user_controller, db_session):
-    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword")
+    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword", "profile_pic")
     result = user_controller.delete_user(db_session, user)
     assert result is True
     assert user_controller.get_user(db_session, user.id) is None
 
 def test_get_users(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
 
     users = user_controller.get_users(db_session)
@@ -89,7 +89,7 @@ def test_get_users_empty(user_controller, db_session):
 
 
 def test_verify_password(user_controller, db_session):
-    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword")
+    user = user_controller.insert_user(db_session, "testuser", "test@example.com", "securepassword", "profile_pic")
     assert user_controller.verify_password("securepassword", user.password)
     assert not user_controller.verify_password("wrongpassword", user.password)
 
@@ -106,8 +106,8 @@ def test_create_refresh_token(user_controller):
     assert decoded["sub"] == "testuser"
 
 def test_follow_user_with_id(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_id(db_session, user1.id, user2.id)
     
@@ -115,21 +115,21 @@ def test_follow_user_with_id(user_controller, db_session):
     assert user1 in user2.followers 
 
 def test_follow_user_with_id_user_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_id(db_session, user1.id, 999) 
 
 def test_follow_user_with_id_target_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_id(db_session, user1.id, 999) 
 
 def test_follow_user_with_id_already_following(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_id(db_session, user1.id, user2.id)
     
@@ -137,8 +137,8 @@ def test_follow_user_with_id_already_following(user_controller, db_session):
         user_controller.follow_user_with_id(db_session, user1.id, user2.id)
 
 def test_follow_user_with_username(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     
@@ -146,28 +146,28 @@ def test_follow_user_with_username(user_controller, db_session):
     assert user1 in user2.followers  
 
 def test_follow_user_with_username_user_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_username(db_session, "testuser1", "nonexistentuser") 
 
 def test_follow_user_with_username_target_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_username(db_session, "testuser1", "nonexistentuser")  
 def test_follow_user_with_username_already_following(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     
     with pytest.raises(ValueError, match="User is already following this target"):
         user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
 def test_follow_user_with_username(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     
@@ -175,21 +175,21 @@ def test_follow_user_with_username(user_controller, db_session):
     assert user1 in user2.followers
 
 def test_follow_user_with_username_user_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_username(db_session, "testuser1", "nonexistentuser")
 
 def test_follow_user_with_username_target_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to follow not found"):
         user_controller.follow_user_with_username(db_session, "testuser1", "nonexistentuser") 
 
 def test_follow_user_with_username_already_following(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     
@@ -197,8 +197,8 @@ def test_follow_user_with_username_already_following(user_controller, db_session
         user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
 
 def test_unfollow_user(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     
@@ -208,21 +208,21 @@ def test_unfollow_user(user_controller, db_session):
     assert user1 not in user2.followers 
 
 def test_unfollow_user_user_not_found(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User or target to unfollow not found"):
         user_controller.unfollow_user(db_session, user1.id, 999) 
 
 def test_unfollow_user_not_following(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     with pytest.raises(ValueError, match="User is not following this target"):
         user_controller.unfollow_user(db_session, user1.id, user2.id)
 
 def test_get_followers(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser2", "testuser1")
     
@@ -236,8 +236,8 @@ def test_get_followers_user_not_found(user_controller, db_session):
         user_controller.get_followers(db_session, 999)  
 
 def test_get_following(user_controller, db_session):
-    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword")
-    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword")
+    user1 = user_controller.insert_user(db_session, "testuser1", "test1@example.com", "securepassword", "profile_pic")
+    user2 = user_controller.insert_user(db_session, "testuser2", "test2@example.com", "securepassword", "profile_pic")
     
     user_controller.follow_user_with_username(db_session, "testuser1", "testuser2")
     

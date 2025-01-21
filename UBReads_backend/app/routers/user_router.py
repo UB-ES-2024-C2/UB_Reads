@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.controllers.user_controller import UserController
 from app.schemas.user import UserCreate, User
-from app.schemas.token import TokenData
+from app.schemas.token import TokenData, TokenRefresh
 import jwt
 import os
 from fastapi.security import (
@@ -63,7 +63,7 @@ async def get_current_user(
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return UserController.insert_user(
-            db=db, username=user.username, email=user.email, password=user.password
+            db=db, username=user.username, email=user.email, password=user.password, profile_pic=user.profile_pic
         )
 
     except ValueError as e:
@@ -123,7 +123,8 @@ def login(
 
 
 @router.post("/token/refresh")
-async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
+async def refresh_token(request: TokenRefresh, db: Session = Depends(get_db)):
+    refresh_token = request.refresh_token
     try:
         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
@@ -169,7 +170,7 @@ def get_followers(user_id: int, db: Session = Depends(get_db)):
         followers = UserController.get_followers(db, user_id)
         return {
             "followers": [
-                {"id": follower.id, "username": follower.username, "email": follower.email}
+                {"id": follower.id, "username": follower.username, "email": follower.email, "profile_pic": follower.profile_pic}
                 for follower in followers
             ]
         }
@@ -182,7 +183,7 @@ def get_following(user_id: int, db: Session = Depends(get_db)):
         following = UserController.get_following(db, user_id)
         return {
             "following": [
-                {"id": user.id, "username": user.username, "email": user.email}
+                {"id": user.id, "username": user.username, "email": user.email, "profile_pic": user.profile_pic}
                 for user in following
             ]
         }
